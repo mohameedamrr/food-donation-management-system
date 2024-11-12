@@ -2,11 +2,11 @@
 // classes/Location.php
 
 class Location {
-    private $id;
-    private $parentID;
-    private $name;
-    private $addressLine;
-    private $postalCode;
+    public $id;
+    public $parentID;
+    public $name;
+    public $addressLine;
+    public $postalCode;
 
     private static $locations = array();
 
@@ -52,7 +52,47 @@ class Location {
         }
         return false;
     }
+	public function getId() {
+		return $this->id;
+	}
+
+	public function setId($value) {
+		$this->id = $value;
+	}
+
+	public function getParentID() {
+		return $this->parentID;
+	}
+
+	public function setParentID($value) {
+		$this->parentID = $value;
+	}
+
+	public function getName() {
+		return $this->name;
+	}
+
+	public function setName($value) {
+		$this->name = $value;
+	}
+
+	public function getAddressLine() {
+		return $this->addressLine;
+	}
+
+	public function setAddressLine($value) {
+		$this->addressLine = $value;
+	}
+
+	public function getPostalCode() {
+		return $this->postalCode;
+	}
+
+	public function setPostalCode($value) {
+		$this->postalCode = $value;
+	}
 
     // Additional methods as needed
 }
 ?>
+

@@ -2,9 +2,11 @@
 require_once 'UserEntity.php';
 
 class Employee extends UserEntity {
-    protected $role;
-    protected $appointmentList;
-    protected $department;
+    public $role;
+    public $appointmentList;
+    public $department;
+
+    public $name;
 
     public function __construct($id, $name, $email, $phone, $password, ILogin $loginMethod, $role, $department) {
         parent::__construct($id, $name, $email, $phone, $password, $loginMethod);
@@ -34,6 +36,20 @@ class Employee extends UserEntity {
         return false;
     }
 
+    public function getRole(): mixed {
+        return $this->role;
+    }
+    public function getAppointmentList(): mixed {
+        return $this->appointmentList;
+    }
+    public function getDepartment(): mixed {
+        return $this->department;
+    }
+    public function getName(): mixed {
+        return $this->name;
+    }
+
+
     public function viewAssignedAppointments() {
         return $this->appointmentList;
     }
@@ -41,5 +57,8 @@ class Employee extends UserEntity {
     public function addAppointment(Appointment $appointment) {
         $this->appointmentList[] = $appointment;
     }
+
 }
 ?>
+
+

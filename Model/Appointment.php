@@ -53,5 +53,58 @@ class Appointment implements Subject {
     public function getAppointmentID() {
         return $this->appointmentID;
     }
+    public function getStatus() {
+		return $this->status;
+	}
+
+	public function setStatus($value) {
+		$this->status = $value;
+	}
+
+	public function getTime() {
+		return $this->time;
+	}
+
+	public function setTime($value) {
+		$this->time = $value;
+	}
+
+	public function getDate() {
+		return $this->date;
+	}
+
+	public function setDate($value) {
+		$this->date = $value;
+	}
+
+	public function setAppointmentID($value) {
+		$this->appointmentID = $value;
+	}
+
+	public function getObservers() {
+		return $this->observers;
+	}
+
+	public function setObservers($value) {
+		$this->observers = $value;
+	}
+
+	public function getEmployeeAssigned() {
+		return $this->employeeAssigned;
+	}
+
+	public function setEmployeeAssigned($value) {
+		$this->employeeAssigned = $value;
+	}
+
+	public function getLocation() {
+		return $this->location;
+	}
+
+	public function setLocation($value) {
+		$this->location = $value;
+	}
 }
 ?>
+
+

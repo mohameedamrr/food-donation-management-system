@@ -3,13 +3,13 @@ require_once __DIR__ . '/../interfaces/ILogin.php';
 require_once __DIR__ . '/../interfaces/Observer.php';
 
 abstract class UserEntity implements Observer {
-    protected $id;
-    protected $name;
-    protected $email;
-    protected $phone;
-    protected $password;
-    protected $donations; // List of Donate objects
-    protected $loginMethod; // ILogin
+    public $id;
+    public $name;
+    public $email;
+    public $phone;
+    public $password;
+    public $donations; // List of Donate objects
+    public $loginMethod; // ILogin
 
     public function __construct($id, $name, $email, $phone, $password, ILogin $loginMethod) {
         $this->id = $id;
@@ -52,5 +52,59 @@ abstract class UserEntity implements Observer {
     public function getDonations() {
         return $this->donations;
     }
+    public function getId() {
+		return $this->id;
+	}
+
+	public function setId($value) {
+		$this->id = $value;
+	}
+
+	public function getName() {
+		return $this->name;
+	}
+
+	public function setName($value) {
+		$this->name = $value;
+	}
+
+	public function getEmail() {
+		return $this->email;
+	}
+
+	public function setEmail($value) {
+		$this->email = $value;
+	}
+
+	public function getPhone() {
+		return $this->phone;
+	}
+
+	public function setPhone($value) {
+		$this->phone = $value;
+	}
+
+	public function getPassword() {
+		return $this->password;
+	}
+
+	public function setPassword($value) {
+		$this->password = $value;
+	}
+
+	public function setDonations($value) {
+		$this->donations = $value;
+	}
+
+	public function getLoginMethod() {
+		return $this->loginMethod;
+	}
+
+	public function setLoginMethod($value) {
+		$this->loginMethod = $value;
+	}
+
 }
 ?>
+
+

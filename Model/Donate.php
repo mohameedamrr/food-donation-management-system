@@ -12,16 +12,53 @@ abstract class Donate {
         $this->description = '';
     }
 
+    // public function getDonationID(): int {
+    //     return $this->donationID;
+    // }
+
+    // public function setDescription($description) {
+    //     $this->description = $description;
+    // }
+
+    // public function getDescription() {
+    //     return $this->description;
+    // }
+
+    // public function getDate(): mixed {
+    //     return $this->donationDate;
+    // }
+
     public function getDonationID() {
-        return $this->donationID;
-    }
+		return $this->donationID;
+	}
 
-    public function setDescription($description) {
-        $this->description = $description;
-    }
+	public function setDonationID($value) {
+		$this->donationID = $value;
+	}
 
-    public function getDescription() {
-        return $this->description;
-    }
+	public function getDonationDate() {
+		return $this->donationDate;
+	}
+
+	public function setDonationDate($value) {
+		$this->donationDate = $value;
+	}
+
+	public function getUser() {
+		return $this->user;
+	}
+
+	public function setUser($value) {
+		$this->user = $value;
+	}
+
+	public function getDescription() {
+		return $this->description;
+	}
+
+	public function setDescription($value) {
+		$this->description = $value;
+	}
 }
 ?>
+

@@ -18,5 +18,22 @@ abstract class BillableDonate extends Donate {
     public function setCost($cost) {
         $this->cost = $cost;
     }
+    public function getReceipt(): void{
+        
+ 
+    }
+    public function getCurrency() {
+		return $this->currency;
+	}
+
+	public function setCurrency($value) {
+		$this->currency = $value;
+	}
+
+	public function getCost() {
+		return $this->cost;
+	}
 }
 ?>
+
+

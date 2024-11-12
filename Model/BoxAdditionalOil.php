@@ -19,7 +19,7 @@ class BoxAdditionalOil extends BoxDecorator {
         $details['additionalOil'] = $this->numBottles;
         return $details;
     }
-
+    
     // Additional methods as needed
 }
 ?>
