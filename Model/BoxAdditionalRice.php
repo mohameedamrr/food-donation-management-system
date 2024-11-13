@@ -4,6 +4,10 @@ require_once 'BoxDecorator.php';
 class BoxAdditionalRice extends BoxDecorator {
     protected $weight;
 
+    public function __construct(DonateBox $ref)
+    {
+        $this->ref = $ref;
+    }
     /**
      * @return mixed
      */

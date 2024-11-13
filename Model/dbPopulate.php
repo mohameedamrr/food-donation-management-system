@@ -3,8 +3,23 @@ require "DatabaseManager.php";
 $db = DatabaseManager::getInstance();
 $db->runQuery("DROP DATABASE IF EXISTS `food_donation`");
 $db->runQuery("CREATE DATABASE `food_donation`");
-$db->runQuery("DROP TABLE IF EXISTS `food_donation`.`users`");
+//$db->runQuery("DROP TABLE IF EXISTS `food_donation`.`users`");
+
 $db->runQuery(
+    "CREATE TABLE food_donation.billable_donations (
+        id BIGINT NOT NULL AUTO_INCREMENT,
+        user_id BIGINT NOT NULL,
+        donation_type VARCHAR(50) NOT NULL,
+        amount DECIMAL(10, 2) NOT NULL,
+        animal_type ENUM('Lamb', 'Cow', 'Camel', 'Chicken') NULL DEFAULT NULL,
+        description TEXT NULL DEFAULT NULL,
+        PRIMARY KEY (id)
+    );"
+);
+
+
+
+/*$db->runQuery(
     "CREATE TABLE `food_donation`.`users` (
     `id` BIGINT NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(50) NULL DEFAULT NULL,
@@ -15,7 +30,7 @@ $db->runQuery(
     UNIQUE INDEX `uq_email` (`email` ASC)
 );"
 );
-
+/*
 $db->runQuery(
     "INSERT INTO `food_donation`.`users` (`id`, `name`, `email`, `phone`, `password`) VALUES
     (1, 'Bertha', 'bertha.wilkinson@example.com', '1234567890', 'b95925ed0aa3897a613c7534ae7abeef'),
@@ -24,5 +39,5 @@ $db->runQuery(
     (4, 'Lacey', 'zdaniel@example.org', '9988776655', 'e5214e7ac6fce4abf561f03c8f30587a'),
     (5, '7amada', '7amada@belganzabeel.com', '1231231234', '25d55ad283aa400af464c76d713c07ad'),
     (6, 'Pearl', 'rjacobi@example.org', '5556667777', 'c1191c08cb4ae00632c4cf3444979bbd');"
-);
+);*/
 ?>
