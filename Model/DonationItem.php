@@ -5,7 +5,7 @@ class DonationItem {
     protected $itemID;
     protected $itemName;
     protected $weight;
-    protected $expiryDate; // DateTime object
+   // protected $expiryDate; // DateTime object
     protected $cost;
 
     //Database
@@ -17,7 +17,33 @@ class DonationItem {
         //database manager
     }
 
+	public function createDonationItems($itemName, $weight, $rawmaterials = 0, $readymeals = 0, $meals = 0, $money = 0, $sacrifice = 0, $box = 0): bool {
+		$sql = "INSERT INTO donation_items (itemName, itemWeight, israwmaterial, isreadymeal, ismeal, ismoney, issacrifice, isbox) VALUES
+			('$itemName', $weight, $rawmaterials, $readymeals, $meals, $money, $sacrifice, $box)";
+	
+		$conn = DatabaseManager::getInstance();
+		$isSuccess = $conn->run_select_query($sql);
+	
+		return $isSuccess;
+	}
 
+	public function getDonationItemInstance($itemID): DonationItem {
+		$conn = DatabaseManager::getInstance();
+		$sql ="SELECT * FROM donation_items WHERE id = $itemID";
+		
+		$row = $conn->run_select_query($sql);
+		if($row->num_rows > 0) {
+		$row = $row->fetch_assoc();	
+		$this->itemName = $row['itemName'];
+		$this->weight = $row['itemWeight'];
+		//$this->expiryDate = $row['expiryDate'];
+		//$this->cost = $row['cost'];
+		$this->itemID = $row['id'];
+		}
+
+		// $row = $conn->fetchAssoc($sql);
+		return $this; 
+	}
 
     public function getItemDetails() {
         return "ID: {$this->itemID}, Name: {$this->itemName}, Weight: {$this->weight}kg, Cost: {$this->cost}";
@@ -33,10 +59,6 @@ class DonationItem {
 
 	public function setWeight($value) {
 		$this->weight = $value;
-	}
-
-	public function setExpiryDate($value) {
-		$this->expiryDate = $value;
 	}
 
 	public function setCost($value) {
@@ -55,9 +77,6 @@ class DonationItem {
 		return $this->weight;
 	}
 
-	public function getExpiryDate() {
-		return $this->expiryDate;
-	}
 
 	public function getCost() {
 		return $this->cost;

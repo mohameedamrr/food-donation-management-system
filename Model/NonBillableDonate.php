@@ -4,6 +4,7 @@ require_once 'DonationItem.php';
 abstract class NonBillableDonate extends DonationItem {
     protected $itemImage;  // Path to the image file
     protected $weight;
+    protected $expiryDate;
 
     public function __construct() {
 

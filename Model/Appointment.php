@@ -14,6 +14,8 @@ class Appointment {
         
     }
 
+    
+
     public function updateStatus(string $status): void {
         $this->status = $status;
     }
