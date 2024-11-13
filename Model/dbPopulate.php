@@ -1,8 +1,8 @@
 <?php
 require "DatabaseManager.php";
 $db = DatabaseManager::getInstance();
-$db->runQuery("DROP TABLE IF EXISTS `food_donation`.`users`",echo:true);
-$db->runQuery("CREATE DATABASE `food_donation`",echo:true);
+$db->runQuery("DROP TABLE IF EXISTS `food_donation`.`users`");
+$db->runQuery("CREATE DATABASE `food_donation`");
 $db->runQuery(
     "CREATE TABLE `food_donation`.`users` (
     `id` BIGINT NOT NULL AUTO_INCREMENT,
@@ -12,7 +12,7 @@ $db->runQuery(
     `password` VARCHAR(32) NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE INDEX `uq_email` (`email` ASC)
-);",echo:true
+);"
 );
 
 $db->runQuery(
@@ -22,6 +22,6 @@ $db->runQuery(
     (3, 'Kyla', 'moore.osbaldo@example.com', '1112233445', 'b98dba1167a8c475d603a51ab9935315'),
     (4, 'Lacey', 'zdaniel@example.org', '9988776655', 'e5214e7ac6fce4abf561f03c8f30587a'),
     (5, '7amada', '7amada@belganzabeel.com', '1231231234', '25d55ad283aa400af464c76d713c07ad'),
-    (6, 'Pearl', 'rjacobi@example.org', '5556667777', 'c1191c08cb4ae00632c4cf3444979bbd');",echo:true
+    (6, 'Pearl', 'rjacobi@example.org', '5556667777', 'c1191c08cb4ae00632c4cf3444979bbd');"
 );
 ?>

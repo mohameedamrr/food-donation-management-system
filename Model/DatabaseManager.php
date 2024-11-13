@@ -35,45 +35,27 @@ class DatabaseManager {
     }
 
     // Method to execute a SQL query
-    function runQuery($query, $echo = false) {
-        if ($echo) echo '<pre>' . $query . '</pre>';
-        if ($echo) echo $this->conn->query($query) === TRUE ? "Query ran successfully<br/>" : "Error: " . $this->conn->error;
-        if ($echo) echo "<hr/>";
+    function runQuery($query) {
+        $this->conn->query($query);
     }
 
-    // Method to get the last inserted ID
-    // public function getLastInsertId(): string {
-    //     return $this->conn->lastInsertId();
-    // }
-    
+    public function getLastInsertId(): int {
+        return $this->conn->insert_id;
+    }
+
     // Method to execute a select query with optional echoing for debugging
-    public function run_select_query($query, $echo = false): mysqli_result|bool {
+    public function run_select_query($query): mysqli_result|bool {
         global $conn;
         $result = $conn->query($query);
-        if ($echo) {
-            echo '<pre>' . $query . '</pre>';
-            if ($result->num_rows > 0) {
-                while ($row = $result->fetch_assoc())
-                    echo $row;
-            } else {
-                echo "0 results";
-            }
-            echo "<hr/>";
-        }
         return $result;
     }
 
     // Method to run multiple queries
-    public function run_queries($queries, $echo = false): array {
+    public function run_queries($queries): array {
         global $conn;
         $ret = [];
         foreach ($queries as $query) {
             $ret += [$conn->query($query)];
-            if ($echo) {
-                echo '<pre>' . $query . '</pre>';
-                echo $ret[array_key_last($ret)] === TRUE ? "Query ran successfully<br/>" : "Error: " . $conn->error;
-                echo "<hr/>";
-            }
         }
         return $ret;
     }

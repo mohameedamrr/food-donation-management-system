@@ -3,6 +3,7 @@ require_once 'UserEntity.php';
 require_once 'Location.php';
 require_once 'Donate.php';
 require_once 'NormalMethod.php';
+require_once 'D:/WorkStation/Univeristy/food-donation-management-system/interfaces/ICRUD.php';
 
 class BasicDonator extends UserEntity implements ICRUD{
     private $location;
@@ -19,19 +20,26 @@ class BasicDonator extends UserEntity implements ICRUD{
     }
 
     public static function storeObject(array $data): ICRUD {
-        // Collect the keys and values from the data array
-        $columns = implode(", ", array_keys($data));
-        $placeholders = ":" . implode(", :", array_keys($data)); // Prepare placeholders for binding
+        // Collect the keys from the data array for column names
+        $columns = implode(", ", array_map(fn($key) => "`$key`", array_keys($data)));
+        
+        // Prepare placeholders for the values (all as ? for binding)
+        $placeholders = implode(", ", array_map(fn($value) => is_numeric($value) ? $value : "'" . addslashes($value) . "'", array_values($data)));
 
+        
         // Prepare the SQL insert statement
-        $sql = "INSERT INTO users ($columns) VALUES ($placeholders)";
-
+        $sql = "INSERT INTO `food_donation`.`users` ($columns) VALUES ($placeholders)";
+        
         // Get the DatabaseManager instance
         $db = DatabaseManager::getInstance();
-
-        // Bind and execute the query
-        $db->runQuery($sql, $data);
-
+        echo $sql . "\n"; // For debugging purposes
+    
+        // Prepare the statement
+        $stmt = $db->runQuery($sql);
+        
+        // Bind and execute the query with values
+    
+        
         // Fetch and return the inserted object if needed
         $lastInsertedId = $db->getLastInsertId();
         return new BasicDonator($lastInsertedId, null);
@@ -79,4 +87,5 @@ class BasicDonator extends UserEntity implements ICRUD{
         $this->location = $location;
     }
 }
+$u = BasicDonator::storeObject(array("id"=>"12", "name"=>"Etshs", "email" => "asdaaasaaa@dads", "phone" => "aaaa+20123123", "password" => "qweq"));
 ?>
