@@ -1,5 +1,6 @@
 <?php
-abstract class DonationItem {
+require_once ("DatabaseManager.php");
+class DonationItem {
 	private static $itemIDCounter = 0;
     protected $itemID;
     protected $itemName;
@@ -12,20 +13,14 @@ abstract class DonationItem {
     //     $this->itemID = $itemID;
     // }
 
-    public function __construct(int $itemID) {
-		$this->itemIDCounter ++;
-        $this->itemID = $this->itemIDCounter;
+    public function __construct() {
         //database manager
     }
 
-    public function getItemDetails(): array {
-        return [
-            'itemID'     => $this->itemID,
-            'itemName'   => $this->itemName,
-            'weight'     => $this->weight,
-            'expiryDate' => $this->expiryDate->format('Y-m-d'),
-            'cost'       => $this->cost
-        ];
+
+
+    public function getItemDetails() {
+        return "ID: {$this->itemID}, Name: {$this->itemName}, Weight: {$this->weight}kg, Cost: {$this->cost}";
     }
 
     public function setItemID($value) {

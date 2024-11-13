@@ -46,7 +46,7 @@ class DatabaseManager {
     // Method to execute a select query with optional echoing for debugging
     public function run_select_query($query): mysqli_result|bool {
         global $conn;
-        $result = $conn->query($query);
+        $result = $this->conn->query($query);
         return $result;
     }
 
