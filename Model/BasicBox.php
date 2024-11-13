@@ -2,16 +2,14 @@
 require_once 'DonateBox.php';
 
 class BasicBox extends DonateBox {
-    private $boxSize;
-    private $itemList; // array of item names
-    private $weightLimit;
 
-    public function addItem(string $item): void {
-        // Add an item to the box
+    public function getContentDetails(): string {
+        return "this box consists of 2 kg rice, 2 pasta packets and 1 oil bottle";
     }
 
-    public function getContentDetails(): array {
-        // Return the contents of the box
+    public function calculateCost(): float
+    {
+        return 80; //price of basic box
     }
 }
 ?>
