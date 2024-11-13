@@ -5,8 +5,6 @@ abstract class BillableDonate extends DonationItem {
     protected $currency;
     protected $cost;
 
-    public function calculateCost(): float {
-        // Calculate and return the cost
-    }
+    public abstract function calculateCost(): float;
 }
 ?>

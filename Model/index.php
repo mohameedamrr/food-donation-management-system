@@ -101,19 +101,20 @@ switch ($action) {
         break;
 
     // Business actions
-    case 'add_location':
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Assuming $business is available (e.g., from session or context)
-            $businessController->addLocation($_POST, $business);
-        } else {
-            // Display location addition form (implement as needed)
-        }
-        break;
+//    case 'add_location':
+//        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+//            // Assuming $business is available (e.g., from session or context)
+//            $businessController->addLocation($_POST, $business);
+//        } else {
+//            // Display location addition form (implement as needed)
+//        }
+//        break;
 
     // Payment actions
     case 'process_payment':
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Assuming $donation is available (e.g., from session or context)
+            $donation = 50;
             $paymentController->processPayment($donation, $_POST);
         } else {
             // Display payment form (implement as needed)
