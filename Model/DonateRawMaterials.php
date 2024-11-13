@@ -6,12 +6,21 @@ class DonateRawMaterials extends NonBillableDonate {
     private $quantity;
     private $supplier;
 
-    public function checkStock(): bool {
-        // Check the stock availability
+    public function __construct(
+        int $itemID,
+        string $itemName,
+        float $weight,
+        DateTime $expiryDate,
+        $itemImage,
+        string $materialType,
+        int $quantity,
+        string $supplier
+    ) {
+        parent::__construct($itemID, $itemName, $weight, $expiryDate, $itemImage);
+        $this->materialType = $materialType;
+        $this->quantity = $quantity;
+        $this->supplier = $supplier;
     }
 
-    public function donateMaterial(): bool {
-        // Donate the raw materials
-    }
 }
 ?>
