@@ -1,6 +1,19 @@
 <?php
-require_once "D:/WorkStation/Univeristy/food-donation-management-system/interfaces/Ilogin.php";
-require_once 'DatabaseManager.php';
+spl_autoload_register(function ($class_name) {
+    $directories = [
+        '../Model/',
+        '../Controller/',
+        '../View/',
+        '../interfaces/',
+    ];
+    foreach ($directories as $directory) {
+        $file = __DIR__ . '/' . $directory . $class_name . '.php';
+        if (file_exists($file)) {
+            require_once $file;
+            return;
+        }
+    }
+});
 
 class NormalMethod implements ILogin {
     private $hashedPassword;
