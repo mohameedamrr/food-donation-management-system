@@ -3,8 +3,8 @@ require "DatabaseManager.php";
 $db = DatabaseManager::getInstance();
 $db->runQuery("DROP DATABASE IF EXISTS `food_donation`");
 $db->runQuery("CREATE DATABASE `food_donation`");
-//$db->runQuery("DROP TABLE IF EXISTS `food_donation`.`users`");
-
+$db->runQuery("DROP TABLE IF EXISTS `food_donation`.`users`");
+$db->runQuery("CREATE DATABASE `food_donation`");
 $db->runQuery(
     "CREATE TABLE food_donation.billable_donations (
         id BIGINT NOT NULL AUTO_INCREMENT,
@@ -31,6 +31,82 @@ $db->runQuery(
 );"
 );
 /*
+$db->runQuery(
+    "CREATE TABLE `food_donation`.`donation_items` (
+        itemID INT AUTO_INCREMENT PRIMARY KEY,
+        itemName VARCHAR(255) NOT NULL,
+        itemWeight DECIMAL(10, 2),
+        israwmaterial TINYINT(1) DEFAULT 0,    -- Flag for raw materials (0 or 1)
+        isreadymeal TINYINT(1) DEFAULT 0,      -- Flag for ready meals (0 or 1)
+        ismeal TINYINT(1) DEFAULT 0,           -- Flag for meals (0 or 1)
+        ismoney TINYINT(1) DEFAULT 0,           -- Flag for money (0 or 1)
+        issacrifice TINYINT(1) DEFAULT 0,       -- Flag for sacrifice (0 or 1)
+        isbox TINYINT(1) DEFAULT 0              -- Flag for box (0 or 1)
+);");
+
+$db->runQuery(
+    "CREATE TABLE `food_donation`.`raw_materials_donation` (
+    itemID INT  PRIMARY KEY,
+    expiryDate DATE,
+    itemImage BLOB,
+    materialType VARCHAR(100),
+    quantity INT,
+    supplier VARCHAR(255)
+);");
+$db->runQuery(
+    "CREATE TABLE `food_donation`.`ready_meals_donation` (
+    itemID INT PRIMARY KEY,
+    expiryDate DATE,
+    itemImage BLOB,
+    mealType VARCHAR(100),
+    packagingType VARCHAR(255)
+);");
+$db->runQuery(
+    "CREATE TABLE `food_donation`.`meals_donation` (
+    itemID INT PRIMARY KEY,
+    expiryDate DATE,
+    itemImage BLOB,
+    mealType VARCHAR(100),
+    servings INT,
+    ingredients TEXT,       -- Array of ingredient names stored as serialized text (e.g., JSON)
+);");
+
+
+
+$db->runQuery(
+    "INSERT INTO `food_donation`.`donation_items` (itemName, itemWeight, israwmaterial, isreadymeal, ismeal, ismoney, issacrifice, isbox) VALUES
+        ('Rice', 100.50, 1, 0, 0, 0, 0, 0),
+        ('Chicken Rice Bowl', 1.50, 0, 1, 0, 0, 0, 0),
+        ('Beef Stew', 1.80, 0, 0, 1, 0, 0, 0),
+        ('Cash Donation', 0, 0, 0, 0, 1, 0, 0),
+        ('Animal Sacrifice', 0, 0, 0, 0, 0, 1, 0),
+        ('Food Box', 10.00, 0, 0, 0, 0, 0, 1);"
+);
+$db->runQuery(
+    "INSERT INTO `food_donation`.`raw_materials_donation` (itemID, expiryDate, itemImage, materialType, quantity, supplier) VALUES
+        (1, '2025-12-01', NULL, 'Grain', 20, 'Global Rice Co.'),
+        (1, '2024-10-20', NULL, 'Grain', 40, 'Flour Mills Ltd.'),
+        (1, '2026-06-15', NULL, 'Canned Goods', 100, 'BeanSuppliers Inc.'),
+        (1, '2025-02-10', NULL, 'Oil', 15, 'Olive Harvesters LLC'),
+        (1, '2024-08-18', NULL, 'Grain', 50, 'PastaWorks Ltd.');"
+);
+$db->runQuery(
+    "INSERT INTO `food_donation`.`ready_meals_donation` (itemID, expiryDate, itemImage, mealType, packagingType) VALUES
+        (2, '2025-06-20', NULL, 'Chicken Meal', 'Plastic Bowl'),
+        (2, '2024-10-15', NULL, 'Vegetarian', 'Foil Wrap'),
+        (2, '2026-06-30', NULL, 'Beef Meal', 'Plastic Container'),
+        (2, '2025-02-01', NULL, 'Seafood', 'Sealed Wrapper'),
+        (2, '2024-12-12', NULL, 'Fruit', 'Plastic Bowl');"
+);
+$db->runQuery(
+    "INSERT INTO `food_donation`.`meals_donation` (itemID, expiryDate, itemImage, mealType, servings, ingredients) VALUES
+        (3, '2025-04-15', NULL, 'Beef Meal', 4, '[\"Beef\", \"Potatoes\", \"Carrots\"]'),
+        (3, '2024-11-01', NULL, 'Vegetarian', 3, '[\"Broccoli\", \"Bell Peppers\", \"Carrots\"]'),
+        (3, '2025-08-10', NULL, 'Chicken Meal', 2, '[\"Chicken\", \"Rice\", \"Sauce\"]'),
+        (3, '2024-07-20', NULL, 'Seafood', 1, '[\"Fish\", \"Lettuce\", \"Tomato\"]'),
+        (3, '2025-01-05', NULL, 'Fruit', 1, '[\"Apple\", \"Banana\", \"Grapes\"]');"
+);
+
 $db->runQuery(
     "INSERT INTO `food_donation`.`users` (`id`, `name`, `email`, `phone`, `password`) VALUES
     (1, 'Bertha', 'bertha.wilkinson@example.com', '1234567890', 'b95925ed0aa3897a613c7534ae7abeef'),

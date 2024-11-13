@@ -30,38 +30,41 @@ class BasicDonator extends UserEntity implements ICRUD{
     }
 
     public static function storeObject(array $data) {
-        // Collect the keys from the data array for column names
         $columns = implode(", ", array_map(fn($key) => "`$key`", array_keys($data)));
-        
-        // Prepare placeholders for the values (all as ? for binding)
         $placeholders = implode(", ", array_map(fn($value) => is_numeric($value) ? $value : "'" . addslashes($value) . "'", array_values($data)));
         $sql = "INSERT INTO `food_donation`.`users` ($columns) VALUES ($placeholders)";
         $db = DatabaseManager::getInstance();
         $db->runQuery($sql);
         $lastInsertedId = $db->getLastInsertId();
-        echo $lastInsertedId;
         return new BasicDonator($lastInsertedId, null);
     }
 
-    public static function readObject($id): void {
-        $sql = "select * from `food_donation`.`users` where id = $id";
+    public static function readObject($id) {
+        $sql = "SELECT * FROM `food_donation`.`users` WHERE id = $id";
         $db = DatabaseManager::getInstance();
-        $row = $db->run_select_query($sql);
+        $row = $db->run_select_query($sql)->fetch_assoc();
         if(isset($row)) {
-            parent::__construct($row["id"], $row["name"], $row["email"], $row["phone"], $row["password"], new NormalMethod());
+            return new BasicDonator($row["id"], null);
         }
+        return null;
     }
 
-    public function updateObject(array $data): void {
-        foreach($data as $d => $value) {
-            if (property_exists($this, $d)) {
-                $this->{$d} = $value;
-            }
+    public function updateObject(array $data) {
+        $updates = [];
+        foreach ($data as $prop => $value) { 
+            $this->{$prop} = $value;
+            $value = is_numeric($value) ? $value : "'" . addslashes($value) . "'";
+            $updates[] = "`$prop` = $value";
         }
+        $sql = "UPDATE `food_donation`.`users` SET " . implode(", ", $updates) . " WHERE id = $this->id";
+        DatabaseManager::getInstance()->runQuery($sql);
     }
+    
 
-    public static function deleteObject($id): void {
-        
+    public static function deleteObject($id) {
+        $sql = "DELETE FROM `food_donation`.`users` WHERE id = $id";
+        $db = DatabaseManager::getInstance();
+        $db->runQuery($sql);
     }
 
     public function makeDonation(array $items, int $id, Donate $donation): bool {
@@ -85,6 +88,6 @@ class BasicDonator extends UserEntity implements ICRUD{
         $this->location = $location;
     }
 }
-$u = BasicDonator::storeObject(array("id"=>"33", "name"=>"Etshs", "email" => "a344@dds", "phone" => "aaaa+20123123", "password" => "qweq"));
-echo $u->getName();
+$u = new BasicDonator(110, null);
+echo $u->login();
 ?>

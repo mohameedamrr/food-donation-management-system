@@ -4,11 +4,10 @@ require_once 'DonationItem.php';
 abstract class NonBillableDonate extends DonationItem {
     protected $itemImage;  // Path to the image file
     protected $weight;
+    protected $expiryDate;
 
-    public function __construct(string $itemName, float $weight, DateTime $expiryDate, $itemImage = null) {
-        parent::__construct($itemName, $weight, $expiryDate, 0.0); // Cost is zero for non-billable donations
-        $this->itemImage = $itemImage;
-        $this->weight = $weight;
+    public function __construct() {
+
     }
 
     public function addImage($imagePath): void {

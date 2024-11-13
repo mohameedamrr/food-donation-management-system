@@ -18,16 +18,16 @@ spl_autoload_register(function ($class_name) {
 class NormalMethod implements ILogin {
     private $hashedPassword;
 
-    public function authenticate(string $username, string $password): string {
-        $sql = "select * from users where username = $username and password = $password";
+    public function authenticate(string $email, string $password): bool {
+        // Prepare the SQL query to select user by email
+        $sql = "SELECT * FROM `food_donation`.`users` WHERE email = '$email'";
         $db = DatabaseManager::getInstance();
-        $row = $db->runQuery($sql);
-        if($row->num_rows) {
+        $row=$db->run_select_query($sql)->fetch_assoc();
+        if($row["password"] == $password){
             return true;
         }
-        else {
-            return false;
-        }
+        
+        return false;
     }
 }
 ?>
