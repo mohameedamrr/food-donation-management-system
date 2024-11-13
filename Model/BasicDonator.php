@@ -25,22 +25,8 @@ class BasicDonator extends UserEntity implements ICRUD{
         
         // Prepare placeholders for the values (all as ? for binding)
         $placeholders = implode(", ", array_map(fn($value) => is_numeric($value) ? $value : "'" . addslashes($value) . "'", array_values($data)));
-
-        
-        // Prepare the SQL insert statement
         $sql = "INSERT INTO `food_donation`.`users` ($columns) VALUES ($placeholders)";
-        
-        // Get the DatabaseManager instance
         $db = DatabaseManager::getInstance();
-        echo $sql . "\n"; // For debugging purposes
-    
-        // Prepare the statement
-        $stmt = $db->runQuery($sql);
-        
-        // Bind and execute the query with values
-    
-        
-        // Fetch and return the inserted object if needed
         $lastInsertedId = $db->getLastInsertId();
         return new BasicDonator($lastInsertedId, null);
     }
@@ -87,5 +73,6 @@ class BasicDonator extends UserEntity implements ICRUD{
         $this->location = $location;
     }
 }
-$u = BasicDonator::storeObject(array("id"=>"12", "name"=>"Etshs", "email" => "asdaaasaaa@dads", "phone" => "aaaa+20123123", "password" => "qweq"));
+$u = (BasicDonator) BasicDonator::storeObject(array("id"=>"12", "name"=>"Etshs", "email" => "asdaaasaaa@dads", "phone" => "aaaa+20123123", "password" => "qweq"));
+echo $u->get
 ?>
