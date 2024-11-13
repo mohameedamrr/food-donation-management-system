@@ -60,7 +60,8 @@ class DatabaseManager {
     }
 
     public function run_select_query($query): mysqli_result|bool {
-        $result = $this->conn->query($query);
+        global $conn;
+        $result = $conn->query($query);
         return $result;
     }
     
