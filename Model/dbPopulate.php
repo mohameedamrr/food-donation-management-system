@@ -1,8 +1,9 @@
 <?php
 require "DatabaseManager.php";
 $db = DatabaseManager::getInstance();
-$db->runQuery("DROP TABLE IF EXISTS `food_donation`.`users`");
+$db->runQuery("DROP DATABASE IF EXISTS `food_donation`");
 $db->runQuery("CREATE DATABASE `food_donation`");
+$db->runQuery("DROP TABLE IF EXISTS `food_donation`.`users`");
 $db->runQuery(
     "CREATE TABLE `food_donation`.`users` (
     `id` BIGINT NOT NULL AUTO_INCREMENT,
