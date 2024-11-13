@@ -39,7 +39,7 @@ class DonateMeal extends NonBillableDonate {
         $this->mealType = $row['mealType'];
         $this->servings = $row['servings'];
         $this->ingredients = $row['ingredients'];
-    }
+		}
 
 		// $row = $conn->fetchAssoc($sql);
 		return $this; 
