@@ -15,12 +15,12 @@ spl_autoload_register(function ($class_name) {
     }
 });
 abstract class UserEntity {
-    private $id;
-    private $name;
-    private $email;
-    private $phone;
-    private $password;
-    private $loginMethod;
+    protected $id;
+    protected $name;
+    protected $email;
+    protected $phone;
+    protected $password;
+    protected $loginMethod;
 
     public function __construct($id, $name, $email, $phone, $password, $loginMethod) {
         $this->id = $id;
@@ -37,6 +37,8 @@ abstract class UserEntity {
 
     public function setId($id) {
         $this->id = $id;
+        $sql = "UPDATE `food_donation`.`users` SET id = $this->id";
+        DatabaseManager::getInstance()->runQuery($sql);
     }
 
     public function getName() {
@@ -45,6 +47,8 @@ abstract class UserEntity {
 
     public function setName($name) {
         $this->name = $name;
+        $sql = "UPDATE `food_donation`.`users` SET name = $this->name";
+        DatabaseManager::getInstance()->runQuery($sql);
     }
 
     public function getEmail() {
@@ -53,6 +57,8 @@ abstract class UserEntity {
 
     public function setEmail($email) {
         $this->email = $email;
+        $sql = "UPDATE `food_donation`.`users` SET email = $this->email";
+        DatabaseManager::getInstance()->runQuery($sql);
     }
 
     public function getPhone() {
@@ -61,6 +67,8 @@ abstract class UserEntity {
 
     public function setPhone($phone) {
         $this->phone = $phone;
+        $sql = "UPDATE `food_donation`.`users` SET phone = $this->phone";
+        DatabaseManager::getInstance()->runQuery($sql);
     }
 
     public function getPassword() {
@@ -69,6 +77,8 @@ abstract class UserEntity {
 
     public function setPassword($password) {
         $this->password = $password;
+        $sql = "UPDATE `food_donation`.`users` SET password = $this->password";
+        DatabaseManager::getInstance()->runQuery($sql);
     }
 
     public function getLoginMethod() {
