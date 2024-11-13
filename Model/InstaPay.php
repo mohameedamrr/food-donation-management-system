@@ -1,28 +1,15 @@
 <?php
-// classes/InstaPay.php
-require_once __DIR__ . '/../interfaces/IPayment.php';
+require_once 'IPayment.php';
 
 class InstaPay implements IPayment {
-    private $transactionID; // Transaction ID for InstaPay
+    private $transactionID;
 
-    public function pay($cost) {
-        // Implement InstaPay payment processing
-        // For simplicity, we'll assume the payment is always successful
-
-        // Process the transaction
-        if ($this->processTransaction($cost)) {
-            return true;
-        } else {
-            return false;
-        }
+    public function pay(float $cost): bool {
+        // Process InstaPay payment
     }
 
-    public function processTransaction($cost) {
-        // Simulate processing the transaction
-        // Generate a transaction ID
-        $this->transactionID = uniqid('instapay_');
-        // Assume transaction is successful
-        return true;
+    public function processTransaction(): bool {
+        // Process the transaction
     }
 }
 ?>

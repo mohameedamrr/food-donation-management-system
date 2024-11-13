@@ -1,5 +1,4 @@
 <?php
-// classes/BoxDecorator.php
 require_once 'DonateBox.php';
 
 abstract class BoxDecorator extends DonateBox {
@@ -7,14 +6,12 @@ abstract class BoxDecorator extends DonateBox {
     protected $additionalCost;
     protected $pricePerUnit;
 
-    public function __construct(DonateBox $donateBox) {
-        $this->ref = $donateBox;
+    public function __construct(DonateBox $ref) {
+        $this->ref = $ref;
     }
 
-    public function getContentDetails() {
-        return $this->ref->getContentDetails();
+    public function getContentDetails(): array {
+        // Return the contents including decorations
     }
-
-    // Additional methods as needed
 }
 ?>

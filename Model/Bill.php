@@ -1,26 +1,17 @@
 <?php
-require_once __DIR__ . '/../interfaces/IPayment.php';
+require_once 'IPayment.php';
+require_once 'BillableDonate.php';
 
 class Bill {
-    private $paymentStrategy;
+    private $paymentStrategy; // IPayment
     private $billAmount;
 
-    public function __construct($billAmount) {
-        $this->billAmount = $billAmount;
-        $this->paymentStrategy = null;
-    }
-
-    public function setPaymentStrategy(IPayment $strategy) {
+    public function setPaymentStrategy(IPayment $strategy): void {
         $this->paymentStrategy = $strategy;
     }
 
-    public function executePayment(BillableDonate $billableDonate) {
-        if ($this->paymentStrategy == null) {
-            throw new Exception("Payment strategy not set.");
-        }
-        $cost = $billableDonate->calculateCost();
-        $this->billAmount = $cost;
-        return $this->paymentStrategy->pay($cost);
+    public function executePayment(BillableDonate $billableDonate): bool {
+        // Execute payment using the chosen strategy
     }
 }
 ?>

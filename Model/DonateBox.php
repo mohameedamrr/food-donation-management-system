@@ -1,21 +1,9 @@
 <?php
-// classes/DonateBox.php
+require_once 'BillableDonate.php';
 
-abstract class DonateBox {
-    protected $components; // List of DonateBox
-
-    public function __construct() {
-        $this->components = array();
+abstract class DonateBox extends BillableDonate {
+    public function getContentDetails(): array {
+        // Return content details of the box
     }
-
-    public function getContentDetails() {
-        $details = array();
-        foreach ($this->components as $component) {
-            $details[] = $component->getContentDetails();
-        }
-        return $details;
-    }
-
-    // Additional methods as needed
 }
 ?>

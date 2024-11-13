@@ -1,64 +1,28 @@
 <?php
 require_once 'UserEntity.php';
+require_once 'IObserver.php';
+require_once 'Appointment.php';
 
-class Employee extends UserEntity {
-    public $role;
-    public $appointmentList;
-    public $department;
+class Employee extends UserEntity implements IObserver {
+    private $role;
+    private $appointmentList; // array of Appointment objects
+    private $department;
+    private $admin; // ISubject
 
-    public $name;
-
-    public function __construct($id, $name, $email, $phone, $password, ILogin $loginMethod, $role, $department) {
-        parent::__construct($id, $name, $email, $phone, $password, $loginMethod);
-        $this->role = $role;
-        $this->department = $department;
-        $this->appointmentList = array();
+    public function changeDonationDescription(int $donationID, string $description): void {
+        // Change the description of a donation
     }
 
-    public function changeDonationDescription($donationID, $description) {
-        $donationManager = DonationManager::getInstance();
-        $donation = $donationManager->getDonationByID($donationID);
-        if ($donation) {
-            $donation->setDescription($description);
-            $donationManager->updateDonation($donation);
-            return true;
-        }
-        return false;
+    public function changeAppointmentStatus(int $appointmentID, string $status): void {
+        // Change the status of an appointment
     }
 
-    public function changeAppointmentStatus($appointmentID, $status) {
-        $appointmentManager = AppointmentManager::getInstance();
-        $appointment = $appointmentManager->getAppointmentByID($appointmentID);
-        if ($appointment) {
-            $appointment->updateStatus($status);
-            return true;
-        }
-        return false;
+    public function viewAssignedAppointments(): array {
+        // Return assigned appointments
     }
 
-    public function getRole(): mixed {
-        return $this->role;
+    public function update(ISubject $subject): void {
+        // Update method as per IObserver interface
     }
-    public function getAppointmentList(): mixed {
-        return $this->appointmentList;
-    }
-    public function getDepartment(): mixed {
-        return $this->department;
-    }
-    public function getName(): mixed {
-        return $this->name;
-    }
-
-
-    public function viewAssignedAppointments() {
-        return $this->appointmentList;
-    }
-
-    public function addAppointment(Appointment $appointment) {
-        $this->appointmentList[] = $appointment;
-    }
-
 }
 ?>
-
-
