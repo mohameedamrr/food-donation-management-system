@@ -18,7 +18,7 @@ class DonateRawMaterials extends NonBillableDonate {
         }
 
         $sql = "INSERT INTO raw_materials_donation (itemID, expiryDate, itemImage, materialType, quantity, supplier) VALUES
-            ($this->itemID, '$expiryDate', '$itemImage', '$materialType', $quantity, '$supplier')";
+            ('$this->itemID', '$expiryDate', '$itemImage', '$materialType', $quantity, '$supplier')";
 
         $conn = DatabaseManager::getInstance();
         $isSuccess = $conn->run_select_query($sql);
@@ -29,14 +29,14 @@ class DonateRawMaterials extends NonBillableDonate {
     
     public function getRawMaterialItemsInstance($itemID): DonationItem {
 		$conn = DatabaseManager::getInstance();
-		$sql ="SELECT * FROM raw_materials_donation WHERE id = $itemID";
+		$sql ="SELECT * FROM raw_materials_donation WHERE itemID = $itemID";
 		
 		$row = $conn->run_select_query($sql);
 		if($row->num_rows > 0) {
 		$row = $row->fetch_assoc();	
 		$this->expiryDate = $row['expiryDate'];
-		$this->cost = $row['cost'];
-		$this->itemID = $row['id'];
+		//$this->cost = $row['cost'];
+		$this->itemID = $row['itemID'];
         $this->materialType = $row['materialType'];
         $this->quantity = $row['quantity'];
         $this->supplier = $row['supplier'];
@@ -47,8 +47,8 @@ class DonateRawMaterials extends NonBillableDonate {
 		return $this; 
 	}
     public function getItemDetails() {
-        $expiryDateStr = $this->expiryDate ? $this->expiryDate->format('Y-m-d') : 'N/A';
-        return "ID: {$this->itemID}, Name: {$this->itemName}, Weight: {$this->weight}kg, Cost: {$this->cost}, Expiry Date: {$expiryDateStr}, Material Type: {$this->materialType}, Quantity: {$this->quantity}, Supplier: {$this->supplier}";
+        //$expiryDateStr = $this->expiryDate ? $this->expiryDate->format('Y-m-d') : 'N/A';
+        return "ID: {$this->itemID}, Name: {$this->itemName}, Weight: {$this->weight}kg, Cost: {$this->cost}, Material Type: {$this->materialType}, Quantity: {$this->quantity}, Supplier: {$this->supplier}";
     }
 }
 ?>

@@ -29,6 +29,7 @@ class DonationItem {
 		}
 		$isSuccess = $conn->runQuery($sql);
 		$this->itemID = $conn->getLastInsertId();
+		
 		return $isSuccess;
 	}
 
