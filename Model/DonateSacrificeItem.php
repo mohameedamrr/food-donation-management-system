@@ -11,7 +11,7 @@ enum AnimalType: int {
         return $this->value;
     }
 }
-class DonateSacrifice extends BillableDonate {
+class DonateSacrificeItem extends BillableDonate {
     private AnimalType $animalType;
 
     /**
@@ -72,6 +72,28 @@ class DonateSacrifice extends BillableDonate {
 
     public function calculateCost(): float {
         return $this->animalType->getPrice() * $this->weight;
+    }
+
+    public function executeDonation(): bool
+    {
+        // Get the instance of DatabaseManager
+        $db = DatabaseManager::getInstance();
+
+        // Construct the SQL query to insert the donation data
+        $query = "
+        INSERT INTO food_donation.billable_donations (user_id, donation_type, amount, animal_type, description) 
+        VALUES (2, 'Sacrifice', {$this->calculateCost()}, '{$this->animalType->name}', NULL);
+    ";
+
+        // Execute the query and check if it was successful
+        if ($db->runQuery($query) !== false) {
+            return true; // Insertion was successful
+        } else {
+            // Log or handle the error
+
+            return false; // Insertion failed
+        }
+
     }
 }
 ?>

@@ -4,6 +4,10 @@ require_once 'BoxDecorator.php';
 class BoxAdditionalPasta extends BoxDecorator {
     private $numPackets;
 
+    public function __construct(DonateBox $ref)
+    {
+        $this->ref = $ref;
+    }
     /**
      * @return mixed
      */
