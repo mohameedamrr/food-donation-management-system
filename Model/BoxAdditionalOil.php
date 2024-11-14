@@ -4,6 +4,11 @@ require_once 'BoxDecorator.php';
 class BoxAdditionalOil extends BoxDecorator {
     private $numBottles;
 
+    public function __construct(DonateBox $ref)
+    {
+        $this->ref = $ref;
+    }
+
     /**
      * @return mixed
      */
@@ -21,7 +26,7 @@ class BoxAdditionalOil extends BoxDecorator {
     }
 
     public function getContentDetails(): string {
-        return $this->ref->getContentDetails()." , additional oil bottels ".$this->numBottles;
+        return $this->ref->getContentDetails()." , additional oil bottles ".$this->numBottles;
     }
 
     public function calculateCost(): float

@@ -42,7 +42,7 @@ class DonationController {
     }
 
     public function createMonetaryDonation($donationData, $user) {
-        $donation = new DonateMoney(
+        $donation = new DonateMoneyItem(
             rand(1000, 9999),
             new DateTime(),
             $user,
@@ -55,7 +55,7 @@ class DonationController {
     }
 
     public function createSacrificeDonation($donationData, $user) {
-        $donation = new DonateSacrifice(
+        $donation = new DonateSacrificeItem(
             rand(1000, 9999),
             new DateTime(),
             $user,
@@ -91,7 +91,7 @@ class DonationController {
     public function editDonationCost($donationID, $cost, $admin) {
         $donation = $this->donationManager->getDonationByID($donationID);
         if ($donation) {
-            if ($donation instanceof DonateSacrifice) {
+            if ($donation instanceof DonateSacrificeItem) {
                 $donation->setCost($cost);
                 $this->donationManager->updateDonation($donation);
                 $this->donationView->displayDonationCostUpdateSuccess($donationID, $cost);

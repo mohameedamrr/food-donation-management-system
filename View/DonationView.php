@@ -54,11 +54,11 @@ class DonationView {
                     <li><strong>Donation ID:</strong> <?php echo htmlspecialchars($donation->getDonationID()); ?></li>
                     <li><strong>Date:</strong> <?php echo htmlspecialchars($donation->getDate()->format('Y-m-d H:i:s')); ?></li>
                     <li><strong>Donor:</strong> <?php echo htmlspecialchars($donation->getDonor()->getName()); ?></li>
-                    <?php if ($donation instanceof DonateMoney): ?>
+                    <?php if ($donation instanceof DonateMoneyItem): ?>
                         <li><strong>Type:</strong> Monetary Donation</li>
                         <li><strong>Amount:</strong> <?php echo htmlspecialchars($donation->getCurrency()); ?> <?php echo htmlspecialchars($donation->getAmount()); ?></li>
                         <li><strong>Purpose:</strong> <?php echo htmlspecialchars($donation->getDonationPurpose()); ?></li>
-                    <?php elseif ($donation instanceof DonateSacrifice): ?>
+                    <?php elseif ($donation instanceof DonateSacrificeItem): ?>
                         <li><strong>Type:</strong> Sacrifice Donation</li>
                         <li><strong>Cost:</strong> <?php echo htmlspecialchars($donation->getCurrency()); ?> <?php echo htmlspecialchars($donation->getCost()); ?></li>
                         <li><strong>Animal Type:</strong> <?php echo htmlspecialchars($donation->getAnimalType()); ?></li>
@@ -119,11 +119,11 @@ class DonationView {
                             <tr>
                                 <td><?php echo htmlspecialchars($donation->getDonationID()); ?></td>
                                 <td><?php echo htmlspecialchars($donation->getDate()->format('Y-m-d H:i:s')); ?></td>
-                                <?php if ($donation instanceof DonateMoney): ?>
+                                <?php if ($donation instanceof DonateMoneyItem): ?>
                                     <td>Monetary Donation</td>
                                     <td><?php echo htmlspecialchars($donation->getCurrency()); ?> <?php echo htmlspecialchars($donation->getAmount()); ?></td>
                                     <td>Purpose: <?php echo htmlspecialchars($donation->getDonationPurpose()); ?></td>
-                                <?php elseif ($donation instanceof DonateSacrifice): ?>
+                                <?php elseif ($donation instanceof DonateSacrificeItem): ?>
                                     <td>Sacrifice Donation</td>
                                     <td><?php echo htmlspecialchars($donation->getCurrency()); ?> <?php echo htmlspecialchars($donation->getCost()); ?></td>
                                     <td>Animal: <?php echo htmlspecialchars($donation->getAnimalType()); ?>, Location: <?php echo htmlspecialchars($donation->getLocation()); ?></td>

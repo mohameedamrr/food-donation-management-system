@@ -12,27 +12,31 @@ class DonateMeal extends NonBillableDonate {
 
     }
 
-    public function createDonationItems($itemName, $weight, $expiryDate, $itemImage, $mealType,$servings, $ingredients): bool {
-        $sql = "INSERT INTO `meals_donation` (itemName, itemWeight, expiryDate, itemImage, mealType, servings, ingredients) VALUES
-        ($itemName,$weight,$expiryDate,$itemImage,$mealType,$servings,$ingredients)";
-        
-        $conn = DatabaseManager::getInstance();	
 
-		$isSuccess =$conn->run_select_query($sql);
+    public function createMealItems($itemName, $weight, $expiryDate, $itemImage, $mealType, $servings, $ingredients): bool {
+        $isSuccess = $this->createDonationItems($itemName, $weight, 0, 0, 1, 0, 0, 0); // Set meals flag to 1
         
+        if (!$isSuccess) {
+            return false;
+        }
+
+        $sql = "INSERT INTO meals_donation (itemID, expiryDate, itemImage, mealType, servings, ingredients) VALUES
+            ($this->itemID, '$expiryDate', '$itemImage', '$mealType', $servings, '$ingredients')";
+
+        $conn = DatabaseManager::getInstance();
+        $isSuccess = $conn->run_select_query($sql);
+
         return $isSuccess;
-
-
     }
-    public function getDonationItemInstance($itemID): DonationItem {
+    
+    public function getMealItemInstance($itemID): DonationItem {
 		$conn = DatabaseManager::getInstance();
 		$sql ="SELECT * FROM meals_donation WHERE id = $itemID";
 		
 		$row = $conn->run_select_query($sql);
 		if($row->num_rows > 0) {
 		$row = $row->fetch_assoc();	
-		$this->itemName = $row['itemName'];
-		$this->weight = $row['itemWeight'];
+		parent::getDonationItemInstance($itemID);
 		$this->expiryDate = $row['expiryDate'];
 		$this->cost = $row['cost'];
 		$this->itemID = $row['id'];
