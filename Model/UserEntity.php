@@ -37,7 +37,7 @@ abstract class UserEntity {
 
     public function setId($id) {
         $this->id = $id;
-        $sql = "UPDATE `food_donation`.`users` SET id = $this->id";
+        $sql = "UPDATE `food_donation`.`users` SET id = $this->id WHERE id = $this->id";
         DatabaseManager::getInstance()->runQuery($sql);
     }
 
@@ -47,7 +47,7 @@ abstract class UserEntity {
 
     public function setName($name) {
         $this->name = $name;
-        $sql = "UPDATE `food_donation`.`users` SET name = $this->name";
+        $sql = "UPDATE `food_donation`.`users` SET name = '$this->name' WHERE id = $this->id";
         DatabaseManager::getInstance()->runQuery($sql);
     }
 
@@ -57,7 +57,7 @@ abstract class UserEntity {
 
     public function setEmail($email) {
         $this->email = $email;
-        $sql = "UPDATE `food_donation`.`users` SET email = $this->email";
+        $sql = "UPDATE `food_donation`.`users` SET email = '$this->email' WHERE id = $this->id";
         DatabaseManager::getInstance()->runQuery($sql);
     }
 
@@ -67,7 +67,7 @@ abstract class UserEntity {
 
     public function setPhone($phone) {
         $this->phone = $phone;
-        $sql = "UPDATE `food_donation`.`users` SET phone = $this->phone";
+        $sql = "UPDATE `food_donation`.`users` SET phone = '$this->phone' WHERE id = $this->id";
         DatabaseManager::getInstance()->runQuery($sql);
     }
 
@@ -77,7 +77,7 @@ abstract class UserEntity {
 
     public function setPassword($password) {
         $this->password = $password;
-        $sql = "UPDATE `food_donation`.`users` SET password = $this->password";
+        $sql = "UPDATE `food_donation`.`users` SET password = '$this->password' WHERE id = $this->id";
         DatabaseManager::getInstance()->runQuery($sql);
     }
 

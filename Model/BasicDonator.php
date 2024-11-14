@@ -88,6 +88,6 @@ class BasicDonator extends UserEntity implements ICRUD{
         $this->location = $location;
     }
 }
-$u = new BasicDonator(110, null);
+$u = new BasicDonator(1, null);
 echo $u->login();
 ?>
