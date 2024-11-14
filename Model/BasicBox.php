@@ -15,6 +15,10 @@ class BasicBox extends DonateBox {
     {
         return 80; //price of basic box
     }
+    public function getWeight()
+    {
+        return 7; // 2kg rice, 4kg pasta (2packets), 1 kilo oil bottle
+    }
 
 }
 ?>

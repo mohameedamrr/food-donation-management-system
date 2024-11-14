@@ -8,13 +8,8 @@ class BoxAdditionalRice extends BoxDecorator {
     {
         $this->ref = $ref;
     }
-    /**
-     * @return mixed
-     */
-    public function getWeight()
-    {
-        return $this->weight;
-    }
+
+
 
     /**
      * @param mixed $weight
@@ -32,6 +27,11 @@ class BoxAdditionalRice extends BoxDecorator {
     {
         return ($this->weight * 30) + $this->ref->calculateCost(); //30 is price of 1 kg of rice
 
+    }
+
+    public function getWeight()
+    {
+        return $this->weight + $this->ref->getWeight();
     }
 }
 ?>

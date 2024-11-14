@@ -34,5 +34,10 @@ class BoxAdditionalPasta extends BoxDecorator {
         return ($this->numPackets * 10) + $this->ref->calculateCost(); //10 is price of 1 packet of pasta
 
     }
+
+    public function getWeight()
+    {
+        return $this->numPackets*2 + $this->ref->getWeight(); //  1 pasta packet = 2 kilo
+    }
 }
 ?>
