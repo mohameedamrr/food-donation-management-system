@@ -1,6 +1,6 @@
 <?php
 require_once 'NonBillableDonate.php';
-
+require_once 'DatabaseManager.php';
 class DonateRawMaterials extends NonBillableDonate {
     private $materialType;
     private $quantity;
@@ -46,6 +46,9 @@ class DonateRawMaterials extends NonBillableDonate {
 		// $row = $conn->fetchAssoc($sql);
 		return $this; 
 	}
-
+    public function getItemDetails() {
+        $expiryDateStr = $this->expiryDate ? $this->expiryDate->format('Y-m-d') : 'N/A';
+        return "ID: {$this->itemID}, Name: {$this->itemName}, Weight: {$this->weight}kg, Cost: {$this->cost}, Expiry Date: {$expiryDateStr}, Material Type: {$this->materialType}, Quantity: {$this->quantity}, Supplier: {$this->supplier}";
+    }
 }
 ?>

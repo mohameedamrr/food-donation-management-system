@@ -1,6 +1,6 @@
 <?php
 require_once 'NonBillableDonate.php';
-
+require_once 'DatabaseManager.php';
 class DonateMeal extends NonBillableDonate {
     private $mealType;
     private $servings;
@@ -21,7 +21,7 @@ class DonateMeal extends NonBillableDonate {
         }
 
         $sql = "INSERT INTO meals_donation (itemID, expiryDate, itemImage, mealType, servings, ingredients) VALUES
-            ($this->itemID, '$expiryDate', '$itemImage', '$mealType', $servings, '$ingredients')";
+            ($this->itemID, $expiryDate, $itemImage, $mealType, $servings, $ingredients)";
 
         $conn = DatabaseManager::getInstance();
         $isSuccess = $conn->run_select_query($sql);
@@ -48,5 +48,10 @@ class DonateMeal extends NonBillableDonate {
 		// $row = $conn->fetchAssoc($sql);
 		return $this; 
 	}
+    public function getItemDetails() {
+        $expiryDateStr = $this->expiryDate ? $this->expiryDate->format('Y-m-d') : 'N/A';
+        $ingredientsStr = implode(', ', $this->ingredients); // Convert ingredients array to string
+        return "ID: {$this->itemID}, Name: {$this->itemName}, Weight: {$this->weight}kg, Cost: {$this->cost}, Expiry Date: {$expiryDateStr}, Meal Type: {$this->mealType}, Servings: {$this->servings}, Ingredients: {$ingredientsStr}";
+    }
 }
 ?>

@@ -27,7 +27,7 @@ class DatabaseManager {
 
     // Public static method to get the single instance of DatabaseManager
     public static function getInstance(): DatabaseManager {
-        if (self::$instance === null) {
+        if (self::$instance == null) {
             self::$instance = new DatabaseManager();
         }
         return self::$instance;
@@ -60,7 +60,8 @@ class DatabaseManager {
     }
 
     public function run_select_query($query): mysqli_result|bool {
-        $result = $this->conn->query($query);
+        global $conn;
+        $result = $conn->query($query);
         return $result;
     }
     
