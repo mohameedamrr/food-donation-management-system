@@ -1,8 +1,8 @@
 <?php
 require "DatabaseManager.php";
 $db = DatabaseManager::getInstance();
+
 $db->runQuery("DROP DATABASE IF EXISTS `food_donation`");
-$db->runQuery("CREATE DATABASE `food_donation`");
 $db->runQuery("DROP TABLE IF EXISTS `food_donation`.`users`");
 $db->runQuery("CREATE DATABASE `food_donation`");
 $db->runQuery(

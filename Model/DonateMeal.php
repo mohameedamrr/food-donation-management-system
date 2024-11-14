@@ -21,7 +21,7 @@ class DonateMeal extends NonBillableDonate {
         }
 
         $sql = "INSERT INTO meals_donation (itemID, expiryDate, itemImage, mealType, servings, ingredients) VALUES
-            ($this->itemID, $expiryDate, $itemImage, $mealType, $servings, $ingredients)";
+            ('$this->itemID', '$expiryDate', '$itemImage', '$mealType', '$servings', '$ingredients')";
 
         $conn = DatabaseManager::getInstance();
         $isSuccess = $conn->run_select_query($sql);
@@ -31,15 +31,15 @@ class DonateMeal extends NonBillableDonate {
     
     public function getMealItemInstance($itemID): DonationItem {
 		$conn = DatabaseManager::getInstance();
-		$sql ="SELECT * FROM meals_donation WHERE id = $itemID";
+		$sql ="SELECT * FROM meals_donation WHERE itemID = $itemID";
 		
 		$row = $conn->run_select_query($sql);
 		if($row->num_rows > 0) {
 		$row = $row->fetch_assoc();	
 		parent::getDonationItemInstance($itemID);
 		$this->expiryDate = $row['expiryDate'];
-		$this->cost = $row['cost'];
-		$this->itemID = $row['id'];
+		//$this->cost = $row['cost'];
+		$this->itemID = $row['itemID'];
         $this->mealType = $row['mealType'];
         $this->servings = $row['servings'];
         $this->ingredients = $row['ingredients'];
@@ -49,9 +49,9 @@ class DonateMeal extends NonBillableDonate {
 		return $this; 
 	}
     public function getItemDetails() {
-        $expiryDateStr = $this->expiryDate ? $this->expiryDate->format('Y-m-d') : 'N/A';
-        $ingredientsStr = implode(', ', $this->ingredients); // Convert ingredients array to string
-        return "ID: {$this->itemID}, Name: {$this->itemName}, Weight: {$this->weight}kg, Cost: {$this->cost}, Expiry Date: {$expiryDateStr}, Meal Type: {$this->mealType}, Servings: {$this->servings}, Ingredients: {$ingredientsStr}";
+        // $expiryDateStr = $this->expiryDate ? $this->expiryDate->format('Y-m-d') : 'N/A';
+        // $ingredientsStr = implode(', ', $this->ingredients); // Convert ingredients array to string
+        return "ID: {$this->itemID}, Name: {$this->itemName}, Weight: {$this->weight}kg, Cost: {$this->cost}, Meal Type: {$this->mealType}, Servings: {$this->servings}, Ingredients: {$this->ingredients}";
     }
 }
 ?>

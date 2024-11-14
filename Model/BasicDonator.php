@@ -51,7 +51,7 @@ class BasicDonator extends UserEntity implements ICRUD{
 
     public function updateObject(array $data) {
         $updates = [];
-        foreach ($data as $prop => $value) { 
+        foreach ($data as $prop => $value) {
             $this->{$prop} = $value;
             $value = is_numeric($value) ? $value : "'" . addslashes($value) . "'";
             $updates[] = "`$prop` = $value";
@@ -59,7 +59,7 @@ class BasicDonator extends UserEntity implements ICRUD{
         $sql = "UPDATE `food_donation`.`users` SET " . implode(", ", $updates) . " WHERE id = $this->id";
         DatabaseManager::getInstance()->runQuery($sql);
     }
-    
+
 
     public static function deleteObject($id) {
         $sql = "DELETE FROM `food_donation`.`users` WHERE id = $id";
