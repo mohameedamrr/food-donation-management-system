@@ -16,68 +16,61 @@ spl_autoload_register(function ($class_name) {
 });
 
 class Admin extends UserEntity implements ISubject, ICRUD {
-    private $role;
     private $tasksList; // array of tasks
     private $observersList; // array of IObserver objects
 
-    public function __construct()
-    {
-        
+    public function __construct() {
+        $sql3 = "SELECT * FROM `food_donation`.`appointments`";
+        $db = DatabaseManager::getInstance();
+        $rows = $db->run_select_query($sql3);
+        foreach($rows as $row) {
+            array_push($this->tasksList, Appointment::readObject($row["appointmentID"]));
+        }
+
     }
 
-    public function assignAppointment(int $appointmentID, Employee $employee): void {
-        // Assign an appointment to an employee
-        //create appointment using CRUD and add employee to its data
+    public function assignAppointment($appointmentID, $employeeID): void {
+        foreach ($this->tasksList as $appointment) {
+            if ($appointment->getAppointmentID() == $appointmentID) {
+                $appointment->assignEmployee($employeeID);
+                return;
+            }
+        }
+        $this->notifyObservers();
     }
 
     public function createEmployee(array $employeeData) {
-        // Create a new employee and return it
         return Employee::storeObject($employeeData);
     }
 
     public function deleteEmployee(int $employeeID): void {
-        // Delete an employee
         Employee::deleteObject($employeeID);
     }
 
-    public function addTask(string $task): void {
-        // Add a new task
-        array_push($this->tasksList, $task);
+    public function addTask($taskID): void {
+        array_push($this->tasksList, Appointment::readObject($taskID));
         $this->notifyObservers();
     }
 
-    public function removeTask(string $taskID): void {
-        // Loop through the tasksList
-        foreach ($this->tasksList as $key => $existingTask) {
-            // Check if the existing task's ID matches the provided taskID
-            if ($existingTask->getId() === $taskID) {
-                // Remove the task from the list
-                unset($this->tasksList[$key]);
-                // Reindex the array to avoid gaps in the keys
+    public function removeTask($taskID): void {
+        foreach ($this->tasksList as $appointment) {
+            if ($appointment->getId() === $taskID) {
+                $this->tasksList = array_diff($this->tasksList, [$appointment]);
                 $this->tasksList = array_values($this->tasksList);
                 break;
             }
         }
-        
-        // If the task was not found, you can notify observers or handle accordingly
-        $this->notifyObservers();  // Notify if the task wasn't found (optional)
+        $this->notifyObservers();
     }
-    
 
     public function addObserver(IObserver $observer): void {
-        // Add an observer
         array_push($this->observersList, $observer);
-        
     }
 
     public function removeObserver(IObserver $observer): void {
-        // Remove an observer
         foreach ($this->observersList as $key => $existingObserver) {
-            // Check if the observer is the same as the one to be removed
             if ($existingObserver === $observer) {
-                // Remove the observer from the list
                 unset($this->observerList[$key]);
-                // Reindex the array to avoid gaps in the keys
                 $this->observersList = array_values($this->observersList);
                 return;
             }
@@ -85,13 +78,11 @@ class Admin extends UserEntity implements ISubject, ICRUD {
     }
 
     public function notifyObservers(): void {
-        // Notify all observers
         foreach ($this->observersList as $observer) {
-            // Call the update method on each observer
-            $observer->update(); // Assuming $this is the ISubject that the observer is observing
+            $observer->update();
         }
     }
-    
+
     public static function storeObject(array $data){
         $columns = implode(", ", array_map(fn($key) => "`$key`", array_keys($data)));
         $placeholders = implode(", ", array_map(fn($value) => is_numeric($value) ? $value : "'" . addslashes($value) . "'", array_values($data)));
