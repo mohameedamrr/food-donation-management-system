@@ -18,18 +18,23 @@ class DonationItem {
     }
 
 	public function createDonationItems($itemName, $weight, $rawmaterials = 0, $readymeals = 0, $meals = 0, $money = 0, $sacrifice = 0, $box = 0): bool {
+		$this->itemName = $itemName;
+		$this->weight = $weight;
 		$sql = "INSERT INTO donation_items (itemName, itemWeight, israwmaterial, isreadymeal, ismeal, ismoney, issacrifice, isbox) VALUES
-			('$itemName', $weight, $rawmaterials, $readymeals, $meals, $money, $sacrifice, $box)";
+			('$itemName', '$weight', '$rawmaterials', '$readymeals', '$meals','$money', '$sacrifice', '$box')";
 	
 		$conn = DatabaseManager::getInstance();
-		$isSuccess = $conn->run_select_query($sql);
-	
+		if($conn === NULL){
+			echo "no connection";
+		}
+		$isSuccess = $conn->runQuery($sql);
+		$this->itemID = $conn->getLastInsertId();
 		return $isSuccess;
 	}
 
 	public function getDonationItemInstance($itemID): DonationItem {
 		$conn = DatabaseManager::getInstance();
-		$sql ="SELECT * FROM donation_items WHERE id = $itemID";
+		$sql ="SELECT * FROM donation_items WHERE itemID = $itemID";
 		
 		$row = $conn->run_select_query($sql);
 		if($row->num_rows > 0) {
@@ -38,7 +43,7 @@ class DonationItem {
 		$this->weight = $row['itemWeight'];
 		//$this->expiryDate = $row['expiryDate'];
 		//$this->cost = $row['cost'];
-		$this->itemID = $row['id'];
+		$this->itemID = $row['itemID'];
 		}
 
 		// $row = $conn->fetchAssoc($sql);
