@@ -77,7 +77,7 @@ class Donate {
         // Logic to process the donation
         if($this->donationItems[0][0] instanceof NonBillableDonate){
             $user = new BasicDonator($this->userId, Null);
-            $appointment = new Appointment(0);
+            $appointment = new Appointment(0,NULL);
         }
 
         $donationDetails = new DonationDetails();
