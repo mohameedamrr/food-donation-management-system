@@ -102,13 +102,14 @@ class Employee extends UserEntity implements IObserver {
     }
 
     public static function readObject($id){
-        $sql = "SELECT * FROM `food_donation`.`Employees` WHERE id = $id";
-        $db = DatabaseManager::getInstance();
-        $row = $db->run_select_query($sql)->fetch_assoc();
-        if(isset($row)) {
-            return new Employee($row["id"], null);
-        }
-        return null;
+        // $sql = "SELECT * FROM `food_donation`.`Employees` WHERE id = $id";
+        // $db = DatabaseManager::getInstance();
+        // $row = $db->run_select_query($sql)->fetch_assoc();
+        // if(isset($row)) {
+        //     return new Employee($row["id"], null);
+        // }
+        // return null;
+        return new Employee($id, null);
     }
 
     public function updateObject(array $data){
@@ -129,20 +130,20 @@ class Employee extends UserEntity implements IObserver {
     }
 }
 $a1 = new Admin(1);
-echo $a1->getName();
-echo "<br>";
-echo $a1->getTasksList();
-echo "<br>";
-$newUser = $a1->createUser(array("name"=>"yarap", "email"=>"adsdasd@dadaa", "phone"=>"+23213", "password"=> "dfqwqdqdwq"));
-$newEmployee = $a1->createEmployee(array("id"=>$newUser->getId(), "role"=>"test", "department"=>"test"));
-echo $newEmployee->getName();
-$a1->deleteEmployee(3);
-$newAppointment = Appointment::storeObject(array("status"=>"ongoing", "date"=>(string) new DateTime('yyyy-mm-dd'), "employeeAssignedID"=>""));
-$a1->assignAppointment($newAppointment->getAppointmentID(), $newEmployee->getId());
-echo "<br>";
-echo $newEmployee->getAssignedAppointments();
-$newEmployee->changeAppointmentStatus($newAppointment->getAppointmentID(), "yarapp");
-echo "<br>";
-echo $newAppointment->getStatus();
+// echo $a1->getName();
+// echo "<br>";
+// echo $a1->getTasksList();
+// echo "<br>";
+// $newUser = $a1->createUser(array("name"=>"yarap", "email"=>"adsdasd@dadaa", "phone"=>"+23213", "password"=> "dfqwqdqdwq"));
+// $newEmployee = $a1->createEmployee(array("id"=>$newUser->getId(), "role"=>"test", "department"=>"test"));
+// echo $newEmployee->getName();
+// $a1->deleteEmployee(3);
+// $newAppointment = Appointment::storeObject(array("status"=>"ongoing", "date"=>(string) new DateTime('yyyy-mm-dd'), "employeeAssignedID"=>""));
+// $a1->assignAppointment($newAppointment->getAppointmentID(), $newEmployee->getId());
+// echo "<br>";
+// echo $newEmployee->getAssignedAppointments();
+// $newEmployee->changeAppointmentStatus($newAppointment->getAppointmentID(), "yarapp");
+// echo "<br>";
+// echo $newAppointment->getStatus();
 
 ?>

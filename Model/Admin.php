@@ -24,14 +24,16 @@ class Admin extends UserEntity implements ISubject {
         $db = DatabaseManager::getInstance();
         $sql = "SELECT * FROM `food_donation`.`users` WHERE id = $id";
 
+
         $row = $db->run_select_query($sql)->fetch_assoc();
         if(isset($row)) {
             parent::__construct($row["id"], $row["name"], $row["email"], $row["phone"], $row["password"], new NormalMethod());
         }
         echo "111111";
         $sql3 = "SELECT * FROM `food_donation`.`appointments`";
-        $rows = $db->run_select_query($sql3);
-        foreach($rows as $row) {
+        $rows = $db->run_select_query($sql3)->fetch_all(MYSQLI_ASSOC); // Assuming the second parameter sets it to return the raw mysqli_result 
+
+        foreach ($rows as $row) {
             array_push($this->tasksList, Appointment::readObject($row["appointmentID"]));
         }
 

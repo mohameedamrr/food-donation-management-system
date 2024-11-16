@@ -40,13 +40,14 @@ class BasicDonator extends UserEntity implements ICRUD{
     }
 
     public static function readObject($id) {
-        $sql = "SELECT * FROM `food_donation`.`users` WHERE id = $id";
-        $db = DatabaseManager::getInstance();
-        $row = $db->run_select_query($sql)->fetch_assoc();
-        if(isset($row)) {
-            return new BasicDonator($row["id"], null);
-        }
-        return null;
+        // $sql = "SELECT * FROM `food_donation`.`users` WHERE id = $id";
+        // $db = DatabaseManager::getInstance();
+        // $row = $db->run_select_query($sql)->fetch_assoc();
+        // if(isset($row)) {
+        //     return new BasicDonator($row["id"], null);
+        // }
+        // return null;
+        return new BasicDonator($id, null);
     }
 
     public function updateObject(array $data) {

@@ -97,13 +97,14 @@ class Appointment {
     }
 
     public static function readObject($appointmentID) {
-        $sql = "SELECT * FROM `food_donation`.`appointments` WHERE appointmentID = $appointmentID";
-        $db = DatabaseManager::getInstance();
-        $row = $db->run_select_query($sql)->fetch_assoc();
-        if(isset($row)) {
-            return new Appointment($row["appointmentID"], null);
-        }
-        return null;
+        // $sql = "SELECT * FROM `food_donation`.`appointments` WHERE appointmentID = $appointmentID";
+        // $db = DatabaseManager::getInstance();
+        // $row = $db->run_select_query($sql)->fetch_assoc();
+        // if(isset($row)) {
+        //     return new Appointment($row["appointmentID"], null);
+        // }
+        // return null;
+        return new Appointment($appointmentID, null);
     }
 
     public static function storeObject(array $data) {
