@@ -3,7 +3,7 @@
 require_once "DonationItem.php";
 require_once "NonBillableDonate.php";
 require_once "DonationDetails.php";
-
+require_once "Appointment.php";
 class Donate {
     private static $donationIdCounter = 0;
     private $donationID;
@@ -19,6 +19,11 @@ class Donate {
         $this->donationItems = $donationItems;
     }
 
+    function donate($userID, $donationItemID, $quantity) {
+
+
+    }
+    
     // Getters and Setters
     public function getDonationID(): int {
         return $this->donationID;
@@ -65,25 +70,25 @@ class Donate {
     }
 
 
-    public function donate($donationItemsMap): bool {
+    // public function donate($donationItemsMap): bool {
         
-        foreach ($donationItemsMap as $itemId => $quantity) {
-            $donationItem = new DonationItem($itemId); // donation Item object
-            $donationItemMap = [$donationItem => $quantity]; // mapping object to quantities
-            array_push($this->donationItems, $donationItemMap); // adding the new item object to the class map attribute
+    //     foreach ($donationItemsMap as $itemId => $quantity) {
+    //         $donationItem = new DonationItem($itemId); // donation Item object
+    //         $donationItemMap = [$donationItem => $quantity]; // mapping object to quantities
+    //         array_push($this->donationItems, $donationItemMap); // adding the new item object to the class map attribute
 
-        }
+    //     }
         
-        // Logic to process the donation
-        if($this->donationItems[0][0] instanceof NonBillableDonate){
-            $user = new BasicDonator($this->userId, Null);
-            $appointment = new Appointment(0,NULL);
-        }
+    //     // Logic to process the donation
+    //     if($this->donationItems[0][0] instanceof NonBillableDonate){
+    //         $user = new BasicDonator($this->userId, Null);
+    //         $appointment = new Appointment(0,NULL);
+    //     }
 
-        $donationDetails = new DonationDetails();
-        $donationDetails->setDetails($this);
+    //     $donationDetails = new DonationDetails();
+    //     $donationDetails->setDetails($this);
 
-        return true;
-    }
+    //     return true;
+    // }
 }
 ?>

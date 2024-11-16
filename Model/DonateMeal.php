@@ -6,12 +6,9 @@ class DonateMeal extends NonBillableDonate {
     private $servings;
     private $ingredients; // Array of ingredient names
 
-    public function __construct(
-
-    ) {
-
+    public function __construct($DonationItemID) {
+    parent::__construct($DonationItemID);
     }
-
 
     public function createMealItems($itemName, $weight, $expiryDate, $itemImage, $mealType, $servings, $ingredients): bool {
         $isSuccess = $this->createDonationItems($itemName, $weight, 0, 0, 1, 0, 0, 0); // Set meals flag to 1
@@ -20,29 +17,37 @@ class DonateMeal extends NonBillableDonate {
             return false;
         }
 
-        $sql = "INSERT INTO meals_donation (itemID, expiryDate, itemImage, mealType, servings, ingredients) VALUES
-            ('$this->itemID', '$expiryDate', '$itemImage', '$mealType', '$servings', '$ingredients')";
+        
+        $sql = "INSERT INTO meals_donation (itemID, expiryDate, itemImage, mealType, servings, ingredients, isDeleted) VALUES
+            ('$this->itemID', '$expiryDate', '$itemImage', '$mealType', '$servings', '$ingredients', 0)";
 
         $conn = DatabaseManager::getInstance();
         $isSuccess = $conn->run_select_query($sql);
 
         return $isSuccess;
     }
-    
-    public function getMealItemInstance($itemID): DonationItem {
+    public static function deleteObject($id){
+        $sql = "UPDATE meals_donation 
+        SET isDeleted = 1 
+        WHERE itemID = '$id'";
+
+        $conn = DatabaseManager::getInstance();
+        $conn->run_select_query($sql);
+	}
+    public function getMealItemInstance(): DonationItem {
 		$conn = DatabaseManager::getInstance();
-		$sql ="SELECT * FROM meals_donation WHERE itemID = $itemID";
+		$sql ="SELECT * FROM meals_donation WHERE itemID = $this->itemID";
 		
 		$row = $conn->run_select_query($sql);
 		if($row->num_rows > 0) {
 		$row = $row->fetch_assoc();	
-		parent::getDonationItemInstance($itemID);
 		$this->expiryDate = $row['expiryDate'];
 		//$this->cost = $row['cost'];
-		$this->itemID = $row['itemID'];
+		//$this->itemID = $row['itemID'];
         $this->mealType = $row['mealType'];
         $this->servings = $row['servings'];
         $this->ingredients = $row['ingredients'];
+        parent::getDonationItemInstance($this->itemID);
 		}
 
 		// $row = $conn->fetchAssoc($sql);
@@ -53,5 +58,48 @@ class DonateMeal extends NonBillableDonate {
         // $ingredientsStr = implode(', ', $this->ingredients); // Convert ingredients array to string
         return "ID: {$this->itemID}, Name: {$this->itemName}, Weight: {$this->weight}kg, Cost: {$this->cost}, Meal Type: {$this->mealType}, Servings: {$this->servings}, Ingredients: {$this->ingredients}";
     }
+
+    public function getMealType() {
+		return $this->mealType;
+	}
+
+	public function setMealType($value) {
+		$this->mealType = $value;
+        $sql = "UPDATE meals_donation 
+        SET mealType = '$value'
+        WHERE itemID = '$this->itemID'";
+
+        $conn = DatabaseManager::getInstance();
+        $conn->run_select_query($sql);
+	}
+
+	public function getServings() {
+		return $this->servings;
+	}
+
+	public function setServings($value) {
+		$this->servings = $value;
+        $sql = "UPDATE meals_donation 
+        SET servings = '$value'
+        WHERE itemID = '$this->itemID'";
+
+        $conn = DatabaseManager::getInstance();
+        $conn->run_select_query($sql);
+	}
+
+	public function getIngredients() {
+		return $this->ingredients;
+	}
+
+	public function setIngredients($value) {
+		$this->ingredients = $value;
+        $sql = "UPDATE meals_donation 
+        SET ingredients = '$value'
+        WHERE itemID = '$this->itemID'";
+
+        $conn = DatabaseManager::getInstance();
+        $conn->run_select_query($sql);
+	}
 }
 ?>
+

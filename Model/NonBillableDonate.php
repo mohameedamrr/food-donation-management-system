@@ -1,13 +1,13 @@
 <?php
 require_once 'DonationItem.php';
 
-abstract class NonBillableDonate extends DonationItem {
+abstract class NonBillableDonate extends DonationItem{
     protected $itemImage;  // Path to the image file
     protected $weight;
     protected $expiryDate;
 
-    public function __construct() {
-
+    public function __construct(int $DonationItemID) {
+        parent::__construct($DonationItemID);
     }
 
     public function addImage($imagePath): void {

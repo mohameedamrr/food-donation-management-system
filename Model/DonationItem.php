@@ -1,6 +1,7 @@
 <?php
 require_once ("DatabaseManager.php");
-class DonationItem {
+abstract class DonationItem {
+
 	private static $itemIDCounter = 0;
     protected $itemID;
     protected $itemName;
@@ -13,15 +14,17 @@ class DonationItem {
     //     $this->itemID = $itemID;
     // }
 
-    public function __construct() {
+    public function __construct(int $itemID) {
+		$this->itemID = $itemID;
+		$this->getDonationItemInstance($itemID);
         //database manager
     }
 
+
 	public function createDonationItems($itemName, $weight, $rawmaterials = 0, $readymeals = 0, $meals = 0, $money = 0, $sacrifice = 0, $box = 0): bool {
-		$this->itemName = $itemName;
-		$this->weight = $weight;
-		$sql = "INSERT INTO donation_items (itemName, itemWeight, israwmaterial, isreadymeal, ismeal, ismoney, issacrifice, isbox) VALUES
-			('$itemName', '$weight', '$rawmaterials', '$readymeals', '$meals','$money', '$sacrifice', '$box')";
+
+		$sql = "INSERT INTO donation_items (itemName, itemWeight, israwmaterial, isreadymeal, ismeal, ismoney, issacrifice, isbox, isDeleted) VALUES
+			('$itemName', '$weight', '$rawmaterials', '$readymeals', '$meals','$money', '$sacrifice', '$box', 0)";
 	
 		$conn = DatabaseManager::getInstance();
 		if($conn === NULL){
@@ -33,6 +36,14 @@ class DonationItem {
 		return $isSuccess;
 	}
 
+	public static function deleteObject($id){
+        $sql = "UPDATE donation_items
+        SET isDeleted = 1 
+        WHERE itemID = '$id'";
+
+        $conn = DatabaseManager::getInstance();
+        $conn->run_select_query($sql);
+	}
 	public function getDonationItemInstance($itemID): DonationItem {
 		$conn = DatabaseManager::getInstance();
 		$sql ="SELECT * FROM donation_items WHERE itemID = $itemID";
@@ -61,14 +72,27 @@ class DonationItem {
 
 	public function setItemName($value) {
 		$this->itemName = $value;
+        $sql = "UPDATE donation_items 
+        SET itemName = '$value'
+        WHERE itemID = '$this->itemID'";
+
+        $conn = DatabaseManager::getInstance();
+        $conn->run_select_query($sql);
 	}
 
 	public function setWeight($value) {
 		$this->weight = $value;
+        $sql = "UPDATE donation_items 
+        SET itemWeight = '$value'
+        WHERE itemID = '$this->itemID'";
+
+        $conn = DatabaseManager::getInstance();
+        $conn->run_select_query($sql);
 	}
 
 	public function setCost($value) {
 		$this->cost = $value;
+
 	}
 
 	public function getItemID() {
