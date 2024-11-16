@@ -35,6 +35,7 @@ $db->runQuery(
     id BIGINT PRIMARY KEY,
     role VARCHAR(50) NOT NULL,
     department VARCHAR(50) NOT NULL,
+    `email` VARCHAR(50) NOT NULL,
     FOREIGN KEY employees(id) REFERENCES users (id)
 );"
 );
@@ -45,6 +46,7 @@ $db->runQuery(
     `status` VARCHAR(50) NOT NULL,
     `date` DATETIME NOT NULL,
     `employeeAssignedID` BIGINT,
+    `location` VARCHAR(150) NOT NULL,
     PRIMARY KEY (`appointmentID`)
 );"
 );
@@ -60,22 +62,23 @@ $db->runQuery(
 );
 
 $db->runQuery(
-    "INSERT INTO `food_donation`.`employees` (`id`, `role`, `department`) VALUES
-    (1, 'Manager', 'Administration'),
-    (2, 'Volunteer', 'Community Outreach'),
-    (3, 'Coordinator', 'Events'),
-    (4, 'Driver', 'Logistics'),
-    (5, 'Technician', 'Maintenance'),
-    (6, 'Assistant', 'Operations');"
+    "INSERT INTO `food_donation`.`employees` (`id`, `role`, `department`, `email`) VALUES
+    (1, 'Manager', 'Administration', 'manager.admin@example.com'),
+    (2, 'Volunteer', 'Community Outreach', 'volunteer.co@example.com'),
+    (3, 'Coordinator', 'Events', 'coordinator.events@example.com'),
+    (4, 'Driver', 'Logistics', 'driver.logistics@example.com'),
+    (5, 'Technician', 'Maintenance', 'technician.maintenance@example.com'),
+    (6, 'Assistant', 'Operations', 'assistant.ops@example.com');"
 );
 
+
 $db->runQuery(
-    "INSERT INTO `food_donation`.`appointments` (`status`, `date`, `employeeAssignedID`) VALUES
-    ('Scheduled', '2024-11-14 10:30:00', 1),
-    ('Completed', '2024-11-13 15:00:00', 2),
-    ('Cancelled', '2024-11-12 09:00:00', 3),
-    ('Scheduled', '2024-11-15 11:00:00', 1),
-    ('In Progress', '2024-11-15 14:00:00', 2);"
+    "INSERT INTO `food_donation`.`appointments` (`status`, `date`, `employeeAssignedID`, `location`) VALUES
+    ('Scheduled', '2024-11-14 10:30:00', 1, 'asdasdasdadasd'),
+    ('Completed', '2024-11-13 15:00:00', 2, 'asdasdasdadasd'),
+    ('Cancelled', '2024-11-12 09:00:00', 3, 'asdasdasdadasd'),
+    ('Scheduled', '2024-11-15 11:00:00', 1, 'asdasdasdadasd'),
+    ('In Progress', '2024-11-15 14:00:00', 2, 'asdasdasdadasd');"
 );
 
 /*

@@ -16,11 +16,10 @@ spl_autoload_register(function ($class_name) {
 });
 
 class Admin extends UserEntity implements ISubject {
-    private $tasksList; // array of tasks
-    private $observersList; // array of IObserver objects
+    private array $tasksList = []; // array of tasks
+    private array $observersList = []; // array of IObserver objects
 
     public function __construct($id) {
-        echo "2222222";
         $db = DatabaseManager::getInstance();
         $sql = "SELECT * FROM `food_donation`.`users` WHERE id = $id";
 
@@ -29,9 +28,8 @@ class Admin extends UserEntity implements ISubject {
         if(isset($row)) {
             parent::__construct($row["id"], $row["name"], $row["email"], $row["phone"], $row["password"], new NormalMethod());
         }
-        echo "111111";
         $sql3 = "SELECT * FROM `food_donation`.`appointments`";
-        $rows = $db->run_select_query($sql3)->fetch_all(MYSQLI_ASSOC); // Assuming the second parameter sets it to return the raw mysqli_result 
+        $rows = $db->run_select_query($sql3)->fetch_all(MYSQLI_ASSOC);
 
         foreach ($rows as $row) {
             array_push($this->tasksList, Appointment::readObject($row["appointmentID"]));
@@ -40,10 +38,10 @@ class Admin extends UserEntity implements ISubject {
     }
 
     public function assignAppointment($appointmentID, $employeeID): void {
-        foreach ($this->tasksList as $appointment) {
-            if ($appointment->getAppointmentID() == $appointmentID) {
-                $appointment->assignEmployee($employeeID);
-                return;
+        for($i=0; $i <= count($this->tasksList); $i++) {
+            if ($this->tasksList[$i]->getAppointmentID() == $appointmentID) {
+                $this->tasksList[$i]->assignEmployee($employeeID);
+                break;
             }
         }
         $this->notifyObservers();
@@ -63,7 +61,6 @@ class Admin extends UserEntity implements ISubject {
 
     public function addTask($taskID): void {
         array_push($this->tasksList, Appointment::readObject($taskID));
-        $this->notifyObservers();
     }
 
     public function removeTask($taskID): void {

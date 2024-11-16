@@ -16,17 +16,15 @@ spl_autoload_register(function ($class_name) {
 });
 
 class BasicDonator extends UserEntity implements ICRUD{
-    private $location;
     private $donationHistory; // array of Donate
 
-    public function __construct($id, $location) {
+    public function __construct($id) {
         $sql = "SELECT * FROM `food_donation`.`users` WHERE id = $id";
         $db = DatabaseManager::getInstance();
         $row = $db->run_select_query($sql)->fetch_assoc();
         if(isset($row)) {
             parent::__construct($row["id"], $row["name"], $row["email"], $row["phone"], $row["password"], new NormalMethod());
         }
-        $this->location = $location;
     }
 
     public static function storeObject(array $data) {
@@ -80,15 +78,5 @@ class BasicDonator extends UserEntity implements ICRUD{
     public function setDonationHistory($donationHistory): void {
         $this->donationHistory = $donationHistory;
     }
-
-    public function getLocation(): Location {
-        return $this->location;
-    }
-
-    public function setLocation($location): void {
-        $this->location = $location;
-    }
 }
-$u = new BasicDonator(1, null);
-echo $u->login();
 ?>

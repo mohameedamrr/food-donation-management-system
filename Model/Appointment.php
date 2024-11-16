@@ -1,15 +1,28 @@
 <?php
-require_once 'Location.php';
-require_once 'Employee.php';
+spl_autoload_register(function ($class_name) {
+    $directories = [
+        '../Model/',
+        '../Controller/',
+        '../View/',
+        '../interfaces/',
+    ];
+    foreach ($directories as $directory) {
+        $file = __DIR__ . '/' . $directory . $class_name . '.php';
+        if (file_exists($file)) {
+            require_once $file;
+            return;
+        }
+    }
+});
 
 class Appointment {
     private $appointmentID;
     private $status;
     private $date; // DateTime object
     private $appointmentLocation; // Location object
-    private $employeeAssigned; // Employee object
+    private $employeeAssignedID; // Employee object
 
-    public function __construct($appointmentID, $location) {
+    public function __construct($appointmentID) {
         $sql = "SELECT * FROM `food_donation`.`appointments` WHERE appointmentID = $appointmentID";
         $db = DatabaseManager::getInstance();
         $row = $db->run_select_query($sql)->fetch_assoc();
@@ -17,13 +30,13 @@ class Appointment {
             $this->appointmentID = $row["appointmentID"];
             $this->status = $row["status"];
             $this->date = $row["date"];
+            $this->appointmentLocation = $row["location"];
             if(isset($row["employeeAssignedID"])) {
-                $this->employeeAssigned = Employee::readObject($row["employeeAssignedID"]);
+                $this->employeeAssignedID = $row["employeeAssignedID"];
             } else {
-                $this->employeeAssigned = null;
+                $this->employeeAssignedID = null;
             }
         }
-        $this->appointmentLocation = $location;
     }
 
 
@@ -69,13 +82,13 @@ class Appointment {
     }
 
     // Employee Assigned (Employee object)
-    public function getEmployeeAssigned() {
-        return $this->employeeAssigned;
+    public function getEmployeeAssignedID() {
+        return $this->employeeAssignedID;
     }
 
     public function assignEmployee($employeeID): void {
-        $this->employeeAssigned = Employee::readObject($employeeID);
-        $sql = "UPDATE `food_donation`.`appointments` SET employeeAssignedID = '".$employeeID."' WHERE appointmentID = $this->appointmentID";
+        $sql = "UPDATE `food_donation`.`appointments` SET employeeAssignedID = $employeeID WHERE appointmentID = $this->appointmentID";
+        $this->employeeAssignedID = $employeeID;
         DatabaseManager::getInstance()->runQuery($sql);
     }
 
