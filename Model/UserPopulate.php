@@ -18,8 +18,6 @@ $db->runQuery(
     );"
 );
 
-
-
 $db->runQuery(
     "CREATE TABLE `food_donation`.`users` (
     `id` BIGINT NOT NULL AUTO_INCREMENT,

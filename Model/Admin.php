@@ -15,13 +15,21 @@ spl_autoload_register(function ($class_name) {
     }
 });
 
-class Admin extends UserEntity implements ISubject, ICRUD {
+class Admin extends UserEntity implements ISubject {
     private $tasksList; // array of tasks
     private $observersList; // array of IObserver objects
 
-    public function __construct() {
-        $sql3 = "SELECT * FROM `food_donation`.`appointments`";
+    public function __construct($id) {
+        echo "2222222";
         $db = DatabaseManager::getInstance();
+        $sql = "SELECT * FROM `food_donation`.`users` WHERE id = $id";
+
+        $row = $db->run_select_query($sql)->fetch_assoc();
+        if(isset($row)) {
+            parent::__construct($row["id"], $row["name"], $row["email"], $row["phone"], $row["password"], new NormalMethod());
+        }
+        echo "111111";
+        $sql3 = "SELECT * FROM `food_donation`.`appointments`";
         $rows = $db->run_select_query($sql3);
         foreach($rows as $row) {
             array_push($this->tasksList, Appointment::readObject($row["appointmentID"]));
@@ -41,6 +49,10 @@ class Admin extends UserEntity implements ISubject, ICRUD {
 
     public function createEmployee(array $employeeData) {
         return Employee::storeObject($employeeData);
+    }
+
+    public function createUser(array $userData) {
+        return BasicDonator::storeObject($userData);
     }
 
     public function deleteEmployee(int $employeeID): void {
@@ -81,40 +93,6 @@ class Admin extends UserEntity implements ISubject, ICRUD {
         foreach ($this->observersList as $observer) {
             $observer->update();
         }
-    }
-
-    public static function storeObject(array $data){
-        $columns = implode(", ", array_map(fn($key) => "`$key`", array_keys($data)));
-        $placeholders = implode(", ", array_map(fn($value) => is_numeric($value) ? $value : "'" . addslashes($value) . "'", array_values($data)));
-        $sql = "INSERT INTO `food_donation`.`Admins` ($columns) VALUES ($placeholders)";
-        $db = DatabaseManager::getInstance();
-        $db->runQuery($sql);
-        $lastInsertedId = $db->getLastInsertId();
-        return new Admin($lastInsertedId); ///////////////////
-    }
-    public static function readObject($id){
-        $sql = "SELECT * FROM `food_donation`.`Admins` WHERE id = $id";
-        $db = DatabaseManager::getInstance();
-        $row = $db->run_select_query($sql)->fetch_assoc();
-        if(isset($row)) {
-            return new Admin($row["id"]); //////////////////////
-        }
-        return null;
-    }
-    public function updateObject(array $data){
-        $updates = [];
-        foreach ($data as $prop => $value) { 
-            $this->{$prop} = $value;
-            $value = is_numeric($value) ? $value : "'" . addslashes($value) . "'";
-            $updates[] = "`$prop` = $value";
-        }
-        $sql = "UPDATE `food_donation`.`Admins` SET " . implode(", ", $updates) . " WHERE id = $this->id";
-        DatabaseManager::getInstance()->runQuery($sql);
-    }
-    public static function deleteObject($id){
-        $sql = "DELETE FROM `food_donation`.`Admins` WHERE id = $id";
-        $db = DatabaseManager::getInstance();
-        $db->runQuery($sql);
     }
 
     public function getTasksList(){

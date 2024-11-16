@@ -128,4 +128,21 @@ class Employee extends UserEntity implements IObserver {
         $db->runQuery($sql);
     }
 }
+$a1 = new Admin(1);
+echo $a1->getName();
+echo "<br>";
+echo $a1->getTasksList();
+echo "<br>";
+$newUser = $a1->createUser(array("name"=>"yarap", "email"=>"adsdasd@dadaa", "phone"=>"+23213", "password"=> "dfqwqdqdwq"));
+$newEmployee = $a1->createEmployee(array("id"=>$newUser->getId(), "role"=>"test", "department"=>"test"));
+echo $newEmployee->getName();
+$a1->deleteEmployee(3);
+$newAppointment = Appointment::storeObject(array("status"=>"ongoing", "date"=>(string) new DateTime('yyyy-mm-dd'), "employeeAssignedID"=>""));
+$a1->assignAppointment($newAppointment->getAppointmentID(), $newEmployee->getId());
+echo "<br>";
+echo $newEmployee->getAssignedAppointments();
+$newEmployee->changeAppointmentStatus($newAppointment->getAppointmentID(), "yarapp");
+echo "<br>";
+echo $newAppointment->getStatus();
+
 ?>

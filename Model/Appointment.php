@@ -101,7 +101,7 @@ class Appointment {
         $db = DatabaseManager::getInstance();
         $row = $db->run_select_query($sql)->fetch_assoc();
         if(isset($row)) {
-            return new Appointment($row["id"], null);
+            return new Appointment($row["appointmentID"], null);
         }
         return null;
     }
