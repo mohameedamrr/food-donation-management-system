@@ -70,38 +70,37 @@ class DonateMoneyItem extends BillableDonate {
 
     public function executeDonation(): bool
     {
-        // Get the instance of DatabaseManager
-        $db = DatabaseManager::getInstance();
+       // Get the instance of DatabaseManager
+    $db = DatabaseManager::getInstance();
 
-        // Construct the SQL query to insert the donation data
+    // Query to get the itemID for 'Money' from the donation_items table
+    $query1 = "SELECT itemID FROM donation_items WHERE itemName = 'Money' LIMIT 1";
 
-        $query1 =  "INSERT INTO donation_items (itemName, itemWeight, israwmaterial, isreadymeal, ismeal, ismoney, issacrifice, isbox) VALUES
-			('Money', 0, 0, 0, 0, 1, 0, 0)";
+    // Execute the query
+    $result = $db->runQuery($query1);
 
-        // Execute the query and check if it was successful
-        if ($db->runQuery($query1) !== false) {
-            $itemID = $db->getLastInsertId();
-            $query2 = "
-        INSERT INTO food_donation.billable_donations (id, animal_type, description, amount) 
-        VALUES ($itemID, 'Null', '{$this->getDonationPurpose()}','{$this->calculateCost()}');
-    ";
-            if ($db->runQuery($query2) !== false) {
+    // Check if the record exists
+    if ($result && $row = $result->fetch_assoc()) {
+        // Get the existing itemID
+        $itemID = $row['itemID'];
 
-                return true;
-            }
-            else{
-                echo "query 2 failed";
-                return false;
-            }
+        // Insert the donation data into the billable_donations table
+        $query2 = "
+            INSERT INTO food_donation.billable_donations (itemID, animal_type, description, amount) 
+            VALUES ($itemID, NULL, '{$this->getDonationPurpose()}', '{$this->calculateCost()}');
+        ";
 
-
+        // Execute the second query
+        if ($db->runQuery($query2) !== false) {
             return true; // Insertion was successful
         } else {
-            echo "query 1 failed";
+            echo "Query 2 failed";
             return false; // Insertion failed
         }
-
+    } else {
+        echo "Query 1 failed: 'Money' not found in donation_items table";
+        return false; // No 'Money' record found
     }
 
-}
+}}
 ?>
