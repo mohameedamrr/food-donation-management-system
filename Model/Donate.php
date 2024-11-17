@@ -66,48 +66,44 @@ class Donate {
 
 
     public function donate($donationItemsMap): bool
-{
-    foreach ($donationItemsMap as $itemId => $quantity) {
-        $donationItem = new DonationItem($itemId); // Create a DonationItem object
-        $itemFlags = $donationItem->getFlags(); // Retrieve flags for the item
-
-        // Determine the type of donation based on flags
-        $donationObject = null;
-        if ($itemFlags['israwmaterial']) {
-            $donationObject = new DonateRawMaterials($itemId);
-            $donationObject = $donationObject->getRawMaterialItemsInstance(); 
-        } elseif ($itemFlags['isreadymeal']) {
-            $donationObject = new DonateReadyMeal($itemId);
-            $donationObject = $donationObject->getReadyMealItemsInstance(); 
-        } elseif ($itemFlags['ismeal']) {
-            $donationObject = new DonateMeal($itemId);
-            $donationObject = $donationObject->getMealItemInstance(); 
-        } elseif ($itemFlags['ismoney']) {
-           // $donationObject = new DonateMoneyItem();
-        } elseif ($itemFlags['issacrifice']) {
-           // $donationObject = new DonateSacrificeItem();
-        } elseif ($itemFlags['isbox']) {
-           // $donationObject = new DonateBox();
-        } else {
-            throw new Exception("Invalid donation item type for item ID: $itemId");
+    {
+        foreach ($donationItemsMap as $itemId => $quantity) {
+            $donationItem = new DonationItem($itemId); // Create a DonationItem object
+            $itemFlags = $donationItem->getFlags(); // Retrieve flags for the item
+    
+            // Determine the type of donation based on flags
+            $donationObject = null;
+            if ($itemFlags['israwmaterial']) {
+                $donationObject = new DonateRawMaterials($itemId);
+                $donationObject = $donationObject->getRawMaterialItemsInstance(); 
+            } elseif ($itemFlags['isreadymeal']) {
+                $donationObject = new DonateReadyMeal($itemId);
+                $donationObject = $donationObject->getReadyMealItemsInstance(); 
+            } elseif ($itemFlags['ismeal']) {
+                $donationObject = new DonateMeal($itemId);
+                $donationObject = $donationObject->getMealItemInstance(); 
+            } elseif ($itemFlags['ismoney']) {
+                // $donationObject = new DonateMoneyItem();
+            } elseif ($itemFlags['issacrifice']) {
+                // $donationObject = new DonateSacrificeItem();
+            } elseif ($itemFlags['isbox']) {
+                // $donationObject = new DonateBox();
+            } else {
+                throw new Exception("Invalid donation item type for item ID: $itemId");
+            }
+    
+            // Map the donation object and its quantity into an array
+            $donationsMap = [
+                'donationObject' => $donationObject,
+                'quantity' => $quantity,
+            ];
+    
+            // Add to donationItems array
+            $this->donationItems[] = $donationsMap;
         }
-
-        // Map the donation object to its quantity
-        $donationItemMap = [$donationObject => $quantity];
-        array_push($this->donationItems, $donationItemMap); // Add the donation object to the class map attribute
+    
+        return true;
     }
-
-    // Logic to process the donation
-    if ($this->donationItems[0][0] instanceof NonBillableDonate) {
-        $user = new BasicDonator($this->userId, null);
-        //Appointment::storeObject();
-        
-    }
-
-    $donationDetails = new DonationDetails();
-    $donationDetails->setDetails($this);
-
-    return true;
-}
+    
 }
 ?>

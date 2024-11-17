@@ -1,6 +1,6 @@
 <?php
 require_once ("DatabaseManager.php");
-abstract class DonationItem {
+class DonationItem {
 
 	private static $itemIDCounter = 0;
     protected $itemID;

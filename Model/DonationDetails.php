@@ -64,9 +64,10 @@ class DonationDetails {
             'donationItems' => $this->donationItems,
         ];
     }
-
-
+ 
 public function setDetails(Donate $donate): bool {
+
+    $conn = DatabaseManager::getInstance();
     $this->donationId = $donate->getDonationID();
     $this->donationItems = [];
 
@@ -74,6 +75,10 @@ public function setDetails(Donate $donate): bool {
     foreach ($donate->getDonationItems() as $item => $quantity) {
         if ($item instanceof DonationItem) {
             $this->donationItems[$item->getItemID()] = $quantity;
+            $tempId = $item->getItemID();
+            $sql = "INSERT INTO donation_detail_items (donationDetailId, itemId, quantity) VALUES
+                ('$this->id', '$tempId', '$quantity')";
+        $isSuccess = $conn->run_select_query($sql);
         }
     }
 
@@ -81,7 +86,7 @@ public function setDetails(Donate $donate): bool {
     $this->description = "Donation Details for Donation ID " . $this->donationId;
 
     //_____________________create in database_______________________//
-    $conn = DatabaseManager::getInstance();
+   
 
     // Insert into 'donation_details' table
     $sql = "INSERT INTO donation_details (id, totalCost, description, donationId) VALUES
@@ -93,15 +98,15 @@ public function setDetails(Donate $donate): bool {
     }
 
     // Insert each item into 'donation_details_items' table
-    foreach ($this->donationItems as $itemId => $quantity) {
-        $sql = "INSERT INTO donation_details_items (donationDetailId, itemId, quantity) VALUES
-                ('$this->id', '$itemId', '$quantity')";
-        $isSuccess = $conn->run_select_query($sql);
+    // foreach ($this->donationItems as $itemId => $quantity) {
+    //     $sql = "INSERT INTO donation_details_items (donationDetailId, itemId, quantity) VALUES
+    //             ('$this->id', '$itemId', '$quantity')";
+    //     $isSuccess = $conn->run_select_query($sql);
 
-        if (!$isSuccess) {
-            return false;
-        }
-    }
+    //     if (!$isSuccess) {
+    //         return false;
+    //     }
+    // }
 
     return true;
 }
