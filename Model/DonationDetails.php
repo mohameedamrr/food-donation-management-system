@@ -65,23 +65,45 @@ class DonationDetails {
         ];
     }
 
-    public function setDetails(Donate $donate): bool {
-        $this->donationId = $donate->getDonationID();
-        $this->donationItems = [];
 
-        // Assuming $donate->getDonationItems() returns an array of DonationItem => quantity
-        foreach ($donate->getDonationItems() as $item => $quantity) {
-            if ($item instanceof DonationItem) {
-                $this->donationItems[$item->getItemID()] = $quantity;
-            }
+public function setDetails(Donate $donate): bool {
+    $this->donationId = $donate->getDonationID();
+    $this->donationItems = [];
+
+    // Assuming $donate->getDonationItems() returns an array of DonationItem => quantity
+    foreach ($donate->getDonationItems() as $item => $quantity) {
+        if ($item instanceof DonationItem) {
+            $this->donationItems[$item->getItemID()] = $quantity;
         }
-
-        $this->totalCost = $donate->calculateTotalCost();
-        $this->description = "Donation Details for Donation ID " . $this->donationId;
-
-        //_____________________create in database_______________________//
-
-        return true;
     }
+
+    $this->totalCost = $donate->calculateTotalCost();
+    $this->description = "Donation Details for Donation ID " . $this->donationId;
+
+    //_____________________create in database_______________________//
+    $conn = DatabaseManager::getInstance();
+
+    // Insert into 'donation_details' table
+    $sql = "INSERT INTO donation_details (id, totalCost, description, donationId) VALUES
+            ('$this->id', '$this->totalCost', '$this->description', '$this->donationId')";
+    $isSuccess = $conn->run_select_query($sql);
+
+    if (!$isSuccess) {
+        return false;
+    }
+
+    // Insert each item into 'donation_details_items' table
+    foreach ($this->donationItems as $itemId => $quantity) {
+        $sql = "INSERT INTO donation_details_items (donationDetailId, itemId, quantity) VALUES
+                ('$this->id', '$itemId', '$quantity')";
+        $isSuccess = $conn->run_select_query($sql);
+
+        if (!$isSuccess) {
+            return false;
+        }
+    }
+
+    return true;
+}
 }
 ?>

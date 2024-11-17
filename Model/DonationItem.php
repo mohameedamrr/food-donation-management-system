@@ -62,6 +62,23 @@ abstract class DonationItem {
 		return $this; 
 	}
 
+	public function getFlags() {
+		$sql = "SELECT israwmaterial, isreadymeal, ismeal, ismoney, issacrifice, isbox, isDeleted
+				FROM donation_items
+				WHERE itemID = '$this->itemID'";
+	
+		$conn = DatabaseManager::getInstance();
+		$result = $conn->run_select_query($sql);
+	
+		if ($result->num_rows > 0) {
+			// Fetch the result as an associative array
+			return $result->fetch_assoc();
+		} else {
+			// Return null or an appropriate response if no flags are found
+			return null;
+		}
+	}
+
     public function getItemDetails() {
         return "ID: {$this->itemID}, Name: {$this->itemName}, Weight: {$this->weight}kg, Cost: {$this->cost}";
     }

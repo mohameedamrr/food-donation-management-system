@@ -17,6 +17,29 @@ $db->runQuery("CREATE DATABASE `food_donation`");
 // );"
 // );
 
+// Function to create the 'donation_details' table
+$db->runQuery(
+    "CREATE TABLE `food_donation`.`donation_details` (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        totalCost DECIMAL(10, 2) NOT NULL,
+        description VARCHAR(255),
+        donationId INT NOT NULL,
+        isDeleted TINYINT(1) DEFAULT 0
+    );"
+);
+
+// Function to create the 'donation_detail_items' table to store the items and their quantities
+$db->runQuery(
+    "CREATE TABLE `food_donation`.`donation_detail_items` (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        donationDetailId INT NOT NULL,
+        itemId INT NOT NULL,
+        quantity INT NOT NULL,
+        FOREIGN KEY (donationDetailId) REFERENCES donation_details(id),
+        FOREIGN KEY (itemId) REFERENCES donation_items(itemID)
+    );"
+);
+
 $db->runQuery(
     "CREATE TABLE `food_donation`.`donation_items` (
         itemID INT AUTO_INCREMENT PRIMARY KEY,

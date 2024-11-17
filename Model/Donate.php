@@ -3,7 +3,7 @@
 require_once "DonationItem.php";
 require_once "NonBillableDonate.php";
 require_once "DonationDetails.php";
-require_once "Appointment.php";
+
 class Donate {
     private static $donationIdCounter = 0;
     private $donationID;
@@ -19,11 +19,6 @@ class Donate {
         $this->donationItems = $donationItems;
     }
 
-    function donate($userID, $donationItemID, $quantity) {
-
-
-    }
-    
     // Getters and Setters
     public function getDonationID(): int {
         return $this->donationID;
@@ -70,25 +65,49 @@ class Donate {
     }
 
 
-    // public function donate($donationItemsMap): bool {
+    public function donate($donationItemsMap): bool
+{
+    foreach ($donationItemsMap as $itemId => $quantity) {
+        $donationItem = new DonationItem($itemId); // Create a DonationItem object
+        $itemFlags = $donationItem->getFlags(); // Retrieve flags for the item
+
+        // Determine the type of donation based on flags
+        $donationObject = null;
+        if ($itemFlags['israwmaterial']) {
+            $donationObject = new DonateRawMaterials($itemId);
+            $donationObject = $donationObject->getRawMaterialItemsInstance(); 
+        } elseif ($itemFlags['isreadymeal']) {
+            $donationObject = new DonateReadyMeal($itemId);
+            $donationObject = $donationObject->getReadyMealItemsInstance(); 
+        } elseif ($itemFlags['ismeal']) {
+            $donationObject = new DonateMeal($itemId);
+            $donationObject = $donationObject->getMealItemInstance(); 
+        } elseif ($itemFlags['ismoney']) {
+           // $donationObject = new DonateMoneyItem();
+        } elseif ($itemFlags['issacrifice']) {
+           // $donationObject = new DonateSacrificeItem();
+        } elseif ($itemFlags['isbox']) {
+           // $donationObject = new DonateBox();
+        } else {
+            throw new Exception("Invalid donation item type for item ID: $itemId");
+        }
+
+        // Map the donation object to its quantity
+        $donationItemMap = [$donationObject => $quantity];
+        array_push($this->donationItems, $donationItemMap); // Add the donation object to the class map attribute
+    }
+
+    // Logic to process the donation
+    if ($this->donationItems[0][0] instanceof NonBillableDonate) {
+        $user = new BasicDonator($this->userId, null);
+        //Appointment::storeObject();
         
-    //     foreach ($donationItemsMap as $itemId => $quantity) {
-    //         $donationItem = new DonationItem($itemId); // donation Item object
-    //         $donationItemMap = [$donationItem => $quantity]; // mapping object to quantities
-    //         array_push($this->donationItems, $donationItemMap); // adding the new item object to the class map attribute
+    }
 
-    //     }
-        
-    //     // Logic to process the donation
-    //     if($this->donationItems[0][0] instanceof NonBillableDonate){
-    //         $user = new BasicDonator($this->userId, Null);
-    //         $appointment = new Appointment(0,NULL);
-    //     }
+    $donationDetails = new DonationDetails();
+    $donationDetails->setDetails($this);
 
-    //     $donationDetails = new DonationDetails();
-    //     $donationDetails->setDetails($this);
-
-    //     return true;
-    // }
+    return true;
+}
 }
 ?>
