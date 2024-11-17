@@ -8,9 +8,9 @@ abstract class BillableDonate extends DonationItem {
     public abstract function calculateCost(): float;
     public abstract function executeDonation(): bool;
 
-    public function getDonationById(int $id): ?array {
+    public static function getDonationById(int $itemID): ?array {
         $db = DatabaseManager::getInstance();
-        $query = "SELECT * FROM `food_donation`.`billable_donations` WHERE `id` = $id";
+        $query = "SELECT * FROM `food_donation`.`billable_donations` WHERE `itemID` = $itemID";
         $result = $db->runQuery($query);
         
         if ($result && $row = $result->fetch_assoc()) {
@@ -20,7 +20,7 @@ abstract class BillableDonate extends DonationItem {
     }
 
     // Function to get all donations as an array list
-    public function getAllDonations(): array {
+    public static function getAllDonations(): array {
         $db = DatabaseManager::getInstance();
         $query = "SELECT * FROM `food_donation`.`billable_donations`";
         $result = $db->runQuery($query);
