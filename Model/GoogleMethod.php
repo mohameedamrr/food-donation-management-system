@@ -18,8 +18,8 @@ spl_autoload_register(function ($class_name) {
 class GoogleMethod implements ILogin {
     private $googleToken;
 
-    public function authenticate(string $username, string $password): string {
-        return "Authenticated Successfully";
+    public function authenticate(string $username, string $password): bool {
+        return True;
     }
 }
 ?>

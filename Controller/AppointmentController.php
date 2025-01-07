@@ -1,68 +1,33 @@
 <?php
-// controllers/AppointmentController.php
-
-spl_autoload_register(function ($class_name) {
-    $directories = [
-        '../Model/',
-        '../Controller/',
-        '../View/',
-        '../interfaces/',
-    ];
-    foreach ($directories as $directory) {
-        $file = __DIR__ . '/' . $directory . $class_name . '.php';
-        if (file_exists($file)) {
-            require_once $file;
-            return;
-        }
-    }
-});
+require_once '../Model/DatabaseManager.php';
 
 class AppointmentController {
-    private $appointmentView;
-    private $appointmentManager;
+    private $db;
 
     public function __construct() {
-        $this->appointmentView = new AppointmentView();
-        $this->appointmentManager = AppointmentManager::getInstance();
+        $this->db = DatabaseManager::getInstance();
     }
 
-    public function scheduleAppointment($appointmentData, UserEntity $user) {
-        $location = new Location(
-            $appointmentData['locationID'],
-            $appointmentData['locationName'],
-            null,
-            $appointmentData['addressLine'],
-            $appointmentData['postalCode']
-        );
-        $appointment = new Appointment(
-            $appointmentData['appointmentID'],
-            new DateTime($appointmentData['date']),
-            new DateTime($appointmentData['time']),
-            $location
-        );
-        $this->appointmentManager->createAppointment($appointment);
-        $this->appointmentView->displayAppointmentScheduled($appointment);
+    // Create a new appointment
+    public function createAppointment($employeeAssignedID, $status, $date, $location) {
+        $sql = "INSERT INTO `appointments` (`status`, `date`, `employeeAssignedID`, `location`) 
+                VALUES ('$status', '$date', '$employeeAssignedID', '$location')";
+        $this->db->runQuery($sql);
+        echo "Appointment created successfully.";
     }
 
-    public function assignEmployeeToAppointment($appointmentID, Employee $employee, Admin $admin) {
-        $admin->assignAppointment($appointmentID, $employee);
-        $this->appointmentView->displayEmployeeAssignment($appointmentID, $employee);
+    // Get all appointments for a specific employee
+    public function getAppointmentsForEmployee($employeeAssignedID) {
+        $sql = "SELECT * FROM `appointments` WHERE `employeeAssignedID` = '$employeeAssignedID'";
+        $appointments = $this->db->run_select_query($sql)->fetch_all(MYSQLI_ASSOC);
+        return $appointments;
     }
 
-    public function updateAppointmentStatus($appointmentID, $status, Employee $employee) {
-        $employee->changeAppointmentStatus($appointmentID, $status);
-        $this->appointmentView->displayAppointmentStatusUpdate($appointmentID, $status);
-    }
-    public function displayAppointmentForm($errorMessage = '') {
-        // Include or output the appointment scheduling form
-        include __DIR__ . '/../View/appointment_form.php';
-    }
-
-    public function viewAppointments($user) {
-        // Fetch appointments for the user and display them
-        // Example:
-        $appointments = []; // Retrieve from AppointmentManager
-        include __DIR__ . '/../View/appointments_list.php';
+    // Update appointment status
+    public function updateAppointmentStatus($appointmentID, $status) {
+        $sql = "UPDATE `appointments` SET `status` = '$status' WHERE `appointmentID` = '$appointmentID'";
+        $this->db->runQuery($sql);
+        echo "Appointment status updated successfully.";
     }
 }
 ?>
