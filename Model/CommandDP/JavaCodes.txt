@@ -1,0 +1,142 @@
+This is a java code for Command design pattern
+
+
+import java.util.*;
+
+// Command Interface with Undo Support
+interface Command {
+    void execute();
+    void undo();
+}
+
+// Concrete Commands
+
+// ChangeAppointmentStatusCommand
+class ChangeAppointmentStatusCommand implements Command {
+    private Employee employee;
+    private int appointmentID;
+    private String newStatus;
+    private String previousStatus;
+
+    public ChangeAppointmentStatusCommand(Employee employee, int appointmentID, String newStatus) {
+        this.employee = employee;
+        this.appointmentID = appointmentID;
+        this.newStatus = newStatus;
+    }
+
+    @Override
+    public void execute() {
+        previousStatus = employee.getAppointmentStatus(appointmentID);
+        employee.changeAppointmentStatus(appointmentID, newStatus);
+        System.out.println("Appointment " + appointmentID + " status changed to " + newStatus);
+    }
+
+    @Override
+    public void undo() {
+        if (previousStatus != null) {
+            employee.changeAppointmentStatus(appointmentID, previousStatus);
+            System.out.println("Undo: Appointment " + appointmentID + " status reverted to " + previousStatus);
+        }
+    }
+}
+
+// ChangeDonationDescriptionCommand
+class ChangeDonationDescriptionCommand implements Command {
+    private Employee employee;
+    private int donationID;
+    private String newDescription;
+    private String previousDescription;
+
+    public ChangeDonationDescriptionCommand(Employee employee, int donationID, String newDescription) {
+        this.employee = employee;
+        this.donationID = donationID;
+        this.newDescription = newDescription;
+    }
+
+    @Override
+    public void execute() {
+        previousDescription = employee.getDonationDescription(donationID);
+        employee.changeDonationDescription(donationID, newDescription);
+        System.out.println("Donation " + donationID + " description changed to " + newDescription);
+    }
+
+    @Override
+    public void undo() {
+        if (previousDescription != null) {
+            employee.changeDonationDescription(donationID, previousDescription);
+            System.out.println("Undo: Donation " + donationID + " description reverted to " + previousDescription);
+        }
+    }
+}
+
+// Admin Class (Invoker)
+class Admin {
+    private List<Command> commandHistory = new ArrayList<>();
+
+    public void setCommand(Command command) {
+        commandHistory.add(command);
+    }
+
+    public void executeCommand() {
+        if (!commandHistory.isEmpty()) {
+            Command command = commandHistory.get(commandHistory.size() - 1);
+            command.execute();
+        }
+    }
+
+    public void undoLastCommand() {
+        if (!commandHistory.isEmpty()) {
+            Command command = commandHistory.remove(commandHistory.size() - 1);
+            command.undo();
+        }
+    }
+}
+
+// Employee Class (Receiver)
+class Employee {
+    private Map<Integer, String> appointmentStatusMap = new HashMap<>();
+    private Map<Integer, String> donationDescriptionMap = new HashMap<>();
+
+    public void changeAppointmentStatus(int appointmentID, String status) {
+        appointmentStatusMap.put(appointmentID, status);
+    }
+
+    public String getAppointmentStatus(int appointmentID) {
+        return appointmentStatusMap.get(appointmentID);
+    }
+
+    public void changeDonationDescription(int donationID, String description) {
+        donationDescriptionMap.put(donationID, description);
+    }
+
+    public String getDonationDescription(int donationID) {
+        return donationDescriptionMap.get(donationID);
+    }
+}
+
+// Main Class
+public class Main {
+    public static void main(String[] args) {
+        // Create an employee (receiver)
+        Employee employee = new Employee();
+
+        // Create an admin (invoker)
+        Admin admin = new Admin();
+
+        // Change appointment status
+        Command changeAppointmentStatusCommand = new ChangeAppointmentStatusCommand(employee, 101, "Confirmed");
+        admin.setCommand(changeAppointmentStatusCommand);
+        admin.executeCommand();
+
+        // Undo the last command
+        admin.undoLastCommand();
+
+        // Change donation description
+        Command changeDonationDescriptionCommand = new ChangeDonationDescriptionCommand(employee, 201, "Charity Donation");
+        admin.setCommand(changeDonationDescriptionCommand);
+        admin.executeCommand();
+
+        // Undo the last command
+        admin.undoLastCommand();
+    }
+}

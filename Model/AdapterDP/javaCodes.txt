@@ -1,0 +1,37 @@
+This is a java code for Adapter design pattern (Used for thirdparty payments)
+
+// Third-Party Payment Gateway
+class ThirdPartyPaymentGateway {
+    public boolean processPayment(double amount, String currency) {
+        // Logic to process payment using the third-party gateway
+        System.out.println("Processing payment of " + amount + " " + currency);
+        return true;
+    }
+}
+
+// Adapter Class
+class PaymentGatewayAdapter implements IPayment {
+    private ThirdPartyPaymentGateway gateway;
+
+    public PaymentGatewayAdapter(ThirdPartyPaymentGateway gateway) {
+        this.gateway = gateway;
+    }
+
+    @Override
+    public boolean pay(double cost) {
+        // Convert the IPayment interface to the third-party gateway interface
+        return gateway.processPayment(cost, "USD"); // Assuming default currency is USD
+    }
+}
+
+// Usage
+public class Main {
+    public static void main(String[] args) {
+        ThirdPartyPaymentGateway gateway = new ThirdPartyPaymentGateway();
+        IPayment paymentAdapter = new PaymentGatewayAdapter(gateway);
+
+        Bill bill = new Bill();
+        bill.setPaymentStrategy(paymentAdapter);
+        bill.executePayment(new DonateMoney()); // Example usage
+    }
+}

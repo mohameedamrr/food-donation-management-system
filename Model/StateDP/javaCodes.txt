@@ -1,0 +1,90 @@
+This is a java code for state design pattern (Used for payments)
+// State Interface
+interface PaymentState {
+    void processPayment(Bill bill);
+    void cancelPayment(Bill bill);
+}
+
+// Concrete States
+class ProcessingState implements PaymentState {
+    @Override
+    public void processPayment(Bill bill) {
+        System.out.println("Payment is already being processed.");
+    }
+
+    @Override
+    public void cancelPayment(Bill bill) {
+        System.out.println("Cannot cancel payment while processing.");
+    }
+}
+
+class CompletedState implements PaymentState {
+    @Override
+    public void processPayment(Bill bill) {
+        System.out.println("Payment is already completed.");
+    }
+
+    @Override
+    public void cancelPayment(Bill bill) {
+        System.out.println("Cannot cancel a completed payment.");
+    }
+}
+
+class FailedState implements PaymentState {
+    @Override
+    public void processPayment(Bill bill) {
+        System.out.println("Retrying failed payment...");
+        bill.setPaymentState(new ProcessingState());
+    }
+
+    @Override
+    public void cancelPayment(Bill bill) {
+        System.out.println("Payment is already failed.");
+    }
+}
+
+// Context Class
+class Bill {
+    private PaymentState paymentState;
+    private IPayment paymentStrategy;
+    private double billAmount;
+
+    public Bill() {
+        this.paymentState = new ProcessingState(); // Default state
+    }
+
+    public void setPaymentState(PaymentState paymentState) {
+        this.paymentState = paymentState;
+    }
+
+    public void processPayment() {
+        paymentState.processPayment(this);
+    }
+
+    public void cancelPayment() {
+        paymentState.cancelPayment(this);
+    }
+
+    public void setPaymentStrategy(IPayment paymentStrategy) {
+        this.paymentStrategy = paymentStrategy;
+    }
+
+    public void executePayment(BillableDonate billableDonate) {
+        if (paymentStrategy.pay(billableDonate.calculateCost())) {
+            this.setPaymentState(new CompletedState());
+        } else {
+            this.setPaymentState(new FailedState());
+        }
+    }
+}
+
+// Usage
+public class Main {
+    public static void main(String[] args) {
+        Bill bill = new Bill();
+        bill.processPayment(); // Moves to ProcessingState
+        bill.cancelPayment();  // Cannot cancel in ProcessingState
+        bill.setPaymentState(new CompletedState());
+        bill.cancelPayment();  // Cannot cancel in CompletedState
+    }
+}
