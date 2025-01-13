@@ -18,6 +18,10 @@ class EmployeesReport extends ReportTemplate {
         return count($this->employees);
     }
 
+    protected function prepareReportData(){
+        
+    }
+
     protected function generateBody() {
         $body = "Employee Details:\n";
         foreach ($this->employees as $employee) {

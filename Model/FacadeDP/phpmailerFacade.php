@@ -129,18 +129,18 @@ class MailFacade
     }
 }
 
-try {
-    $mail = new MailFacade();
+// try {
+//     $mail = new MailFacade();
 
-    $mail->setRecipient('salahgad23@gmail.com', 'salah');
-    $mail->setContent('Your image', '<p1>hello, please checkout your image</p1>', true);
-    $mail ->addAttachment("C:\Users\Salah\Downloads\\etsh_horror.jpeg", "etsh_horror.jpeg");
+//     $mail->setRecipient('salahgad23@gmail.com', 'salah');
+//     $mail->setContent('Your image', '<p1>hello, please checkout your image</p1>', true);
+//     $mail ->addAttachment("C:\Users\Salah\Downloads\\etsh_horror.jpeg", "etsh_horror.jpeg");
 
-    // Send the email
-    $mail->send();
+//     // Send the email
+//     $mail->send();
 
-    echo 'Email sent successfully!';
-} catch (Exception $e) {
-    echo "Error: {$e->getMessage()}";
-}
+//     echo 'Email sent successfully!';
+// } catch (Exception $e) {
+//     echo "Error: {$e->getMessage()}";
+// }
 

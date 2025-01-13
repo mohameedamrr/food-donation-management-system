@@ -18,6 +18,10 @@ class FinancialReport extends ReportTemplate {
         return count($this->transactions);
     }
 
+    protected function prepareReportData(){
+        
+    }
+
     protected function generateBody() {
         $body = "Financial Details:\n";
         foreach ($this->transactions as $transaction) {
