@@ -29,6 +29,6 @@ class PaymentGatewayAdapter implements IPayment {
         return $isPaymentSuccessful;
     }
 }
-$paymentGateway = new PaymentGatewayAdapter();
-echo $paymentGateway->pay(900) ? 'true' : 'false';
+// $paymentGateway = new PaymentGatewayAdapter();
+// echo $paymentGateway->pay(900) ? 'true' : 'false';
 ?>
