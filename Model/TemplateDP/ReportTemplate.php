@@ -1,14 +1,19 @@
 <?php
+// Correct the path for the phpmailerFacade.php file
+require __DIR__ . '/../FacadeDP/phpmailerFacade.php'; // Ensure the path is correct
+
 abstract class ReportTemplate {
     protected $reportString = ""; 
 
     public function generateReport() {
+        $this->prepareReportData();
         $this->reportString .= $this->generateHeader();
         $this->reportString .= $this->generateSummary();
         $this->reportString .= $this->generateBody();
         $this->reportString .= $this->generateFooter();
 
         $this->saveReportToFile();
+        $this->sendReportByMail();
 
         //return $this->reportString; 
     }
@@ -36,7 +41,20 @@ abstract class ReportTemplate {
 
     abstract protected function getReportType();
 
+    abstract protected function prepareReportData();
+
     abstract protected function calculateTotalRecords();
+
+    protected function sendReportByMail(){
+        $mail = new MailFacade();
+
+        $mail->setRecipient('ziadayman087@gmail.com', 'Ziad Ayman');
+        $mail->setContent($this->getReportType(), '<p1>'.$this->reportString.'</p1>', true);
+        //$mail ->addAttachment("C:\Users\Salah\Downloads\\etsh_horror.jpeg", "etsh_horror.jpeg");
+
+        // Send the email
+        $mail->send();
+    }
 
     protected function saveReportToFile() {
         // Generate the filename using today's date and report type

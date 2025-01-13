@@ -1,6 +1,6 @@
 <?php
-require_once "D:/UNI/Final Project/food-donation-management-system/interfaces/IDatabaseManager.php";
-require_once "D:/UNI/Final Project/food-donation-management-system/Model/DatabaseManager.php";
+require_once __DIR__ . '/../../interfaces/IDatabaseManager.php';
+require_once __DIR__ . '/../DatabaseManager.php';
 
 class DatabaseManagerProxy Implements IDatabaseManager{
     private $realDatabaseManager;

@@ -18,6 +18,10 @@ class DonationReport extends ReportTemplate {
         return count($this->donations);
     }
 
+    protected function prepareReportData(){
+        
+    }
+
     protected function generateBody() {
         $body = "Donation Details:\n";
         foreach ($this->donations as $donation) {

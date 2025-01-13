@@ -1,0 +1,17 @@
+=== Admin Report ===
+Date: 2025-01-13 21:40:41
+-------------------
+Summary:
+- Report Type: Donation Report
+- Total Records: 3
+-------------------
+Donation Details:
+- Doner: John Doe, Item: Books, Quantity: 10, Date: 2023-10-01
+- Doner: Jane Smith, Item: Clothes, Quantity: 5, Date: 2023-10-05
+- Doner: Alice Johnson, Item: Food, Quantity: 20, Date: 2023-10-10
+-------------------
+Total Donations: 3
+Most Donated Item: Food
+-------------------
+End of Report
+================
