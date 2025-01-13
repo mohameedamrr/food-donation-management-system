@@ -1,6 +1,6 @@
 <?php
 //require __DIR__ . '/../ProxyDP/DatabaseManagerProxy.php'; 
-require_once 'D:\UNI\Final Project\food-donation-management-system\Model\ProxyDP\DatabaseManagerProxy.php';
+require_once '..\ProxyDP\DatabaseManagerProxy.php';
 class EmployeesReport extends ReportTemplate {
     private $employees;
 
@@ -22,7 +22,15 @@ class EmployeesReport extends ReportTemplate {
 
     protected function prepareReportData(){
         $adminProxy = new DatabaseManagerProxy('admin');
-        $this->employees = $adminProxy->runQuery("SELECT * FROM employees");
+        $this->employees = $adminProxy->run_select_query("SELECT * FROM employees")->fetch_all(MYSQLI_ASSOC);
+        for($i = 0; $i< count($this->employees); $i++){
+            $this->employees[$i]['name'] = $adminProxy->run_select_query("SELECT * FROM users where id = {$this->employees[$i]['id']}")->fetch_all(MYSQLI_ASSOC)[0]['name'];
+        }
+        // foreach ($this->employees as $employee){
+        //     $employee['name'] = $adminProxy->run_select_query("SELECT * FROM users where id = {$employee['id']}")->fetch_all(MYSQLI_ASSOC)[0]['name'];
+        //     $this->employees->array_push($employee);
+        //     echo $employee['name'] ;
+        // } 
     }
 
     protected function generateBody() {
@@ -32,9 +40,9 @@ class EmployeesReport extends ReportTemplate {
         }
         $body .= "-------------------\n";
         $body .= "Total Employees: " . $this->calculateTotalRecords() . "\n";
-        $body .= "Highest Salary: $" . $this->getHighestSalary() . "\n";
-        $body .= "Average Salary: $" . number_format($this->calculateAverageSalary(), 2) . "\n";
-        $body .= "Top Performer: " . $this->getTopPerformer() . "\n";
+        //$body .= "Highest Salary: $" . $this->getHighestSalary() . "\n";
+        //$body .= "Average Salary: $" . number_format($this->calculateAverageSalary(), 2) . "\n";
+        //$body .= "Top Performer: " . $this->getTopPerformer() . "\n";
         return $body;
     }
 
@@ -49,9 +57,9 @@ class EmployeesReport extends ReportTemplate {
 
     private function getTopPerformer() {
         $performances = array_column($this->employees, 'performance');
-        $maxPerformance = max($performances);
-        $index = array_search($maxPerformance, $performances);
-        return $this->employees[$index]['name'];
+        //$maxPerformance = max($performances);
+        //$index = array_search($maxPerformance, $performances);
+        //return $this->employees[$index]['name'];
     }
 }
 ?>

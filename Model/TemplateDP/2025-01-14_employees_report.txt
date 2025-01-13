@@ -1,0 +1,19 @@
+=== Admin Report ===
+Date: 2025-01-14 00:34:52
+-------------------
+Summary:
+- Report Type: Employees Report
+- Total Records: 6
+-------------------
+Employee Details:
+- Name: Bertha, Role: Manager, Salary: $20000, Performance: Excellent
+- Name: Demarcus, Role: Volunteer, Salary: $20000, Performance: Excellent
+- Name: Kyla, Role: Coordinator, Salary: $20000, Performance: Excellent
+- Name: Lacey, Role: Driver, Salary: $20000, Performance: Excellent
+- Name: 7amada, Role: Technician, Salary: $20000, Performance: Excellent
+- Name: Pearl, Role: Assistant, Salary: $20000, Performance: Excellent
+-------------------
+Total Employees: 6
+-------------------
+End of Report
+================
