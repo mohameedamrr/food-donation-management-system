@@ -1,4 +1,6 @@
 <?php
+//require __DIR__ . '/../ProxyDP/DatabaseManagerProxy.php'; 
+require_once 'D:\UNI\Final Project\food-donation-management-system\Model\ProxyDP\DatabaseManagerProxy.php';
 class EmployeesReport extends ReportTemplate {
     private $employees;
 
@@ -19,13 +21,14 @@ class EmployeesReport extends ReportTemplate {
     }
 
     protected function prepareReportData(){
-        
+        $adminProxy = new DatabaseManagerProxy('admin');
+        $this->employees = $adminProxy->runQuery("SELECT * FROM employees");
     }
 
     protected function generateBody() {
         $body = "Employee Details:\n";
         foreach ($this->employees as $employee) {
-            $body .= "- Name: " . $employee['name'] . ", Role: " . $employee['role'] . ", Salary: $" . $employee['salary'] . ", Performance: " . $employee['performance'] . "\n";
+            $body .= "- Name: " . $employee['name'] . ", Role: " . $employee['role'] . ", Salary: $" . "20000" . ", Performance: " . 'Excellent' . "\n";
         }
         $body .= "-------------------\n";
         $body .= "Total Employees: " . $this->calculateTotalRecords() . "\n";
