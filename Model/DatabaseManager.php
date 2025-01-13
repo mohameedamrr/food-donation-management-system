@@ -1,5 +1,7 @@
 <?php
-class DatabaseManager {
+require_once "D:/UNI/Final Project/food-donation-management-system/interfaces/IDatabaseManager.php";
+
+class DatabaseManager implements IDatabaseManager {
     // Private static instance of DatabaseManager
     private static ?DatabaseManager $instance = null;
 
@@ -34,7 +36,7 @@ class DatabaseManager {
     }
 
     // Method to execute a SQL query
-    function runQuery($query) {
+    public function runQuery($query): mysqli_result|bool {
         return $this->conn->query($query);
     }
 
