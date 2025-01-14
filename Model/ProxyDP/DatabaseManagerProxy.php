@@ -28,7 +28,7 @@ class DatabaseManagerProxy Implements IDatabaseManager{
 
             case 'donor':
                 // Donors can INSERT, UPDATE, and SELECT on 'users' and 'donationHistory' tables
-                $allowedTables = ['users', 'donationHistory'];
+                $allowedTables = ['users', 'donation_history'];
                 $readTables = ['donation_items', 'extra_box_items'];
                 if (in_array($tableName, $allowedTables)) {
                     return in_array($queryType, ['SELECT', 'INSERT', 'UPDATE']);

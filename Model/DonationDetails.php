@@ -1,114 +1,142 @@
 <?php
-class DonationDetails {
-    private static $idCounter = 0;
+require_once 'DonationItemChildren/Meal.php';
+require_once 'DonationItemChildren/Money.php';
+require_once 'DonationItemChildren/RawMaterials.php';
+require_once 'DonationItemChildren/Sacrifice.php';
+require_once 'DonationItemChildren/ClientReadyMeal.php';
+
+class DonationDetails implements IStoreObject,IReadObject,IDeleteObject {
     private $id;
     private $totalCost;
     private $description;
-    private $donationId;
-    private $donationItems; // Associative array: itemID => quantity
+    private $donationID;
+    private $donationItems;
 
-    public function __construct(){
-        $this->idCounter++;
-        $this->id = $this->idCounter; 
-    }
+    public function __construct($id){
+        $donorProxy = new DatabaseManagerProxy('donor');
+        $row = $donorProxy->run_select_query("SELECT * FROM donation_history WHERE id = $id")->fetch_assoc(); // Should succeed
+        if(isset($row)) {
+            $this->id = $row['id'];
+            $this->totalCost = $row['total_cost'];
+            $this->description = $row['description'];
+            $this->donationID = $row['donation_id'];
+            $this->donationItems = [];
+            if($row['meal_id'] != NULL) {
+                $meal = new Meal($row['meal_id']);
+                $meal->setCost($row['meal_cost']);
+                $meal->setMealQuantity($row['meal_quantity']);
+                $donationItems[] = $meal;
+            }
+            if($row['raw_materials_id'] != NULL) {
+                $rawMaterials = new RawMaterials($row['raw_materials_id']);
+                $rawMaterials->setCost($row['raw_materials_cost']);
+                $rawMaterials->setMaterialType($row['material_type']);
+                $rawMaterials->setQuantity($row['material_quantity']);
+                $rawMaterials->setRawMaterialWeight($row['material_weight']);
+                $rawMaterials->setSupplier($row['material_supplier']);
+                $donationItems[] = $rawMaterials;
+            }
+            if($row['client_ready_meal_id'] != NULL) {
+                $clientReadyMeal = new ClientReadyMeal($row['client_ready_meal_id']);
+                $clientReadyMeal->setCost($row['client_ready_meal_cost']);
+                $clientReadyMeal->setReadyMealType($row['ready_meal_type']);
+                $clientReadyMeal->setExpiration($row['ready_meal_expiration']);
+                $clientReadyMeal->setReadyMealQuantity($row['ready_meal_quantity']);
+                $clientReadyMeal->setPackagingType($row['ready_meal_packaging_type']);
+                $donationItems[] = $clientReadyMeal;
+            }
+            if($row['money_id'] != NULL) {
+                $money = new Money($row['money_id']);
+                $money->setCost($row['money_amount']);
+                $money->setDonationPurpose($row['money_donation_purpose']);
+                $donationItems[] = $money;
+            }
+            if($row['sacrifice_id'] != NULL) {
+                $sacrifice = new Sacrifice($row['sacrifice_id']);
+                $sacrifice->setCost($row['sacrifice_cost']);
+                $donationItems[] = $sacrifice;
+            }
+            if($row['box_id'] != NULL) {
+                $box = new BasicBox($row['box_id']);
+                $box->setCost($row['box_cost']);
+                $box->setTotalCost($row['box_cost']);
+                $box->setInitialBoxSize($row['final_box_size']);
+                $box->setFinalBoxSize($row['final_box_size']);
+                $box->setInitialItemList(explode(", ", $row['final_item_list']));
+                $box->setFinalItemList(explode(", ", $row['final_item_list']));
+                $donationItems[] = $box;
 
-
-    // Getters and Setters
-    public function getId(): int {
-        return $this->id;
-    }
-
-    public function setId(int $id): void {
-        $this->id = $id;
-    }
-
-    public function getTotalCost(): float {
-        return $this->totalCost;
-    }
-
-    public function setTotalCost(float $totalCost): void {
-        $this->totalCost = $totalCost;
-    }
-
-    public function getDescription(): string {
-        return $this->description;
-    }
-
-    public function setDescription(string $description): void {
-        $this->description = $description;
-    }
-
-    public function getDonationId(): int {
-        return $this->donationId;
-    }
-
-    public function setDonationId(int $donationId): void {
-        $this->donationId = $donationId;
-    }
-
-    public function getDonationItems(): array {
-        return $this->donationItems;
-    }
-
-    public function setDonationItems(array $donationItems): void {
-        $this->donationItems = $donationItems;
-    }
-
-    // Methods
-    public function getDetails(): array {
-        return [
-            'id' => $this->id,
-            'totalCost' => $this->totalCost,
-            'description' => $this->description,
-            'donationId' => $this->donationId,
-            'donationItems' => $this->donationItems,
-        ];
-    }
- 
-public function setDetails(Donate $donate): bool {
-
-    $conn = DatabaseManager::getInstance();
-    $this->donationId = $donate->getDonationID();
-    $this->donationItems = [];
-
-    // Assuming $donate->getDonationItems() returns an array of DonationItem => quantity
-    foreach ($donate->getDonationItems() as $item => $quantity) {
-        if ($item instanceof DonationItem) {
-            $this->donationItems[$item->getItemID()] = $quantity;
-            $tempId = $item->getItemID();
-            $sql = "INSERT INTO donation_detail_items (donationDetailId, itemId, quantity) VALUES
-                ('$this->id', '$tempId', '$quantity')";
-        $isSuccess = $conn->run_select_query($sql);
+            }
         }
     }
 
-    $this->totalCost = $donate->calculateTotalCost();
-    $this->description = "Donation Details for Donation ID " . $this->donationId;
-
-    //_____________________create in database_______________________//
-   
-
-    // Insert into 'donation_details' table
-    $sql = "INSERT INTO donation_details (id, totalCost, description, donationId) VALUES
-            ('$this->id', '$this->totalCost', '$this->description', '$this->donationId')";
-    $isSuccess = $conn->run_select_query($sql);
-
-    if (!$isSuccess) {
-        return false;
+    public function getId()
+    {
+        return $this->id;
     }
 
-    // Insert each item into 'donation_details_items' table
-    // foreach ($this->donationItems as $itemId => $quantity) {
-    //     $sql = "INSERT INTO donation_details_items (donationDetailId, itemId, quantity) VALUES
-    //             ('$this->id', '$itemId', '$quantity')";
-    //     $isSuccess = $conn->run_select_query($sql);
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
 
-    //     if (!$isSuccess) {
-    //         return false;
-    //     }
-    // }
+    public function getTotalCost()
+    {
+        return $this->totalCost;
+    }
 
-    return true;
-}
+    public function setTotalCost($totalCost)
+    {
+        $this->totalCost = $totalCost;
+    }
+
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+    }
+
+    public function getDonationID()
+    {
+        return $this->donationID;
+    }
+
+    public function setDonationID($donationID)
+    {
+        $this->donationID = $donationID;
+    }
+
+    public function getDonationItems()
+    {
+        return $this->donationItems;
+    }
+
+    public function setDonationItems($donationItems)
+    {
+        $this->donationItems = $donationItems;
+    }
+
+    public static function readObject($id){
+        return new DonationDetails($id);
+    }
+
+    public static function storeObject(array $data) {
+        $columns = implode(", ", array_map(fn($key) => "$key", array_keys($data)));
+        $placeholders = implode(", ", array_map(fn($value) => is_numeric($value) ? $value : "'" . addslashes($value) . "'", array_values($data)));
+        $adminProxy = new DatabaseManagerProxy('admin');
+        $adminProxy->runQuery("INSERT INTO food_donation.donation_history ($columns) VALUES ($placeholders)");
+        $lastInsertedId = $adminProxy->getLastInsertId();
+        return new DonationDetails($lastInsertedId);
+    }
+
+    public static function deleteObject($id) {
+        $adminProxy = new DatabaseManagerProxy('admin');
+        $adminProxy->runQuery("DELETE FROM donation_history WHERE id = $id");
+    }
 }
 ?>
