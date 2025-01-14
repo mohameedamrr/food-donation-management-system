@@ -1,6 +1,6 @@
 <?php
 interface IUpdateObject {
-    public static function updateObject(array $data);
+    public function updateObject(array $data);
 
 }
 
