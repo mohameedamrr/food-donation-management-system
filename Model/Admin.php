@@ -38,23 +38,23 @@ class Admin extends UserEntity implements ISubject, IUpdateObject, IStoreObject,
     }
 
     /////////////////////
-    // public function assignAppointment($appointmentID, $employeeID): void {
-    //     for($i=0; $i <= count($this->appointmentsList); $i++) {
-    //         if ($this->appointmentsList[$i]->getAppointmentID() == $appointmentID) {
-    //             $this->appointmentsList[$i]->assignEmployee($employeeID);
-    //             break;
-    //         }
-    //     }
-    //     $this->notifyObservers();
-    // }
-
     public function assignAppointment(Appointment $appointment, $employeeID): void {
-        $index = array_search($appointment, $this->appointmentsList, true);
-        if ($index !== false) {
-            $this->appointmentsList[$index]->assignEmployee($employeeID);
+        for($i=0; $i <= count($this->appointmentsList); $i++) {
+            if ($this->appointmentsList[$i]->getAppointmentID() == $appointment->getAppointmentID()) {
+                $this->appointmentsList[$i]->assignEmployee($employeeID);
+                break;
+            }
         }
         $this->notifyObservers();
     }
+
+    // public function assignAppointment(Appointment $appointment, $employeeID): void {
+    //     $index = array_search($appointment, $this->appointmentsList, true);
+    //     if ($index !== false) {
+    //         $this->appointmentsList[$index]->assignEmployee($employeeID);
+    //     }
+    //     $this->notifyObservers();
+    // }
 
     //edit donation item cost
 
@@ -128,13 +128,29 @@ class Admin extends UserEntity implements ISubject, IUpdateObject, IStoreObject,
     //     $this->notifyObservers();
     // }
 
+    // public function removeAppointment($appointmentID): void {
+    //     foreach ($this->appointmentsList as $key => $appointment) {
+    //         if ($appointment->getAppointmentID() === $appointmentID) {
+    //             // Remove the appointment from the list using its key
+    //             unset($this->appointmentsList[$key]);
+    //             // Reindex the array to avoid gaps in the keys
+    //             $this->appointmentsList = array_values($this->appointmentsList);
+    //             break;
+    //         }
+    //     }
+    //     $this->notifyObservers();
+    // }
+
     public function removeAppointment($appointmentID): void {
         foreach ($this->appointmentsList as $key => $appointment) {
-            if ($appointment->getAppointmentID() === $appointmentID) {
+            if ($appointment->getAppointmentID() == $appointmentID) {
                 // Remove the appointment from the list using its key
                 unset($this->appointmentsList[$key]);
                 // Reindex the array to avoid gaps in the keys
                 $this->appointmentsList = array_values($this->appointmentsList);
+    
+                // Delete the appointment from the database
+                Appointment::deleteObject($appointmentID);
                 break;
             }
         }

@@ -23,19 +23,19 @@ class Employee extends UserEntity implements IObserver, IUpdateObject {
 
     public function __construct($email) {
         $db =  new DatabaseManagerProxy('employee'); 
-        $sql = "SELECT * FROM `food_donation`.`users` WHERE email = '$email'";
+        $sql = "SELECT * FROM users WHERE email = '$email'";
         $row = $db->run_select_query($sql)->fetch_assoc();
         if(isset($row)) {
             parent::__construct($row["id"], $row["name"], $row["email"], $row["phone"], $row["password"], new NormalMethod());
         }
-        $sql2 = "SELECT * FROM `food_donation`.`employees` WHERE id = $this->id";
+        $sql2 = "SELECT * FROM employees WHERE id = $this->id";
         $row2 = $db->run_select_query($sql2)->fetch_assoc();
         if(isset($row2)) {
             $this->role = $row2["role"];
             $this->department = $row2["department"];
         }
 
-        $sql3 = "SELECT * FROM `food_donation`.`appointments` WHERE employeeAssignedID = $this->id";
+        $sql3 = "SELECT * FROM appointments WHERE employeeAssignedID = $this->id";
         $rows = $db->run_select_query($sql3)->fetch_all(MYSQLI_ASSOC);
         foreach($rows as $row) {
             array_push($this->appointmentList, Appointment::readObject($row["appointmentID"]));
@@ -43,27 +43,32 @@ class Employee extends UserEntity implements IObserver, IUpdateObject {
     }
 
     ///// pass object
-    // public function changeAppointmentStatus(int $appointmentID, string $status): void {
-    //     for($i=0; $i <= count($this->appointmentList); $i++) {
-    //         if ($this->appointmentList[$i]->getAppointmentID() == $appointmentID) {
-    //             $this->appointmentList[$i]->updateStatus($status);
-    //             return;
-    //         }
-    //     }
-    // }
-
     public function changeAppointmentStatus(Appointment $appointment, string $status): void {
-        // Use array_search to find the appointment in the list
-        $index = array_search($appointment, $this->appointmentList, true);
-    
-        // If the appointment is found, update its status
-        if ($index !== false) {
-            $this->appointmentList[$index]->updateStatus($status);
+        echo "{$appointment->getAppointmentID()}";
+        for($i=0; $i <= count($this->appointmentList); $i++) {
+            echo "<br>";
+            echo "{$this->appointmentList[$i]->getAppointmentID()}";
+            if ($this->appointmentList[$i]->getAppointmentID() == $appointment->getAppointmentID()) {
+                echo "founndddddd";
+                $this->appointmentList[$i]->updateStatus($status);
+                return;
+            }
         }
     }
 
+    // public function changeAppointmentStatus(Appointment $appointment, string $status): void {
+    //     // Use array_search to find the appointment in the list
+    //     $index = array_search($appointment, $this->appointmentList, true);
+    
+    //     // If the appointment is found, update its status
+    //     if ($index !== false) {
+    //         echo "foundddddddddddddddddddd";
+    //         $this->appointmentList[$index]->updateStatus($status);
+    //     }
+    // }
+
     public function AppointmentDone(int $appointmentID){
-        $this->admin->removeTask($appointmentID);
+        $this->admin->removeAppointment($appointmentID);
     }
 
     public function getAssignedAppointments(){
@@ -115,7 +120,7 @@ class Employee extends UserEntity implements IObserver, IUpdateObject {
 
     public function setDepartment($department) {
         $this->department = $department;
-        $sql = "UPDATE `food_donation`.`employees` SET `department` = '$this->department' WHERE `id` = $this->id";
+        $sql = "UPDATE employees SET `department` = '$this->department' WHERE `id` = $this->id";
         DatabaseManager::getInstance()->runQuery($sql);
     }
 
@@ -125,7 +130,7 @@ class Employee extends UserEntity implements IObserver, IUpdateObject {
 
     public function setRole($role) {
         $this->role = $role;
-        $sql = "UPDATE `food_donation`.`employees` SET role = '$this->role' WHERE id = $this->id";
+        $sql = "UPDATE employees SET role = '$this->role' WHERE id = $this->id";
         DatabaseManager::getInstance()->runQuery($sql);
     }
 

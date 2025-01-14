@@ -121,7 +121,7 @@ echo "<br>Testing Admin functionalities...<br>";
 echo "<br>Creating a new employee...<br>";
 $newEmployee = $admin->createEmployee([
     'name' => 'Test Employee',
-    'email' => 'testemployee@example.com',
+    'email' => 'testemployee32ee@example.com',
     'phone' => '+987654321',
     'password' => 'password123',
     'role' => 'Tester',
