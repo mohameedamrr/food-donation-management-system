@@ -40,7 +40,7 @@ class DatabaseManagerProxy Implements IDatabaseManager{
 
             case 'employee':
                 // Employees can UPDATE and SELECT on 'employees' and 'appointments' tables
-                $allowedTables = ['employees', 'appointments'];
+                $allowedTables = ['employees', 'appointments', 'users'];
                 if (in_array($tableName, $allowedTables)) {
                     return in_array($queryType, ['SELECT', 'UPDATE']);
                 }
