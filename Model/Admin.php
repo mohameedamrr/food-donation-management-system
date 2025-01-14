@@ -15,7 +15,7 @@ spl_autoload_register(function ($class_name) {
     }
 });
 
-class Admin extends UserEntity implements ISubject {
+class Admin extends UserEntity implements ISubject, IUpdateObject, IStoreObject, IDeleteObject {
     private array $tasksList = []; // array of tasks
     private array $observersList = []; // array of IObserver objects
 
@@ -37,6 +37,7 @@ class Admin extends UserEntity implements ISubject {
 
     }
 
+    /////////////////////
     public function assignAppointment($appointmentID, $employeeID): void {
         for($i=0; $i <= count($this->tasksList); $i++) {
             if ($this->tasksList[$i]->getAppointmentID() == $appointmentID) {
@@ -47,6 +48,9 @@ class Admin extends UserEntity implements ISubject {
         $this->notifyObservers();
     }
 
+    //edit donation item cost
+
+
     public function createEmployee(array $employeeData) {
         return Employee::storeObject($employeeData);
     }
@@ -55,14 +59,17 @@ class Admin extends UserEntity implements ISubject {
         return BasicDonator::storeObject($userData);
     }
 
+    //***hnsebha kda */
     public function deleteEmployee(int $employeeID): void {
         Employee::deleteObject($employeeID);
     }
 
+    ////////// add apoint
     public function addTask($taskID): void {
         array_push($this->tasksList, Appointment::readObject($taskID));
     }
 
+    //////
     public function removeTask($taskID): void {
         foreach ($this->tasksList as $appointment) {
             if ($appointment->getId() === $taskID) {
@@ -97,6 +104,21 @@ class Admin extends UserEntity implements ISubject {
     public function getTasksList(){
         return $this->tasksList;
     }
+
+    //get all employees
+
+    public static function updateObject(array $data){
+
+    }
+
+    public static function storeObject(array $data){
+
+    }
+
+    public static function deleteObject($id){
+        
+    }
+
 
 }
 ?>
