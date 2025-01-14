@@ -1,9 +1,9 @@
 <?php
-require_once "../ProxyDP/DatabaseManagerProxy.php";
-require_once "../../interfaces/IStoreObject.php";
-require_once "../../interfaces/IReadObject.php";
-require_once "../../interfaces/IUpdateObject.php";
-require_once "../../interfaces/IDeleteObject.php";
+// require_once "../ProxyDP/DatabaseManagerProxy.php";
+// require_once "../../interfaces/IStoreObject.php";
+// require_once "../../interfaces/IReadObject.php";
+// require_once "../../interfaces/IUpdateObject.php";
+// require_once "../../interfaces/IDeleteObject.php";
 abstract class DonationItem {
 
     protected $itemID;

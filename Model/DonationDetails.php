@@ -1,9 +1,17 @@
 <?php
+require_once '../interfaces/IDatabaseManager.php';
+require_once 'DatabaseManager.php';
+require_once 'ProxyDP/DatabaseManagerProxy.php';
+require_once "../interfaces/IStoreObject.php";
+require_once "../interfaces/IReadObject.php";
+require_once "../interfaces/IUpdateObject.php";
+require_once "../interfaces/IDeleteObject.php";
 require_once 'DonationItemChildren/Meal.php';
 require_once 'DonationItemChildren/Money.php';
 require_once 'DonationItemChildren/RawMaterials.php';
 require_once 'DonationItemChildren/Sacrifice.php';
 require_once 'DonationItemChildren/ClientReadyMeal.php';
+require_once 'DecoratorDP/BasicBox.php';
 
 class DonationDetails implements IStoreObject,IReadObject,IDeleteObject {
     private $id;
@@ -139,4 +147,8 @@ class DonationDetails implements IStoreObject,IReadObject,IDeleteObject {
         $adminProxy->runQuery("DELETE FROM donation_history WHERE id = $id");
     }
 }
+
+
+DonationDetails::deleteObject(13);
+echo "DonationDetails with ID {11} has been DELETED.\n";
 ?>
