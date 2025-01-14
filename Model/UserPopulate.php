@@ -29,8 +29,8 @@ $db->runQuery(
     id int PRIMARY KEY,
     role VARCHAR(50) NOT NULL,
     department VARCHAR(50) NOT NULL,
-    `email` VARCHAR(50) NOT NULL,
-    FOREIGN KEY employees(id) REFERENCES users (id)
+    salary FLOAT NOT NULL,
+    FOREIGN KEY employees(id) REFERENCES users (id) ON DELETE CASCADE
 );"
 );
 
@@ -56,13 +56,13 @@ $db->runQuery(
 );
 
 $db->runQuery(
-    "INSERT INTO `food_donation`.`employees` (`id`, `role`, `department`, `email`) VALUES
-    (1, 'Manager', 'Administration', 'manager.admin@example.com'),
-    (2, 'Volunteer', 'Community Outreach', 'volunteer.co@example.com'),
-    (3, 'Coordinator', 'Events', 'coordinator.events@example.com'),
-    (4, 'Driver', 'Logistics', 'driver.logistics@example.com'),
-    (5, 'Technician', 'Maintenance', 'technician.maintenance@example.com'),
-    (6, 'Assistant', 'Operations', 'assistant.ops@example.com');"
+    "INSERT INTO `food_donation`.`employees` (`id`, `role`, `department`, salary) VALUES
+    (1, 'Manager', 'Administration', 20000.0),
+    (2, 'Volunteer', 'Community Outreach', 0),
+    (3, 'Coordinator', 'Events', 17000),
+    (4, 'Driver', 'Logistics', 5000),
+    (5, 'Technician', 'Maintenance', 15000),
+    (6, 'Assistant', 'Operations', 10000);"
 );
 
 
@@ -111,7 +111,7 @@ $db->runQuery("
         donation_id INT AUTO_INCREMENT PRIMARY KEY,
         donation_date DATETIME NOT NULL,
         user_id INT NOT NULL,
-        FOREIGN KEY donations(user_id) REFERENCES users(id)
+        FOREIGN KEY donations(user_id) REFERENCES users(id) ON DELETE CASCADE
     );
 ");
 
@@ -145,7 +145,7 @@ $db->runQuery("
         box_cost FLOAT,
         final_box_size FLOAT,
         final_item_list TEXT,
-        FOREIGN KEY donation_history(donation_id) REFERENCES donations(donation_id)
+        FOREIGN KEY donation_history(donation_id) REFERENCES donations(donation_id) ON DELETE CASCADE
     );
 ");
 

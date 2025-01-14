@@ -1,0 +1,34 @@
+=== Admin Report ===
+Date: 2025-01-14 17:18:56
+-------------------
+Summary:
+- Report Type: Donation Report
+- Total Records: 5
+-------------------
+Donation Details:
+- Doner: Bertha, Date: 2023-10-01 15:00:00, Total Cost: $50
+  Description: Donation for meals and raw materials
+  Meal Donation: 5 meals at $10 each
+  Raw Materials: 10 units of Grains at $20 total
+-------------------
+- Doner: Demarcus, Date: 2023-10-02 15:00:00, Total Cost: $100
+  Description: Donation for ready meals
+  Ready Meal: 10 Frozen meals expiring on 2024-12-31
+-------------------
+- Doner: Kyla, Date: 2023-10-03 15:00:00, Total Cost: $75
+  Description: Monetary donation for a cause
+  Monetary Donation: $75 for Education
+-------------------
+- Doner: Lacey, Date: 2023-10-04 15:00:00, Total Cost: $30
+  Description: Donation for animal sacrifice
+  Sacrifice: $30 for a animal
+-------------------
+- Doner: 7amada, Date: 2023-10-05 15:00:00, Total Cost: $60
+  Description: Donation for a custom box
+  Custom Box: $60 with items: Oil, Pasta, Rice, Sugar
+-------------------
+Total Donations: 5
+Most Donated Item: Raw Materials (Grains)
+-------------------
+End of Report
+================
