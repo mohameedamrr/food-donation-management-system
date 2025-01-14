@@ -30,4 +30,7 @@ class NormalMethod implements ILogin {
         return false;
     }
 }
+
+$normal = new NormalMethod();
+echo $normal->authenticate('bertha.wilkinson@example.com','b95925ed0aa3897a613c7534ae7abeef')? "Login Successfully": "Failed to Login";
 ?>

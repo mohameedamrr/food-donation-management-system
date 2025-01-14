@@ -29,7 +29,6 @@ $db->runQuery(
     id int PRIMARY KEY,
     role VARCHAR(50) NOT NULL,
     department VARCHAR(50) NOT NULL,
-    `email` VARCHAR(50) NOT NULL,
     salary FLOAT NOT NULL,
     FOREIGN KEY employees(id) REFERENCES users (id)
 );"
@@ -57,13 +56,13 @@ $db->runQuery(
 );
 
 $db->runQuery(
-    "INSERT INTO `food_donation`.`employees` (`id`, `role`, `department`, `email`, salary) VALUES
-    (1, 'Manager', 'Administration', 'manager.admin@example.com', 20000.0),
-    (2, 'Volunteer', 'Community Outreach', 'volunteer.co@example.com', 0),
-    (3, 'Coordinator', 'Events', 'coordinator.events@example.com', 17000),
-    (4, 'Driver', 'Logistics', 'driver.logistics@example.com', 5000),
-    (5, 'Technician', 'Maintenance', 'technician.maintenance@example.com', 15000),
-    (6, 'Assistant', 'Operations', 'assistant.ops@example.com', 10000);"
+    "INSERT INTO `food_donation`.`employees` (`id`, `role`, `department`, salary) VALUES
+    (1, 'Manager', 'Administration', 20000.0),
+    (2, 'Volunteer', 'Community Outreach', 0),
+    (3, 'Coordinator', 'Events', 17000),
+    (4, 'Driver', 'Logistics', 5000),
+    (5, 'Technician', 'Maintenance', 15000),
+    (6, 'Assistant', 'Operations', 10000);"
 );
 
 
