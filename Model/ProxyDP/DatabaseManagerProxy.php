@@ -1,6 +1,7 @@
 <?php
-require_once __DIR__ . '/../../interfaces/IDatabaseManager.php';
-require_once __DIR__ . '/../DatabaseManager.php';
+//require '../../interfaces/IDatabaseManager.php';
+require_once '../../interfaces/IDatabaseManager.php';
+require_once '../DatabaseManager.php';
 
 class DatabaseManagerProxy Implements IDatabaseManager{
     private $realDatabaseManager;
