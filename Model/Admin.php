@@ -16,11 +16,11 @@ spl_autoload_register(function ($class_name) {
 });
 require_once 'ProxyDP/DatabaseManagerProxy.php';
 class Admin extends UserEntity implements ISubject, IUpdateObject, IStoreObject, IDeleteObject {
-    private array $tasksList = []; // array of tasks
+    private array $appointmentsList = []; // array of tasks
     private array $observersList = []; // array of IObserver objects
 
     public function __construct($id) {
-        $db = DatabaseManager::getInstance();
+        $db = new DatabaseManagerProxy('admin');
         $sql = "SELECT * FROM `food_donation`.`users` WHERE id = $id";
 
 
@@ -32,18 +32,26 @@ class Admin extends UserEntity implements ISubject, IUpdateObject, IStoreObject,
         $rows = $db->run_select_query($sql3)->fetch_all(MYSQLI_ASSOC);
 
         foreach ($rows as $row) {
-            array_push($this->tasksList, Appointment::readObject($row["appointmentID"]));
+            array_push($this->appointmentsList, Appointment::readObject($row["appointmentID"]));
         }
 
     }
 
     /////////////////////
-    public function assignAppointment($appointmentID, $employeeID): void {
-        for($i=0; $i <= count($this->tasksList); $i++) {
-            if ($this->tasksList[$i]->getAppointmentID() == $appointmentID) {
-                $this->tasksList[$i]->assignEmployee($employeeID);
-                break;
-            }
+    // public function assignAppointment($appointmentID, $employeeID): void {
+    //     for($i=0; $i <= count($this->appointmentsList); $i++) {
+    //         if ($this->appointmentsList[$i]->getAppointmentID() == $appointmentID) {
+    //             $this->appointmentsList[$i]->assignEmployee($employeeID);
+    //             break;
+    //         }
+    //     }
+    //     $this->notifyObservers();
+    // }
+
+    public function assignAppointment(Appointment $appointment, $employeeID): void {
+        $index = array_search($appointment, $this->appointmentsList, true);
+        if ($index !== false) {
+            $this->appointmentsList[$index]->assignEmployee($employeeID);
         }
         $this->notifyObservers();
     }
@@ -52,7 +60,43 @@ class Admin extends UserEntity implements ISubject, IUpdateObject, IStoreObject,
 
 
     public function createEmployee(array $employeeData) {
-        return Employee::storeObject($employeeData);
+        // return Employee::storeObject($employeeData);
+
+        $db = new DatabaseManagerProxy('admin'); 
+    
+        // Extract user-specific data
+        $userData = [
+            'name' => $employeeData['name'],
+            'email' => $employeeData['email'],
+            'phone' => $employeeData['phone'],
+            'password' => $employeeData['password'],
+        ];
+    
+        // Insert into the users table
+        $userColumns = implode(", ", array_map(fn($key) => "$key", array_keys($userData)));
+        $userPlaceholders = implode(", ", array_map(fn($value) => is_numeric($value) ? $value : "'" . addslashes($value) . "'", array_values($userData)));
+        $userSql = "INSERT INTO food_donation.users ($userColumns) VALUES ($userPlaceholders)";
+        $db->runQuery($userSql);
+    
+        // Get the last inserted user ID
+        $userId = $db->getLastInsertId();
+    
+        // Extract employee-specific data
+        $employeeData = [
+            'id' => $userId, // Use the user ID as the employee ID
+            'role' => $employeeData['role'],
+            'department' => $employeeData['department'],
+            'salary' => $employeeData['salary'],
+        ];
+    
+        // Insert into the employees table
+        $employeeColumns = implode(", ", array_map(fn($key) => "$key", array_keys($employeeData)));
+        $employeePlaceholders = implode(", ", array_map(fn($value) => is_numeric($value) ? $value : "'" . addslashes($value) . "'", array_values($employeeData)));
+        $employeeSql = "INSERT INTO food_donation.employees ($employeeColumns) VALUES ($employeePlaceholders)";
+        $db->runQuery($employeeSql);
+    
+        // Return the newly created Employee object
+        return new Employee($userData["email"]);
     }
 
     public function createUser(array $userData) {
@@ -61,20 +105,36 @@ class Admin extends UserEntity implements ISubject, IUpdateObject, IStoreObject,
 
     //***hnsebha kda */
     public function deleteEmployee(int $employeeID): void {
-        Employee::deleteObject($employeeID);
+        // Employee::deleteObject($employeeID);
+        $sql = "DELETE FROM `food_donation`.`Employees` WHERE id = $employeeID";
+        $db =  new DatabaseManagerProxy('admin'); 
+        $db->runQuery($sql);
     }
 
     ////////// add apoint
-    public function addTask($taskID): void {
-        array_push($this->tasksList, Appointment::readObject($taskID));
+    public function addAppointment(Appointment $appointment): void {
+        array_push($this->appointmentsList, $appointment);
     }
 
     //////
-    public function removeTask($taskID): void {
-        foreach ($this->tasksList as $appointment) {
-            if ($appointment->getId() === $taskID) {
-                $this->tasksList = array_diff($this->tasksList, [$appointment]);
-                $this->tasksList = array_values($this->tasksList);
+    // public function removeAppointment($appointmentID): void {
+    //     foreach ($this->appointmentsList as $appointment) {
+    //         if ($appointment->getAppointmentID() === $appointmentID) {
+    //             $this->appointmentsList = array_diff($this->appointmentsList, [$appointment]);
+    //             $this->appointmentsList = array_values($this->appointmentsList);
+    //             break;
+    //         }
+    //     }
+    //     $this->notifyObservers();
+    // }
+
+    public function removeAppointment($appointmentID): void {
+        foreach ($this->appointmentsList as $key => $appointment) {
+            if ($appointment->getAppointmentID() === $appointmentID) {
+                // Remove the appointment from the list using its key
+                unset($this->appointmentsList[$key]);
+                // Reindex the array to avoid gaps in the keys
+                $this->appointmentsList = array_values($this->appointmentsList);
                 break;
             }
         }
@@ -101,11 +161,19 @@ class Admin extends UserEntity implements ISubject, IUpdateObject, IStoreObject,
         }
     }
 
-    public function getTasksList(){
-        return $this->tasksList;
+    public function getAppointmentsList(){
+        return $this->appointmentsList;
     }
 
     //get all employees
+    public function getAllEmployees(){
+        $adminProxy = new DatabaseManagerProxy('admin');
+        $employees = $adminProxy->run_select_query("SELECT * FROM employees")->fetch_all(MYSQLI_ASSOC);
+        for($i = 0; $i< count($employees); $i++){
+            $employees[$i]['name'] = $adminProxy->run_select_query("SELECT * FROM users where id = {$employees[$i]['id']}")->fetch_all(MYSQLI_ASSOC)[0]['name'];
+        }
+        return $employees;
+    }
 
     public static function storeObject(array $data) {
         $proxy = new DatabaseManagerProxy('admin');
@@ -134,10 +202,12 @@ class Admin extends UserEntity implements ISubject, IUpdateObject, IStoreObject,
         }
     }
 
-    public static function updateObject(array $data) {
+    public function updateObject(array $data) {
         $proxy = new DatabaseManagerProxy('admin');
 
-
+        foreach ($data as $prop => $value) {
+            $this->{$prop} = $value;
+        }
         try {
             // Update `users` table
             $queryUsers = "UPDATE users SET 
