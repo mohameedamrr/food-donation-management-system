@@ -13,24 +13,55 @@ $db->runQuery("
         item_name VARCHAR(255) NOT NULL,
         currency VARCHAR(255) NOT NULL,
         cost FLOAT NOT NULL,
-        ready_meal_type VARCHAR(255),
-        expiry DATE,
-        packaging_type VARCHAR(255),
-        amount FLOAT,
-        donation_purpose VARCHAR(255),
         animal_type VARCHAR(255),
         weight FLOAT,
-        location VARCHAR(255),
         mealType VARCHAR(255),
-        servings INT,
         ingredients TEXT,
+        initial_box_size FLOAT,
+        initial_item_list TEXT
+    )
+");
+
+$db->runQuery("
+    CREATE TABLE `food_donation`.`donations` (
+        donation_id INT AUTO_INCREMENT PRIMARY KEY,
+        donation_date DATE NOT NULL,
+        user_id INT NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES users(id)
+    )
+");
+
+$db->runQuery("
+    CREATE TABLE `food_donation`.`donation_history` (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        total_cost FLOAT NOT NULL,
+        description TEXT NOT NULL,
+        donation_id INT NOT NULL,
+        meal_id INT,
+        meal_cost FLOAT,
+        meal_quantity INT,
+        raw_materials_id INT,
+        raw_materials_cost FLOAT,
         material_type VARCHAR(255),
-        quantity INT,
-        raw_material_weight FLOAT,
-        supplier VARCHAR(255),
-        box_size FLOAT,
-        item_list TEXT,
-        PRIMARY KEY (item_id)
+        material_quantity INT,
+        material_weight FLOAT,
+        material_supplier VARCHAR(255),
+        client_ready_meal_id INT,
+        client_ready_meal_cost FLOAT,
+        ready_meal_type VARCHAR(255),
+        ready_meal_expiration DATE,
+        ready_meal_quantity INT,
+        ready_meal_packaging_type VARCHAR(255),
+        money_id INT,
+        money_amount FLOAT,
+        money_donation_purpose VARCHAR(255),
+        sacrifice_id INT,
+        sacrifice_cost FLOAT,
+        box_id INT,
+        box_cost FLOAT,
+        final_box_size FLOAT,
+        final_item_list TEXT,
+        FOREIGN KEY (donation_id) REFERENCES donations(donation_id)
     )
 ");
 
@@ -38,8 +69,7 @@ $db->runQuery("
     CREATE TABLE `food_donation`.`extra_box_items` (
         extra_item_id INT AUTO_INCREMENT PRIMARY KEY,
         extra_item_name VARCHAR(255) NOT NULL,
-        price_per_unit FLOAT NOT NULL,
-        PRIMARY KEY (extra_item_id)
+        price_per_unit FLOAT NOT NULL
     )
 ");
 
