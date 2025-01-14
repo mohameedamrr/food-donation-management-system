@@ -6,129 +6,15 @@ $db->runQuery("CREATE DATABASE `food_donation`");
 $db->runQuery("DROP TABLE IF EXISTS `food_donation`.`users`");
 $db->runQuery("DROP TABLE IF EXISTS `food_donation`.`employees`");
 $db->runQuery("DROP TABLE IF EXISTS `food_donation`.`appointments`");
-
-$db->runQuery("
-    CREATE TABLE `food_donation`.`donation_items` (
-        item_id INT AUTO_INCREMENT PRIMARY KEY,
-        item_name VARCHAR(255) NOT NULL,
-        currency VARCHAR(255) NOT NULL,
-        cost FLOAT NOT NULL,
-        animal_type VARCHAR(255),
-        weight FLOAT,
-        mealType VARCHAR(255),
-        ingredients TEXT,
-        initial_box_size FLOAT,
-        initial_item_list TEXT
-    )
-");
-
-$db->runQuery("
-    CREATE TABLE `food_donation`.`donations` (
-        donation_id INT AUTO_INCREMENT PRIMARY KEY,
-        donation_date DATE NOT NULL,
-        user_id INT NOT NULL,
-        FOREIGN KEY (user_id) REFERENCES users(id)
-    )
-");
-
-$db->runQuery("
-    CREATE TABLE `food_donation`.`donation_history` (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        total_cost FLOAT NOT NULL,
-        description TEXT NOT NULL,
-        donation_id INT NOT NULL,
-        meal_id INT,
-        meal_cost FLOAT,
-        meal_quantity INT,
-        raw_materials_id INT,
-        raw_materials_cost FLOAT,
-        material_type VARCHAR(255),
-        material_quantity INT,
-        material_weight FLOAT,
-        material_supplier VARCHAR(255),
-        client_ready_meal_id INT,
-        client_ready_meal_cost FLOAT,
-        ready_meal_type VARCHAR(255),
-        ready_meal_expiration DATE,
-        ready_meal_quantity INT,
-        ready_meal_packaging_type VARCHAR(255),
-        money_id INT,
-        money_amount FLOAT,
-        money_donation_purpose VARCHAR(255),
-        sacrifice_id INT,
-        sacrifice_cost FLOAT,
-        box_id INT,
-        box_cost FLOAT,
-        final_box_size FLOAT,
-        final_item_list TEXT,
-        FOREIGN KEY (donation_id) REFERENCES donations(donation_id)
-    )
-");
-
-$db->runQuery("
-    CREATE TABLE `food_donation`.`extra_box_items` (
-        extra_item_id INT AUTO_INCREMENT PRIMARY KEY,
-        extra_item_name VARCHAR(255) NOT NULL,
-        price_per_unit FLOAT NOT NULL
-    )
-");
-
-$db->runQuery(
-    "INSERT INTO `food_donation`.`donation_items` (
-        `item_name`, `currency`, `cost`, `ready_meal_type`, `expiry`, `packaging_type`, `amount`, `donation_purpose`, `animal_type`, `weight`, `location`, `mealType`, `servings`, `ingredients`, `material_type`, `quantity`, `raw_material_weight`, `supplier`, `box_size`, `item_list`
-    ) VALUES
-    ('Canned Beans', 'USD', 2.50, 'Canned', '2024-12-31', 'Can', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-    ('Dog Food', 'USD', 15.00, NULL, NULL, NULL, 5.0, 'Animal Consumption', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-    ('Rice', 'USD', 1.20, NULL, NULL, NULL, NULL, NULL, 'Sheep', 95.0, 'Cairo', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-    ('Chicken Meal', 'EGP', 8.00, NULL, NULL, NULL,NULL, NULL, NULL, NULL, NULL, 'Non-Vegetarian', 4, 'Chicken, Pasta, Tomato Sauce', NULL, NULL, NULL, NULL, NULL, NULL),
-    ('Tomatoes', 'EGP', 50.00, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Tomatoes', 8, 10, 'Supplier E', NULL, NULL),
-    ('Standard Box', 'EGP', 150.00, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 50.5, 'Rice, Oil, Pasta, Sugar, Chicken');"
-);
-
-$db->runQuery(
-    "INSERT INTO `food_donation`.`extra_box_items` (
-        `extra_item_name`, `price_per_unit`
-    ) VALUES
-    ('Utensils Pack', 0.50),
-    ('Napkins', 0.10),
-    ('Plastic Cups', 0.20),
-    ('Water Bottles', 1.00),
-    ('Sanitizer', 2.50);"
-);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-$db->runQuery(
-    "CREATE TABLE food_donation.billable_donations (
-        id BIGINT NOT NULL AUTO_INCREMENT,
-        user_id BIGINT NOT NULL,
-        donation_type VARCHAR(50) NOT NULL,
-        amount DECIMAL(10, 2) NOT NULL,
-        animal_type ENUM('Lamb', 'Cow', 'Camel', 'Chicken') NULL DEFAULT NULL,
-        description TEXT NULL DEFAULT NULL,
-        PRIMARY KEY (id)
-    );"
-);
+$db->runQuery("DROP TABLE IF EXISTS `food_donation`.`donations`");
+$db->runQuery("DROP TABLE IF EXISTS `food_donation`.`donation_history`");
+$db->runQuery("DROP TABLE IF EXISTS `food_donation`.`donation_items`");
+$db->runQuery("DROP TABLE IF EXISTS `food_donation`.`extra_box_items`");
 
 
 $db->runQuery(
     "CREATE TABLE `food_donation`.`users` (
-    `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `id` int NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(50) NULL DEFAULT NULL,
     `email` VARCHAR(50) NULL DEFAULT NULL,
     `phone` VARCHAR(50) NULL,
@@ -140,7 +26,7 @@ $db->runQuery(
 
 $db->runQuery(
     "CREATE TABLE food_donation.employees (
-    id BIGINT PRIMARY KEY,
+    id int PRIMARY KEY,
     role VARCHAR(50) NOT NULL,
     department VARCHAR(50) NOT NULL,
     `email` VARCHAR(50) NOT NULL,
@@ -150,10 +36,10 @@ $db->runQuery(
 
 $db->runQuery(
     "CREATE TABLE `food_donation`.`appointments` (
-    `appointmentID` BIGINT NOT NULL AUTO_INCREMENT,
+    `appointmentID` int NOT NULL AUTO_INCREMENT,
     `status` VARCHAR(50) NOT NULL,
     `date` DATETIME NOT NULL,
-    `employeeAssignedID` BIGINT,
+    `employeeAssignedID` int,
     `location` VARCHAR(150) NOT NULL,
     PRIMARY KEY (`appointmentID`)
 );"
@@ -190,89 +76,145 @@ $db->runQuery(
 );
 
 
-$db->runQuery(
-    "CREATE TABLE `food_donation`.`donation_items` (
-        itemID INT AUTO_INCREMENT PRIMARY KEY,
-        itemName VARCHAR(255) NOT NULL,
-        itemWeight DECIMAL(10, 2),
-        israwmaterial TINYINT(1) DEFAULT 0,    -- Flag for raw materials (0 or 1)
-        isreadymeal TINYINT(1) DEFAULT 0,      -- Flag for ready meals (0 or 1)
-        ismeal TINYINT(1) DEFAULT 0,           -- Flag for meals (0 or 1)
-        ismoney TINYINT(1) DEFAULT 0,           -- Flag for money (0 or 1)
-        issacrifice TINYINT(1) DEFAULT 0,       -- Flag for sacrifice (0 or 1)
-        isbox TINYINT(1) DEFAULT 0              -- Flag for box (0 or 1)
-);");
-
-$db->runQuery(
-    "CREATE TABLE `food_donation`.`raw_materials_donation` (
-    itemID INT  PRIMARY KEY,
-    expiryDate DATE,
-    itemImage BLOB,
-    materialType VARCHAR(100),
-    quantity INT,
-    supplier VARCHAR(255)
-);");
-$db->runQuery(
-    "CREATE TABLE `food_donation`.`ready_meals_donation` (
-    itemID INT PRIMARY KEY,
-    expiryDate DATE,
-    itemImage BLOB,
-    mealType VARCHAR(100),
-    packagingType VARCHAR(255)
-);");
-$db->runQuery(
-    "CREATE TABLE `food_donation`.`meals_donation` (
-    itemID INT PRIMARY KEY,
-    expiryDate DATE,
-    itemImage BLOB,
-    mealType VARCHAR(100),
-    servings INT,
-    ingredients TEXT,       -- Array of ingredient names stored as serialized text (e.g., JSON)
-);");
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+$db->runQuery("
+    CREATE TABLE `food_donation`.`donation_items` (
+        item_id INT AUTO_INCREMENT PRIMARY KEY,
+        item_name VARCHAR(255) NOT NULL,
+        currency VARCHAR(255) NOT NULL,
+        cost FLOAT NOT NULL,
+        animal_type VARCHAR(255),
+        weight FLOAT,
+        mealType VARCHAR(255),
+        ingredients TEXT,
+        initial_box_size FLOAT,
+        initial_item_list TEXT
+    );
+");
+
+$db->runQuery("
+    CREATE TABLE `food_donation`.`donations` (
+        donation_id INT AUTO_INCREMENT PRIMARY KEY,
+        donation_date DATETIME NOT NULL,
+        user_id INT NOT NULL,
+        FOREIGN KEY donations(user_id) REFERENCES users(id)
+    );
+");
+
+$db->runQuery("
+    CREATE TABLE `food_donation`.`donation_history` (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        total_cost FLOAT NOT NULL,
+        description TEXT NOT NULL,
+        donation_id INT NOT NULL,
+        meal_id INT,
+        meal_cost FLOAT,
+        meal_quantity INT,
+        raw_materials_id INT,
+        raw_materials_cost FLOAT,
+        material_type VARCHAR(255),
+        material_quantity INT,
+        material_weight FLOAT,
+        material_supplier VARCHAR(255),
+        client_ready_meal_id INT,
+        client_ready_meal_cost FLOAT,
+        ready_meal_type VARCHAR(255),
+        ready_meal_expiration DATE,
+        ready_meal_quantity INT,
+        ready_meal_packaging_type VARCHAR(255),
+        money_id INT,
+        money_amount FLOAT,
+        money_donation_purpose VARCHAR(255),
+        sacrifice_id INT,
+        sacrifice_cost FLOAT,
+        box_id INT,
+        box_cost FLOAT,
+        final_box_size FLOAT,
+        final_item_list TEXT,
+        FOREIGN KEY donation_history(donation_id) REFERENCES donations(donation_id)
+    );
+");
+
+$db->runQuery("
+    CREATE TABLE `food_donation`.`extra_box_items` (
+        extra_item_id INT AUTO_INCREMENT PRIMARY KEY,
+        extra_item_name VARCHAR(255) NOT NULL,
+        price_per_unit FLOAT NOT NULL
+    );
+");
+
 $db->runQuery(
-    "INSERT INTO `food_donation`.`donation_items` (itemName, itemWeight, israwmaterial, isreadymeal, ismeal, ismoney, issacrifice, isbox) VALUES
-        ('Rice', 100.50, 1, 0, 0, 0, 0, 0),
-        ('Chicken Rice Bowl', 1.50, 0, 1, 0, 0, 0, 0),
-        ('Beef Stew', 1.80, 0, 0, 1, 0, 0, 0),
-        ('Cash Donation', 0, 0, 0, 0, 1, 0, 0),
-        ('Animal Sacrifice', 0, 0, 0, 0, 0, 1, 0),
-        ('Food Box', 10.00, 0, 0, 0, 0, 0, 1);"
+    "INSERT INTO `food_donation`.`donation_items` (
+        `item_name`, `currency`, `cost`, `animal_type`, `weight`, `mealType`, `ingredients`, `initial_box_size`, `initial_item_list`
+    ) VALUES
+    ('Meal', 'EGP', 150, NULL, NULL, 'Vegetarian', 'Beans, Water, Salt', NULL, NULL),
+    ('Raw Materials', 'EGP', 0, NULL, NULL, NULL, NULL, NULL, NULL),
+    ('Client Ready Meal', 'EGP', 0, NULL, NULL, NULL, NULL, NULL, NULL),
+    ('Money', 'EGP', 0, NULL, NULL, NULL, NULL, NULL, NULL),
+    ('Sheep Sacrifice', 'EGP', 150, 'Sheep', 90, NULL, NULL, NULL, NULL),
+    ('Cow Sacrifice', 'EGP', 350, 'Cow', 290, NULL, NULL, NULL, NULL),
+    ('Initial Box', 'EGP', 100, NULL, NULL, NULL, NULL, 10, 'Oil, Pasta, Rice, Sugar');"
 );
+
 $db->runQuery(
-    "INSERT INTO `food_donation`.`raw_materials_donation` (itemID, expiryDate, itemImage, materialType, quantity, supplier) VALUES
-        (1, '2025-12-01', NULL, 'Grain', 20, 'Global Rice Co.'),
-        (1, '2024-10-20', NULL, 'Grain', 40, 'Flour Mills Ltd.'),
-        (1, '2026-06-15', NULL, 'Canned Goods', 100, 'BeanSuppliers Inc.'),
-        (1, '2025-02-10', NULL, 'Oil', 15, 'Olive Harvesters LLC'),
-        (1, '2024-08-18', NULL, 'Grain', 50, 'PastaWorks Ltd.');"
-);
-$db->runQuery(
-    "INSERT INTO `food_donation`.`ready_meals_donation` (itemID, expiryDate, itemImage, mealType, packagingType) VALUES
-        (2, '2025-06-20', NULL, 'Chicken Meal', 'Plastic Bowl'),
-        (2, '2024-10-15', NULL, 'Vegetarian', 'Foil Wrap'),
-        (2, '2026-06-30', NULL, 'Beef Meal', 'Plastic Container'),
-        (2, '2025-02-01', NULL, 'Seafood', 'Sealed Wrapper'),
-        (2, '2024-12-12', NULL, 'Fruit', 'Plastic Bowl');"
-);
-$db->runQuery(
-    "INSERT INTO `food_donation`.`meals_donation` (itemID, expiryDate, itemImage, mealType, servings, ingredients) VALUES
-        (3, '2025-04-15', NULL, 'Beef Meal', 4, '[\"Beef\", \"Potatoes\", \"Carrots\"]'),
-        (3, '2024-11-01', NULL, 'Vegetarian', 3, '[\"Broccoli\", \"Bell Peppers\", \"Carrots\"]'),
-        (3, '2025-08-10', NULL, 'Chicken Meal', 2, '[\"Chicken\", \"Rice\", \"Sauce\"]'),
-        (3, '2024-07-20', NULL, 'Seafood', 1, '[\"Fish\", \"Lettuce\", \"Tomato\"]'),
-        (3, '2025-01-05', NULL, 'Fruit', 1, '[\"Apple\", \"Banana\", \"Grapes\"]');"
+    "INSERT INTO `food_donation`.`donations` (
+        `donation_date`, `user_id`
+    ) VALUES
+    ('2023-10-01 15:00:00', 1),
+    ('2023-10-02 15:00:00', 2),
+    ('2023-10-03 15:00:00', 3),
+    ('2023-10-04 15:00:00', 4),
+    ('2023-10-05 15:00:00', 5);"
 );
 
 $db->runQuery(
-    "INSERT INTO `food_donation`.`users` (`id`, `name`, `email`, `phone`, `password`) VALUES
-    (1, 'Bertha', 'bertha.wilkinson@example.com', '1234567890', 'b95925ed0aa3897a613c7534ae7abeef'),
-    (2, 'Demarcus', 'joy.moen@example.net', '0987654321', '5dbd4fbe4edca5a5dd465968232fbf9e'),
-    (3, 'Kyla', 'moore.osbaldo@example.com', '1112233445', 'b98dba1167a8c475d603a51ab9935315'),
-    (4, 'Lacey', 'zdaniel@example.org', '9988776655', 'e5214e7ac6fce4abf561f03c8f30587a'),
-    (5, '7amada', '7amada@belganzabeel.com', '1231231234', '25d55ad283aa400af464c76d713c07ad'),
-    (6, 'Pearl', 'rjacobi@example.org', '5556667777', 'c1191c08cb4ae00632c4cf3444979bbd');"
-);*/
+    "INSERT INTO `food_donation`.`donation_history` (
+        `total_cost`, `description`, `donation_id`, `meal_id`, `meal_cost`, `meal_quantity`, `raw_materials_id`, `raw_materials_cost`, `material_type`, `material_quantity`, `material_weight`, `material_supplier`, `client_ready_meal_id`, `client_ready_meal_cost`, `ready_meal_type`, `ready_meal_expiration`, `ready_meal_quantity`, `ready_meal_packaging_type`, `money_id`, `money_amount`, `money_donation_purpose`, `sacrifice_id`, `sacrifice_cost`, `box_id`, `box_cost`, `final_box_size`, `final_item_list`
+    ) VALUES
+    (50.00, 'Donation for meals and raw materials', 1, 1, 10.00, 5, 2, 20.00, 'Grains', 10, 5.0, 'Supplier A', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+    (100.00, 'Donation for ready meals', 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, 50.00, 'Frozen', '2024-12-31', 10, 'Plastic Wrap', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+    (75.00, 'Monetary donation for a cause', 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 4, 75.00, 'Education', NULL, NULL, NULL, NULL, NULL, NULL),
+    (30.00, 'Donation for animal sacrifice', 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 5, 30.00, NULL, NULL, NULL, NULL),
+    (60.00, 'Donation for a custom box', 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 7, 60.00, 15.0, 'Oil, Pasta, Rice, Sugar');"
+);
+
+$db->runQuery(
+    "INSERT INTO `food_donation`.`extra_box_items` (
+        `extra_item_name`, `price_per_unit`
+    ) VALUES
+    ('Rice', 50),
+    ('Oil', 10),
+    ('Pasta', 20);"
+);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ?>
