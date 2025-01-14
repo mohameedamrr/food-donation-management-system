@@ -30,7 +30,7 @@ $db->runQuery(
     role VARCHAR(50) NOT NULL,
     department VARCHAR(50) NOT NULL,
     salary FLOAT NOT NULL,
-    FOREIGN KEY employees(id) REFERENCES users (id)
+    FOREIGN KEY employees(id) REFERENCES users (id) ON DELETE CASCADE
 );"
 );
 
@@ -111,7 +111,7 @@ $db->runQuery("
         donation_id INT AUTO_INCREMENT PRIMARY KEY,
         donation_date DATETIME NOT NULL,
         user_id INT NOT NULL,
-        FOREIGN KEY donations(user_id) REFERENCES users(id)
+        FOREIGN KEY donations(user_id) REFERENCES users(id) ON DELETE CASCADE
     );
 ");
 
@@ -145,7 +145,7 @@ $db->runQuery("
         box_cost FLOAT,
         final_box_size FLOAT,
         final_item_list TEXT,
-        FOREIGN KEY donation_history(donation_id) REFERENCES donations(donation_id)
+        FOREIGN KEY donation_history(donation_id) REFERENCES donations(donation_id) ON DELETE CASCADE
     );
 ");
 

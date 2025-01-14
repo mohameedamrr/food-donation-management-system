@@ -14,7 +14,7 @@ spl_autoload_register(function ($class_name) {
         }
     }
 });
-
+require_once 'ProxyDP/DatabaseManagerProxy.php';
 class Admin extends UserEntity implements ISubject, IUpdateObject, IStoreObject, IDeleteObject {
     private array $tasksList = []; // array of tasks
     private array $observersList = []; // array of IObserver objects
@@ -88,7 +88,7 @@ class Admin extends UserEntity implements ISubject, IUpdateObject, IStoreObject,
     public function removeObserver(IObserver $observer): void {
         foreach ($this->observersList as $key => $existingObserver) {
             if ($existingObserver === $observer) {
-                unset($this->observerList[$key]);
+                unset($this->observersList[$key]);
                 $this->observersList = array_values($this->observersList);
                 return;
             }
@@ -107,17 +107,95 @@ class Admin extends UserEntity implements ISubject, IUpdateObject, IStoreObject,
 
     //get all employees
 
-    public static function updateObject(array $data){
+    public static function storeObject(array $data) {
+        $proxy = new DatabaseManagerProxy('admin');
+        if (empty($data['name']) || empty($data['email']) || empty($data['phone']) || empty($data['password'])) {
+            throw new Exception("All fields (name, email, phone, password) are required.");
+        }
+        try {
+            // Insert into `users` table
+            $queryUsers = "INSERT INTO users (name, email, phone, password) VALUES 
+                      ('{$data['name']}', '{$data['email']}', '{$data['phone']}', '{$data['password']}')";
+            if (!$proxy->runQuery($queryUsers)) {
+                throw new Exception("Failed to store admin object in users table.");
+            }
+            // Get the last inserted ID
+            $id = $proxy->getLastInsertId();
+            // Insert into `employees` table
+            $queryEmployees = "INSERT INTO employees (id, role, department) VALUES 
+                          ($id, 'Manager', 'Administration')";
+            if (!$proxy->runQuery($queryEmployees)) {
+                throw new Exception("Failed to store admin object in employees table.");
+            }
+            return new self($id, $data['name'], $data['email'], $data['phone'], $data['password']);
+        } catch (Exception $e) {
 
+            throw $e;
+        }
     }
 
-    public static function storeObject(array $data){
+    public static function updateObject(array $data) {
+        $proxy = new DatabaseManagerProxy('admin');
 
+
+        try {
+            // Update `users` table
+            $queryUsers = "UPDATE users SET 
+                       name = '{$data['name']}', 
+                       email = '{$data['email']}', 
+                       phone = '{$data['phone']}' 
+                       WHERE id = {$data['id']}";
+            if (!$proxy->runQuery($queryUsers)) {
+                throw new Exception("Failed to update admin object in users table.");
+            }
+
+            // Update `employees` table
+            $queryEmployees = "UPDATE employees SET 
+                           role = 'Manager', 
+                           department = 'Administration' 
+                           WHERE id = {$data['id']}";
+            if (!$proxy->runQuery($queryEmployees)) {
+                throw new Exception("Failed to update admin object in employees table.");
+            }
+
+
+            return true;
+        } catch (Exception $e) {
+
+            throw $e;
+        }
     }
 
-    public static function deleteObject($id){
-        
+    public static function deleteObject($id) {
+        $proxy = new DatabaseManagerProxy('admin');
+
+
+        try {
+            // Delete from `employees` table
+            $queryEmployees = "DELETE FROM employees WHERE id = $id";
+            if (!$proxy->runQuery($queryEmployees)) {
+                throw new Exception("Failed to delete admin object in employees table.");
+            }
+
+            // Delete from `users` table
+            $queryUsers = "DELETE FROM users WHERE id = $id";
+            if (!$proxy->runQuery($queryUsers)) {
+                throw new Exception("Failed to delete admin object in users table.");
+            }
+
+
+            return true;
+        } catch (Exception $e) {
+
+            throw $e;
+        }
     }
+
+
+    public function getId() {
+        return $this->id;
+    }
+
 
 
 }
