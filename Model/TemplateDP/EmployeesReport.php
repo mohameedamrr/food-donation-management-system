@@ -36,18 +36,33 @@ class EmployeesReport extends ReportTemplate {
     protected function generateBody() {
         $body = "Employee Details:\n";
         foreach ($this->employees as $employee) {
-            $body .= "- Name: " . $employee['name'] . ", Role: " . $employee['role'] . ", Salary: $" . "20000" . ", Performance: " . 'Excellent' . "\n";
+            $body .= "- Name: " . $employee['name'] . ", Role: " . $employee['role'] . ", Salary: $" . "{$employee['salary']}" . "\n";
         }
         $body .= "-------------------\n";
         $body .= "Total Employees: " . $this->calculateTotalRecords() . "\n";
-        //$body .= "Highest Salary: $" . $this->getHighestSalary() . "\n";
-        //$body .= "Average Salary: $" . number_format($this->calculateAverageSalary(), 2) . "\n";
+        $highestSalaryDetails = $this->getHighestSalary();
+        $body .= "Highest Salary: $" . $highestSalaryDetails['salary'] . " (Employee: " . $highestSalaryDetails['name'] . ", Role: " . $highestSalaryDetails['role'] . ")\n";        
+        $body .= "Average Salary: $" . number_format($this->calculateAverageSalary(), 2) . "\n";
         //$body .= "Top Performer: " . $this->getTopPerformer() . "\n";
         return $body;
     }
 
     private function getHighestSalary() {
-        return max(array_column($this->employees, 'salary'));
+        $highestSalary = 0;
+        $highestSalaryEmployee = [];
+
+        foreach ($this->employees as $employee) {
+            if ($employee['salary'] > $highestSalary) {
+                $highestSalary = $employee['salary'];
+                $highestSalaryEmployee = [
+                    'name' => $employee['name'],
+                    'role' => $employee['role'],
+                    'salary' => $employee['salary']
+                ];
+            }
+        }
+
+        return $highestSalaryEmployee;
     }
 
     private function calculateAverageSalary() {
