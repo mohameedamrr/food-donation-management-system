@@ -102,9 +102,9 @@ class Admin extends UserEntity implements ISubject, IUpdateObject, IStoreObject,
         return new Employee($userData["email"], $loginMethod);
     }
 
-    public function createUser(array $userData) {
-        return BasicDonator::storeObject($userData);
-    }
+    // public function createUser(array $userData) {
+    //     return BasicDonator::storeObject($userData);
+    // }
 
     //***hnsebha kda */
     public function deleteEmployee(int $employeeID): void {
