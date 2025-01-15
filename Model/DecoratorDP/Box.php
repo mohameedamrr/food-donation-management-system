@@ -14,7 +14,7 @@ abstract class Box extends DonationItem {
     protected $totalCost;
 
 
-    public function __construct($item_id, $item_name, $currency, $cost, $initialBoxSize, $initialItemList){
+    public function __construct($item_id, $item_name, $currency, $cost, $initialBoxSize, $initialItemList) {
         $this->initialBoxSize = $initialBoxSize;
         $this->initialItemList = $initialItemList;
         parent::__construct($item_id, $item_name, $currency, $cost);
@@ -25,57 +25,47 @@ abstract class Box extends DonationItem {
     abstract public function calculateCost(): float;
 
 
-    public function getInitialBoxSize()
-    {
+    public function getInitialBoxSize() {
         return $this->initialBoxSize;
     }
 
-    public function setInitialBoxSize($initialBoxSize)
-    {
+    public function setInitialBoxSize($initialBoxSize) {
         $this->initialBoxSize = $initialBoxSize;
 
     }
 
-    public function getInitialItemList()
-    {
+    public function getInitialItemList() {
         return $this->initialItemList;
     }
 
-    public function setInitialItemList($initialItemList)
-    {
+    public function setInitialItemList($initialItemList) {
         $this->initialItemList = $initialItemList;
 
     }
 
-    public function getFinalBoxSize()
-    {
+    public function getFinalBoxSize() {
         return $this->finalBoxSize;
     }
 
-    public function setFinalBoxSize($finalBoxSize)
-    {
+    public function setFinalBoxSize($finalBoxSize) {
         $this->finalBoxSize = $finalBoxSize;
 
     }
 
-    public function getFinalItemList()
-    {
+    public function getFinalItemList() {
         return $this->finalItemList;
     }
 
-    public function setFinalItemList($finalItemList)
-    {
+    public function setFinalItemList($finalItemList) {
         $this->finalItemList = $finalItemList;
 
     }
 
-    public function getTotalCost()
-    {
+    public function getTotalCost() {
         return $this->totalCost;
     }
 
-    public function setTotalCost($totalCost)
-    {
+    public function setTotalCost($totalCost) {
         $this->totalCost = $totalCost;
 
     }

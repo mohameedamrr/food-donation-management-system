@@ -3,9 +3,10 @@
 class BoxAdditionalOil extends BoxDecorator implements IUpdateObject{
 
     private $numBottles;
+
     public function __construct(Box $box, $numBottles) {
         $donorProxy = new DatabaseManagerProxy('donor');
-        $row = $donorProxy->run_select_query("SELECT * FROM extra_box_items WHERE extra_item_name = 'Oil'")->fetch_assoc(); // Should succeed
+        $row = $donorProxy->run_select_query("SELECT * FROM extra_box_items WHERE extra_item_name = 'Oil'")->fetch_assoc();
         if(isset($row)) {
             $this->numBottles = $numBottles;
             parent::__construct($box, $row["price_per_unit"]);
@@ -48,7 +49,6 @@ class BoxAdditionalOil extends BoxDecorator implements IUpdateObject{
         }
         $adminProxy = new DatabaseManagerProxy('admin');
         $adminProxy->runQuery("UPDATE extra_box_items SET " . implode(", ", $updates) . " WHERE extra_item_name = 'Oil'");
-
     }
 }
 ?>

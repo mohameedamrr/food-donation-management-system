@@ -3,9 +3,10 @@
 class BoxAdditionalRice extends BoxDecorator implements IUpdateObject{
 
     private $weight;
+
     public function __construct(Box $box, $weight) {
         $donorProxy = new DatabaseManagerProxy('donor');
-        $row = $donorProxy->run_select_query("SELECT * FROM extra_box_items WHERE extra_item_name = 'Rice'")->fetch_assoc(); // Should succeed
+        $row = $donorProxy->run_select_query("SELECT * FROM extra_box_items WHERE extra_item_name = 'Rice'")->fetch_assoc();
         if(isset($row)) {
             $this->weight = $weight;
             parent::__construct($box, $row["price_per_unit"]);
@@ -48,7 +49,6 @@ class BoxAdditionalRice extends BoxDecorator implements IUpdateObject{
         }
         $adminProxy = new DatabaseManagerProxy('admin');
         $adminProxy->runQuery("UPDATE extra_box_items SET " . implode(", ", $updates) . " WHERE extra_item_name = 'Rice'");
-
     }
 }
 ?>

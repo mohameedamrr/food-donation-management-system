@@ -7,15 +7,27 @@ require_once 'BoxAdditionalOil.php';
 
 class BasicBox extends Box implements IDeleteObject, IReadObject, IStoreObject, IUpdateObject {
 
-    public function __construct($item_id){
+    public function __construct($item_id) {
         $donorProxy = new DatabaseManagerProxy('donor');
-        $row = $donorProxy->run_select_query("SELECT * FROM donation_items WHERE item_id = $item_id")->fetch_assoc(); // Should succeed
+        $row = $donorProxy->run_select_query("SELECT * FROM donation_items WHERE item_id = $item_id")->fetch_assoc();
         if(isset($row)) {
             parent::__construct($row['item_id'],$row['item_name'],$row['currency'],$row['cost'], $row['initial_box_size'], explode(", ", $row['initial_item_list']));
         }
     }
 
-    public static function readObject($item_id){
+    public function addItem($item): array {
+        $this->finalItemList = $this->initialItemList;
+        echo $this->finalItemList;
+        $this->finalBoxSize = $this->initialBoxSize;
+        return $this->finalItemList;
+    }
+
+    public function calculateCost(): float {
+        $this->totalCost = $this->cost;
+        return $this->totalCost;
+    }
+
+    public static function readObject($item_id) {
         return new BasicBox($item_id);
     }
 
@@ -73,18 +85,6 @@ class BasicBox extends Box implements IDeleteObject, IReadObject, IStoreObject, 
     public static function deleteObject($id) {
         $adminProxy = new DatabaseManagerProxy('admin');
         $adminProxy->runQuery("DELETE FROM donation_items WHERE item_id = $id");
-    }
-
-    public function addItem($item): array {
-        $this->finalItemList = $this->initialItemList;
-        echo $this->finalItemList;
-        $this->finalBoxSize = $this->initialBoxSize;
-        return $this->finalItemList;
-    }
-
-    public function calculateCost(): float {
-        $this->totalCost = $this->cost;
-        return $this->totalCost;
     }
 }
 // $basicBox = new BasicBox(7);

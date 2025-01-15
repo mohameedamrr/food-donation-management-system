@@ -14,15 +14,20 @@ require_once 'DonationItemChildren/ClientReadyMeal.php';
 require_once 'DecoratorDP/BasicBox.php';
 
 class DonationDetails implements IStoreObject,IReadObject,IDeleteObject {
+
     private $id;
+
     private $totalCost;
+
     private $description;
+
     private $donationID;
+
     private $donationItems;
 
-    public function __construct($id){
+    public function __construct($id) {
         $donorProxy = new DatabaseManagerProxy('donor');
-        $row = $donorProxy->run_select_query("SELECT * FROM donation_history WHERE id = $id")->fetch_assoc(); // Should succeed
+        $row = $donorProxy->run_select_query("SELECT * FROM donation_history WHERE id = $id")->fetch_assoc();
         if(isset($row)) {
             $this->id = $row['id'];
             $this->totalCost = $row['total_cost'];
@@ -78,58 +83,48 @@ class DonationDetails implements IStoreObject,IReadObject,IDeleteObject {
         }
     }
 
-    public function getId()
-    {
+    public function getId() {
         return $this->id;
     }
 
-    public function setId($id)
-    {
+    public function setId($id) {
         $this->id = $id;
     }
 
-    public function getTotalCost()
-    {
+    public function getTotalCost() {
         return $this->totalCost;
     }
 
-    public function setTotalCost($totalCost)
-    {
+    public function setTotalCost($totalCost) {
         $this->totalCost = $totalCost;
     }
 
-    public function getDescription()
-    {
+    public function getDescription() {
         return $this->description;
     }
 
-    public function setDescription($description)
-    {
+    public function setDescription($description) {
         $this->description = $description;
 
     }
 
-    public function getDonationID()
-    {
+    public function getDonationID() {
         return $this->donationID;
     }
 
-    public function setDonationID($donationID)
-    {
+    public function setDonationID($donationID) {
         $this->donationID = $donationID;
     }
 
-    public function getDonationItems()
-    {
+    public function getDonationItems() {
         return $this->donationItems;
     }
 
-    public function setDonationItems($donationItems)
-    {
+    public function setDonationItems($donationItems) {
         $this->donationItems = $donationItems;
     }
 
-    public static function readObject($id){
+    public static function readObject($id) {
         return new DonationDetails($id);
     }
 
@@ -147,8 +142,4 @@ class DonationDetails implements IStoreObject,IReadObject,IDeleteObject {
         $adminProxy->runQuery("DELETE FROM donation_history WHERE id = $id");
     }
 }
-
-
-DonationDetails::deleteObject(13);
-echo "DonationDetails with ID {11} has been DELETED.\n";
 ?>

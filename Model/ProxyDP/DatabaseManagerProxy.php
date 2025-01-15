@@ -139,12 +139,12 @@ function displayTestResult(string $testName, bool $passed): void {
 }
 
 // Test cases
-try {
+// try {
     // Test 1: Admin can execute any query
-    $adminProxy = new DatabaseManagerProxy('admin');
-    $adminProxy->runQuery("SELECT * FROM users"); // Should succeed
-    displayTestResult("Admin SELECT query on 'users' table", true);
-    echo "\n";
+    // $adminProxy = new DatabaseManagerProxy('admin');
+    // $adminProxy->runQuery("SELECT * FROM users"); // Should succeed
+    // displayTestResult("Admin SELECT query on 'users' table", true);
+    // echo "\n";
 
     // $adminProxy->runQuery("INSERT INTO users (name, email) VALUES ('Test Etsh32', 'etshTest32@example.com')"); // Should succeed
     // displayTestResult("Admin INSERT query on 'users' table", true);
@@ -217,7 +217,7 @@ try {
     //     displayTestResult("Employee access to last inserted ID", true);
     // }
 
-} catch (Exception $e) {
-    echo "Test failed with exception: " . $e->getMessage() . "\n";
-}
+// } catch (Exception $e) {
+//     echo "Test failed with exception: " . $e->getMessage() . "\n";
+// }
 ?>
