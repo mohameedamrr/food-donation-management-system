@@ -63,13 +63,14 @@ class Admin extends UserEntity implements ISubject, IUpdateObject, IStoreObject,
         // return Employee::storeObject($employeeData);
 
         $db = new DatabaseManagerProxy('admin'); 
-    
+
+        $hashedPassword = md5($employeeData['password']);
         // Extract user-specific data
         $userData = [
             'name' => $employeeData['name'],
             'email' => $employeeData['email'],
             'phone' => $employeeData['phone'],
-            'password' => $employeeData['password'],
+            'password' => $hashedPassword,
         ];
     
         // Insert into the users table

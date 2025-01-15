@@ -28,6 +28,8 @@ class BasicDonator extends UserEntity implements ICRUD{
     }
 
     public static function storeObject(array $data) {
+        $hashedPassword = md5($data['password']);
+        $data['password'] = $hashedPassword;
         $columns = implode(", ", array_map(fn($key) => "`$key`", array_keys($data)));
         $placeholders = implode(", ", array_map(fn($value) => is_numeric($value) ? $value : "'" . addslashes($value) . "'", array_values($data)));
         $sql = "INSERT INTO `food_donation`.`users` ($columns) VALUES ($placeholders)";
