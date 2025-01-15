@@ -15,38 +15,41 @@ spl_autoload_register(function ($class_name) {
     }
 });
 
-class BasicDonator extends UserEntity implements ICRUD{
-    private $donationHistory; // array of Donate
+class BasicDonator extends UserEntity implements IStoreObject, IUpdateObject, IDeleteObject{
+    private $donationHistory; // array of Donation details
+    private $location;
 
-    public function __construct($id) {
+    public function __construct($id, $loginMethod = new NormalMethod()) {
         $sql = "SELECT * FROM `food_donation`.`users` WHERE id = $id";
-        $db = DatabaseManager::getInstance();
+        $db = new DatabaseManagerProxy('donor');
         $row = $db->run_select_query($sql)->fetch_assoc();
         if(isset($row)) {
-            parent::__construct($row["id"], $row["name"], $row["email"], $row["phone"], $row["password"], new NormalMethod());
+            parent::__construct($row["id"], $row["name"], $row["email"], $row["phone"], $row["password"], $loginMethod);
         }
     }
 
-    public static function storeObject(array $data) {
+    public static function storeObject(array $data, $loginMethod = new NormalMethod()) {
+        $hashedPassword = md5($data['password']);
+        $data['password'] = $hashedPassword;
         $columns = implode(", ", array_map(fn($key) => "`$key`", array_keys($data)));
         $placeholders = implode(", ", array_map(fn($value) => is_numeric($value) ? $value : "'" . addslashes($value) . "'", array_values($data)));
         $sql = "INSERT INTO `food_donation`.`users` ($columns) VALUES ($placeholders)";
-        $db = DatabaseManager::getInstance();
+        $db = new DatabaseManagerProxy('donor');
         $db->runQuery($sql);
         $lastInsertedId = $db->getLastInsertId();
-        return new BasicDonator($lastInsertedId, null);
+        return new BasicDonator($lastInsertedId, $loginMethod);
     }
 
-    public static function readObject($id) {
-        // $sql = "SELECT * FROM `food_donation`.`users` WHERE id = $id";
-        // $db = DatabaseManager::getInstance();
-        // $row = $db->run_select_query($sql)->fetch_assoc();
-        // if(isset($row)) {
-        //     return new BasicDonator($row["id"], null);
-        // }
-        // return null;
-        return new BasicDonator($id, null);
-    }
+    // public static function readObject($id) {
+    //     // $sql = "SELECT * FROM `food_donation`.`users` WHERE id = $id";
+    //     // $db = DatabaseManager::getInstance();
+    //     // $row = $db->run_select_query($sql)->fetch_assoc();
+    //     // if(isset($row)) {
+    //     //     return new BasicDonator($row["id"], null);
+    //     // }
+    //     // return null;
+    //     return new BasicDonator($id, null);
+    // }
 
     public function updateObject(array $data) {
         $updates = [];
@@ -56,13 +59,14 @@ class BasicDonator extends UserEntity implements ICRUD{
             $updates[] = "`$prop` = $value";
         }
         $sql = "UPDATE `food_donation`.`users` SET " . implode(", ", $updates) . " WHERE id = $this->id";
-        DatabaseManager::getInstance()->runQuery($sql);
+        $db = new DatabaseManagerProxy('donor');
+        $db->runQuery($sql);
     }
 
 
     public static function deleteObject($id) {
         $sql = "DELETE FROM `food_donation`.`users` WHERE id = $id";
-        $db = DatabaseManager::getInstance();
+        $db = new DatabaseManagerProxy('donor');
         $db->runQuery($sql);
     }
 
@@ -77,6 +81,39 @@ class BasicDonator extends UserEntity implements ICRUD{
 
     public function setDonationHistory($donationHistory): void {
         $this->donationHistory = $donationHistory;
+    }
+
+    //create iterator
+
+    public function createAppointment(string $location, string $date): bool {
+        // Prepare the data for the new appointment
+        $data = [
+            'status' => 'pending', // Default status
+            'date' => $date,
+            'location' => $location,
+            'employeeAssignedID' => null, // No employee assigned initially
+        ];
+
+        // Insert the appointment into the database
+        try {
+            Appointment::storeObject($data);
+            return true; // Success
+        } catch (Exception $e) {
+            // Log the error or handle it as needed
+            error_log("Failed to create appointment: " . $e->getMessage());
+            return false; // Failure
+        }
+    }
+
+    public function deleteAppointment(int $appointmentID): bool {
+        try {
+            Appointment::deleteObject($appointmentID);
+            return true; // Success
+        } catch (Exception $e) {
+            // Log the error or handle it as needed
+            error_log("Failed to delete appointment: " . $e->getMessage());
+            return false; // Failure
+        }
     }
 }
 ?>
