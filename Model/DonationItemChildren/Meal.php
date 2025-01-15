@@ -140,6 +140,7 @@ class Meal extends DonationItem implements IStoreObject,IReadObject,IDeleteObjec
 //     'currency'    => 'USD',
 //     'cost'        => 5,
 //     'mealType'    => 'Vegan',
+//     'expiration'  => '2025-12-1',
 //     'ingredients' => 'Tomatoes, Lettuce, Cucumber',
 // ];
 // $newMeal = Meal::storeObject($data);

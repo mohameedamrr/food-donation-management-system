@@ -31,7 +31,7 @@ class Appointment {
         $row = $db->run_select_query($sql)->fetch_assoc();
         if(isset($row)) {
             $this->appointmentID = $row["appointmentID"];
-            $this->userId = $row["userId"];
+            $this->userId = $row["userID"];
             $this->note = $row["note"];
             $this->status = $row["status"];
             $this->date = $row["date"];

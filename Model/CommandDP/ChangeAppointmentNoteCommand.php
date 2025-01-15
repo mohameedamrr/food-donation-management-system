@@ -16,10 +16,10 @@ class ChangeAppointmentNoteCommand implements ICommand {
         $this->employee = new Employee($row2['email']);
     }
     public function execute(): void{
-        $this->employee->changeAppointmentNote($this->appointment, $this->newNote);
+        $this->employee->addNoteToAppointment($this->appointment, $this->newNote);
     }
     public function undo(): void{
-        $this->employee->changeAppointmentNote($this->appointment, $this->previousNote);
+        $this->employee->addNoteToAppointment($this->appointment, $this->previousNote);
     }
  
     public function getAppointment()

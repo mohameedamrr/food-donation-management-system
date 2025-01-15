@@ -107,7 +107,6 @@ class DonationDetails implements IStoreObject,IReadObject,IDeleteObject, IUpdate
 
     public function setDescription($description) {
         $this->description = $description;
-
     }
 
     public function getDonationID() {
@@ -143,8 +142,8 @@ class DonationDetails implements IStoreObject,IReadObject,IDeleteObject, IUpdate
         $adminProxy = new DatabaseManagerProxy('admin');
         $adminProxy->runQuery("DELETE FROM donation_history WHERE id = $id");
     }
-    public function updateObject(array $data) {
 
+    public function updateObject(array $data) {
         $updates = [];
         foreach ($data as $prop => $value) {
             $this->{$prop} = $value;
