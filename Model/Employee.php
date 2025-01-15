@@ -19,6 +19,7 @@ class Employee extends UserEntity implements IObserver, IUpdateObject {
     private $role;
     private array $appointmentList = []; // array of Appointment objects
     private $department;
+    private $salary;
     private $admin; // ISubject
 
     public function __construct($email) {
@@ -33,6 +34,7 @@ class Employee extends UserEntity implements IObserver, IUpdateObject {
         if(isset($row2)) {
             $this->role = $row2["role"];
             $this->department = $row2["department"];
+            $this->salary = $row2["salary"];
         }
 
         $sql3 = "SELECT * FROM appointments WHERE employeeAssignedID = $this->id";
@@ -44,12 +46,8 @@ class Employee extends UserEntity implements IObserver, IUpdateObject {
 
     ///// pass object
     public function changeAppointmentStatus(Appointment $appointment, string $status): void {
-        echo "{$appointment->getAppointmentID()}";
         for($i=0; $i <= count($this->appointmentList); $i++) {
-            echo "<br>";
-            echo "{$this->appointmentList[$i]->getAppointmentID()}";
             if ($this->appointmentList[$i]->getAppointmentID() == $appointment->getAppointmentID()) {
-                echo "founndddddd";
                 $this->appointmentList[$i]->updateStatus($status);
                 return;
             }
@@ -130,7 +128,17 @@ class Employee extends UserEntity implements IObserver, IUpdateObject {
 
     public function setRole($role) {
         $this->role = $role;
-        $sql = "UPDATE employees SET role = '$this->role' WHERE id = $this->id";
+        $sql = "UPDATE employees SET `role` = '$this->role' WHERE id = $this->id";
+        DatabaseManager::getInstance()->runQuery($sql);
+    }
+
+    public function getSalary() {
+        return $this->salary;
+    }
+
+    public function setSalary($salary) {
+        $this->salary = $salary;
+        $sql = "UPDATE employees SET `salary` = '$this->salary' WHERE id = $this->id";
         DatabaseManager::getInstance()->runQuery($sql);
     }
 

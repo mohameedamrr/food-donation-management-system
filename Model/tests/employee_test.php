@@ -34,6 +34,7 @@ echo "Employee ID: " . $employee->getId() . "<br>";
 echo "Employee Name: " . $employee->getName() . "<br>";
 echo "Employee Email: " . $employee->getEmail() . "<br>";
 echo "Employee Phone: " . $employee->getPhone() . "<br>";
+echo "Employee salary: " . $employee->getSalary() . "<br>";
 
 // Test setters and getters
 echo "<br>Testing setters and getters...<br>";
@@ -49,8 +50,10 @@ $employee->updateObject([
     'role' => 'Senior Tester',
     'department' => 'Quality Assurance'
 ]);
+$employee->setSalary(200000);
 echo "Updated Employee Role: " . $employee->getRole() . "<br>";
 echo "Updated Employee Department: " . $employee->getDepartment() . "<br>";
+echo "Updated Employee Salary: " . $employee->getSalary() . "<br>";
 
 // Assign the Admin to the Employee (for Observer pattern setup)
 echo "<br>Assigning Admin to Employee...<br>";
