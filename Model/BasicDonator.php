@@ -15,25 +15,66 @@ spl_autoload_register(function ($class_name) {
     }
 });
 
-class BasicDonator extends UserEntity implements IStoreObject, IUpdateObject, IDeleteObject{
+class BasicDonator extends UserEntity implements IStoreObject, IUpdateObject, IDeleteObject, IBasicDonatorAggregate {
     private $donationHistory; // array of Donation details
     private $location;
+    private $appointments;
 
-    public function __construct($id, $loginMethod = new NormalMethod()) {
-        $sql = "SELECT * FROM `food_donation`.`users` WHERE id = $id";
+    public function __construct($email, $loginMethod = new NormalMethod()) {
+        $sql = "SELECT * FROM users WHERE email = '$email'";
         $db = new DatabaseManagerProxy('donor');
         $row = $db->run_select_query($sql)->fetch_assoc();
         if(isset($row)) {
             parent::__construct($row["id"], $row["name"], $row["email"], $row["phone"], $row["password"], $loginMethod);
+            $this->donationHistory = $this->fetchDonationHistory($row["id"]);
+            $this->appointments = $this->fetchAppointments($row["id"]);
         }
     }
 
+    private function fetchDonationHistory($donorId): array {
+        $donationHistory = [];
+
+
+        $sql = "SELECT donation_id FROM donations WHERE user_id = $donorId";
+        $db = new DatabaseManagerProxy('donor');
+        $donationIds = $db->run_select_query($sql)->fetch_all(MYSQLI_ASSOC);
+
+
+        foreach ($donationIds as $donationIdRow) {
+            $donationId = $donationIdRow['donation_id'];
+            $sql = "SELECT * FROM donation_history WHERE donation_id = $donationId";
+            $donationDetailsRows = $db->run_select_query($sql)->fetch_all(MYSQLI_ASSOC);
+
+
+            foreach ($donationDetailsRows as $donationDetailsRow) {
+                $donationDetails = new DonationDetails($donationDetailsRow['id']);
+                $donationHistory[] = $donationDetails;
+            }
+        }
+
+        return $donationHistory;
+    }
+
+    private function fetchAppointments($userId): array {
+        $appointments = [];
+
+        $sql = "SELECT * FROM appointments WHERE userID = $userId";
+        $db = new DatabaseManagerProxy('donor');
+        $appointmentRows = $db->run_select_query($sql)->fetch_all(MYSQLI_ASSOC);
+
+        foreach ($appointmentRows as $appointmentRow) {
+            $appointment = new Appointment($appointmentRow['appointmentID']);
+            $appointments[] = $appointment;
+        }
+
+        return $appointments;
+    }
     public static function storeObject(array $data, $loginMethod = new NormalMethod()) {
         $hashedPassword = md5($data['password']);
         $data['password'] = $hashedPassword;
         $columns = implode(", ", array_map(fn($key) => "`$key`", array_keys($data)));
         $placeholders = implode(", ", array_map(fn($value) => is_numeric($value) ? $value : "'" . addslashes($value) . "'", array_values($data)));
-        $sql = "INSERT INTO `food_donation`.`users` ($columns) VALUES ($placeholders)";
+        $sql = "INSERT INTO users ($columns) VALUES ($placeholders)";
         $db = new DatabaseManagerProxy('donor');
         $db->runQuery($sql);
         $lastInsertedId = $db->getLastInsertId();
@@ -58,14 +99,14 @@ class BasicDonator extends UserEntity implements IStoreObject, IUpdateObject, ID
             $value = is_numeric($value) ? $value : "'" . addslashes($value) . "'";
             $updates[] = "`$prop` = $value";
         }
-        $sql = "UPDATE `food_donation`.`users` SET " . implode(", ", $updates) . " WHERE id = $this->id";
+        $sql = "UPDATE users SET " . implode(", ", $updates) . " WHERE id = $this->id";
         $db = new DatabaseManagerProxy('donor');
         $db->runQuery($sql);
     }
 
 
     public static function deleteObject($id) {
-        $sql = "DELETE FROM `food_donation`.`users` WHERE id = $id";
+        $sql = "DELETE FROM users WHERE id = $id";
         $db = new DatabaseManagerProxy('donor');
         $db->runQuery($sql);
     }
@@ -88,6 +129,7 @@ class BasicDonator extends UserEntity implements IStoreObject, IUpdateObject, ID
     public function createAppointment(string $location, string $date): bool {
         // Prepare the data for the new appointment
         $data = [
+            'userId' => $this->id,
             'status' => 'pending', // Default status
             'date' => $date,
             'location' => $location,
@@ -96,7 +138,7 @@ class BasicDonator extends UserEntity implements IStoreObject, IUpdateObject, ID
 
         // Insert the appointment into the database
         try {
-            Appointment::storeObject($data);
+            $this->appointments [] = Appointment::storeObject($data);
             return true; // Success
         } catch (Exception $e) {
             // Log the error or handle it as needed
@@ -105,15 +147,44 @@ class BasicDonator extends UserEntity implements IStoreObject, IUpdateObject, ID
         }
     }
 
-    public function deleteAppointment(int $appointmentID): bool {
+    /**
+     * @return mixed
+     */
+    public function getAppointments()
+    {
+        return $this->appointments;
+    }
+
+    /**
+     * @param mixed $appointments
+     */
+    public function setAppointments($appointments): void
+    {
+        $this->appointments = $appointments;
+    }
+
+    public function deleteAppointment($appointmentID): bool {
+
         try {
+            echo gettype($appointmentID);
             Appointment::deleteObject($appointmentID);
-            return true; // Success
+            $this->appointments = array_filter($this->appointments, function ($appointment) use ($appointmentID) {
+                return $appointment->getAppointmentID() !== $appointmentID;
+            });
+
+            return true;
         } catch (Exception $e) {
-            // Log the error or handle it as needed
+
             error_log("Failed to delete appointment: " . $e->getMessage());
-            return false; // Failure
+            return false;
         }
+    }
+    public function addToHistory(DonationDetails $donationDetails): void {
+        $this->donationHistory[] = $donationDetails;
+    }
+
+    public function createIterator(): ICustomIterator {
+        return new DonationHistoryIterator($this->donationHistory);
     }
 }
 ?>

@@ -21,14 +21,14 @@ class Admin extends UserEntity implements ISubject, IUpdateObject, IStoreObject,
 
     private array $commandsHistory = [];
 
-    public function __construct($id) {
+    public function __construct($id, $loginMethod = new NormalMethod()) {
         $db = new DatabaseManagerProxy('admin');
         $sql = "SELECT * FROM `food_donation`.`users` WHERE id = $id";
 
 
         $row = $db->run_select_query($sql)->fetch_assoc();
         if(isset($row)) {
-            parent::__construct($row["id"], $row["name"], $row["email"], $row["phone"], $row["password"], new NormalMethod());
+            parent::__construct($row["id"], $row["name"], $row["email"], $row["phone"], $row["password"], $loginMethod);
         }
         $sql3 = "SELECT * FROM `food_donation`.`appointments`";
         $rows = $db->run_select_query($sql3)->fetch_all(MYSQLI_ASSOC);
@@ -61,7 +61,7 @@ class Admin extends UserEntity implements ISubject, IUpdateObject, IStoreObject,
     //edit donation item cost
 
 
-    public function createEmployee(array $employeeData, $loginMethod) {
+    public function createEmployee(array $employeeData, $loginMethod = new NormalMethod()) {
         // return Employee::storeObject($employeeData);
 
         $db = new DatabaseManagerProxy('admin'); 
@@ -186,15 +186,27 @@ class Admin extends UserEntity implements ISubject, IUpdateObject, IStoreObject,
 
     //get all employees
     public function getAllEmployees(){
+        $employeeObjects = [];
         $adminProxy = new DatabaseManagerProxy('admin');
-        $employees = $adminProxy->run_select_query("SELECT * FROM employees")->fetch_all(MYSQLI_ASSOC);
-        for($i = 0; $i< count($employees); $i++){
-            $employees[$i]['name'] = $adminProxy->run_select_query("SELECT * FROM users where id = {$employees[$i]['id']}")->fetch_all(MYSQLI_ASSOC)[0]['name'];
+        $employeesData  = $adminProxy->run_select_query("SELECT * FROM employees")->fetch_all(MYSQLI_ASSOC);
+        foreach ($employeesData as $employeeData) {
+            // Fetch the user's email from the users table using the employee's ID
+            $userId = $employeeData['id'];
+            $userData = $adminProxy->run_select_query("SELECT email FROM users WHERE id = $userId")->fetch_assoc();
+
+            if ($userData) {
+                // Create an Employee object using the email
+                $employee = new Employee($userData['email']);
+                $employeeObjects[] = $employee; // Add the Employee object to the list
+            }
         }
-        return $employees;
+
+        return $employeeObjects;
     }
 
-    public static function storeObject(array $data) {
+    public static function storeObject(array $data, $loginMethod = new NormalMethod()) {
+        $hashedPassword = md5($data['password']);
+        $data['password'] = $hashedPassword;
         $proxy = new DatabaseManagerProxy('admin');
         if (empty($data['name']) || empty($data['email']) || empty($data['phone']) || empty($data['password'])) {
             throw new Exception("All fields (name, email, phone, password) are required.");
@@ -214,7 +226,7 @@ class Admin extends UserEntity implements ISubject, IUpdateObject, IStoreObject,
             if (!$proxy->runQuery($queryEmployees)) {
                 throw new Exception("Failed to store admin object in employees table.");
             }
-            return new self($id, $data['name'], $data['email'], $data['phone'], $data['password']);
+            return new self($id, $loginMethod);
         } catch (Exception $e) {
 
             throw $e;

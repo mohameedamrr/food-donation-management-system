@@ -105,7 +105,7 @@ class Appointment {
 
     public static function deleteObject($appointmentID) {
         $sql = "DELETE FROM `food_donation`.`appointments` WHERE appointmentID = $appointmentID";
-        $db = DatabaseManager::getInstance();
+        $db = new DatabaseManagerProxy('donor');
         $db->runQuery($sql);
     }
 

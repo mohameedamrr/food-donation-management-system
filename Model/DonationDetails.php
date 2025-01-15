@@ -1,11 +1,11 @@
 <?php
-require_once '../interfaces/IDatabaseManager.php';
-require_once 'DatabaseManager.php';
+//require_once '../interfaces/IDatabaseManager.php';
+//require_once 'DatabaseManager.php';
 require_once 'ProxyDP/DatabaseManagerProxy.php';
-require_once "../interfaces/IStoreObject.php";
-require_once "../interfaces/IReadObject.php";
-require_once "../interfaces/IUpdateObject.php";
-require_once "../interfaces/IDeleteObject.php";
+//require_once "../interfaces/IStoreObject.php";
+//require_once "../interfaces/IReadObject.php";
+//require_once "../interfaces/IUpdateObject.php";
+//require_once "../interfaces/IDeleteObject.php";
 require_once 'DonationItemChildren/Meal.php';
 require_once 'DonationItemChildren/Money.php';
 require_once 'DonationItemChildren/RawMaterials.php';
@@ -38,7 +38,7 @@ class DonationDetails implements IStoreObject,IReadObject,IDeleteObject, IUpdate
                 $meal = new Meal($row['meal_id']);
                 $meal->setCost($row['meal_cost']);
                 $meal->setMealQuantity($row['meal_quantity']);
-                $donationItems[] = $meal;
+                $this->donationItems[] = $meal;
             }
             if($row['raw_materials_id'] != NULL) {
                 $rawMaterials = new RawMaterials($row['raw_materials_id']);
@@ -47,7 +47,7 @@ class DonationDetails implements IStoreObject,IReadObject,IDeleteObject, IUpdate
                 $rawMaterials->setQuantity($row['material_quantity']);
                 $rawMaterials->setRawMaterialWeight($row['material_weight']);
                 $rawMaterials->setSupplier($row['material_supplier']);
-                $donationItems[] = $rawMaterials;
+                $this->donationItems[] = $rawMaterials;
             }
             if($row['client_ready_meal_id'] != NULL) {
                 $clientReadyMeal = new ClientReadyMeal($row['client_ready_meal_id']);
@@ -56,18 +56,18 @@ class DonationDetails implements IStoreObject,IReadObject,IDeleteObject, IUpdate
                 $clientReadyMeal->setReadyMealExpiration($row['ready_meal_expiration']);
                 $clientReadyMeal->setReadyMealQuantity($row['ready_meal_quantity']);
                 $clientReadyMeal->setPackagingType($row['ready_meal_packaging_type']);
-                $donationItems[] = $clientReadyMeal;
+                $this->donationItems[] = $clientReadyMeal;
             }
             if($row['money_id'] != NULL) {
                 $money = new Money($row['money_id']);
                 $money->setCost($row['money_amount']);
                 $money->setDonationPurpose($row['money_donation_purpose']);
-                $donationItems[] = $money;
+                $this->donationItems[] = $money;
             }
             if($row['sacrifice_id'] != NULL) {
                 $sacrifice = new Sacrifice($row['sacrifice_id']);
                 $sacrifice->setCost($row['sacrifice_cost']);
-                $donationItems[] = $sacrifice;
+                $this->donationItems[] = $sacrifice;
             }
             if($row['box_id'] != NULL) {
                 $box = new BasicBox($row['box_id']);
@@ -77,9 +77,10 @@ class DonationDetails implements IStoreObject,IReadObject,IDeleteObject, IUpdate
                 $box->setFinalBoxSize($row['final_box_size']);
                 $box->setInitialItemList(explode(", ", $row['final_item_list']));
                 $box->setFinalItemList(explode(", ", $row['final_item_list']));
-                $donationItems[] = $box;
+                $this->donationItems[] = $box;
 
             }
+
         }
     }
 
