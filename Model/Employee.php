@@ -21,12 +21,15 @@ class Employee extends UserEntity implements IObserver, IUpdateObject {
     private $department;
     private $admin; // ISubject
 
-    public function __construct($email) {
+    public function __construct($email, $loginMethod = new NormalMethod()) {
         $db =  new DatabaseManagerProxy('employee'); 
         $sql = "SELECT * FROM users WHERE email = '$email'";
         $row = $db->run_select_query($sql)->fetch_assoc();
+        $this->email = $email;
+        $this->loginMethod = $loginMethod;
+        if($row == null) return;
         if(isset($row)) {
-            parent::__construct($row["id"], $row["name"], $row["email"], $row["phone"], $row["password"], new NormalMethod());
+            parent::__construct($row["id"], $row["name"], $row["email"], $row["phone"], $row["password"], $loginMethod);
         }
         $sql2 = "SELECT * FROM employees WHERE id = $this->id";
         $row2 = $db->run_select_query($sql2)->fetch_assoc();

@@ -25,10 +25,10 @@ class NormalMethod implements ILogin {
         $sql = "SELECT * FROM `food_donation`.`users` WHERE email = '$email'";
         $db = new DatabaseManagerProxy('admin');
         $row=$db->run_select_query($sql)->fetch_assoc();
-        //$hashedPassword = md5($password);
+        $hashedPassword = md5($password);
         echo $row["password"].'<br>';
         //echo $hashedPassword.'<br>';
-        if($row["password"] == $password){
+        if($row["password"] == $hashedPassword){
             return true;
         }
         

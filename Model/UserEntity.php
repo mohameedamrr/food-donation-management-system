@@ -89,9 +89,9 @@ abstract class UserEntity {
         $this->loginMethod = $loginMethod;
     }
 
-    public function login(): bool {
+    public function login($email, $password): bool {
         //echo $this->password;
-        return $this->loginMethod->authenticate($this->email, $this->password);
+        return $this->loginMethod->authenticate($email, $password);
     }
 
     public function logout(&$reference): bool {

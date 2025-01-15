@@ -29,18 +29,18 @@ echo "<br>Testing Admin functionalities...<br>";
 // echo "<br>Creating a new employee...<br>";
 // $newEmployee = $admin->createEmployee([
 //     'name' => 'Test Employee',
-//     'email' => 'testemployee48ee@example.com',
+//     'email' => 'testemployee48ee@gmail.com',
 //     'phone' => '+987654456',
-//     'password' => 'password123',
-//     'role' => 'Driver',
-//     'department' => 'Logistics',
+//     'password' => 'password456',
+//     'role' => 'Developer',
+//     'department' => 'IT',
 //     'salary' => 6000
-// ]);
+// ], new GoogleMethod());
 // echo "New Employee ID: " . $newEmployee->getId() . "<br>";
 // echo "New Employee Name: " . $newEmployee->getName() . "<br>";
 
-$newEmployee = new Employee('testemployee48ee@example.com');
-echo $newEmployee->login()?"Login Successfully":"Login Failed";
+$newEmployee = new Employee('testemployee48ee@gail.com', new GoogleMethod());
+echo $newEmployee->login('testemployee48ee@gmail.com', 'password456')?"Login Successfully":"Login Failed";
 
 // $newDonor = BasicDonator::storeObject(
 //     [

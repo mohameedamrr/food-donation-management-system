@@ -59,7 +59,7 @@ class Admin extends UserEntity implements ISubject, IUpdateObject, IStoreObject,
     //edit donation item cost
 
 
-    public function createEmployee(array $employeeData) {
+    public function createEmployee(array $employeeData, $loginMethod) {
         // return Employee::storeObject($employeeData);
 
         $db = new DatabaseManagerProxy('admin'); 
@@ -97,7 +97,7 @@ class Admin extends UserEntity implements ISubject, IUpdateObject, IStoreObject,
         $db->runQuery($employeeSql);
     
         // Return the newly created Employee object
-        return new Employee($userData["email"]);
+        return new Employee($userData["email"], $loginMethod);
     }
 
     public function createUser(array $userData) {

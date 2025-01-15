@@ -18,16 +18,16 @@ spl_autoload_register(function ($class_name) {
 class BasicDonator extends UserEntity implements ICRUD{
     private $donationHistory; // array of Donate
 
-    public function __construct($id) {
+    public function __construct($id, $loginMethod = new NormalMethod()) {
         $sql = "SELECT * FROM `food_donation`.`users` WHERE id = $id";
         $db = DatabaseManager::getInstance();
         $row = $db->run_select_query($sql)->fetch_assoc();
         if(isset($row)) {
-            parent::__construct($row["id"], $row["name"], $row["email"], $row["phone"], $row["password"], new NormalMethod());
+            parent::__construct($row["id"], $row["name"], $row["email"], $row["phone"], $row["password"], $loginMethod);
         }
     }
 
-    public static function storeObject(array $data) {
+    public static function storeObject(array $data, $loginMethod = new NormalMethod()) {
         $hashedPassword = md5($data['password']);
         $data['password'] = $hashedPassword;
         $columns = implode(", ", array_map(fn($key) => "`$key`", array_keys($data)));
@@ -36,7 +36,7 @@ class BasicDonator extends UserEntity implements ICRUD{
         $db = DatabaseManager::getInstance();
         $db->runQuery($sql);
         $lastInsertedId = $db->getLastInsertId();
-        return new BasicDonator($lastInsertedId, null);
+        return new BasicDonator($lastInsertedId, $loginMethod);
     }
 
     public static function readObject($id) {
