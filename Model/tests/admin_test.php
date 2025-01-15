@@ -121,7 +121,7 @@ echo "\nTesting Admin functionalities...\n";
 echo "\nCreating a new employee...\n";
 $newEmployee = $admin->createEmployee([
     'name' => 'Test Employee',
-    'email' => 't979@example.com',
+    'email' => 'htrhtr@example.com',
     'phone' => '+987654321',
     'password' => 'password123',
     'role' => 'Tester',
@@ -139,6 +139,7 @@ $newEmployee->setAdmin($admin);
 echo "\nCreating a new appointment...\n";
 $date = new DateTime();
 $newAppointment = Appointment::storeObject([
+    'userID' => 1,
     'status' => 'pending',
     'date' => $date->format('Y-m-d'),
     'employeeAssignedID' => null,
