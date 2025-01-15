@@ -294,12 +294,10 @@ class Admin extends UserEntity implements ISubject, IUpdateObject, IStoreObject,
     public function getId() {
         return $this->id;
     }
- 
 
     public function addToCommandsHistory($command) {
         $this->commandsHistory[] = $command;
     }
-    
     public function getCommandsHistory()
     {
         return $this->commandsHistory;

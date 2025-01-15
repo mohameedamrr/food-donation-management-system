@@ -169,6 +169,7 @@ class Employee extends UserEntity implements IObserver, IUpdateObject {
                 return;
             }
         }
+        $appointment->updateObject(['note' => $note]);
     }
 
     public function changeDonationDescription(DonationDetails $donationDetails, String $description): void {

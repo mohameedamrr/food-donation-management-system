@@ -1,4 +1,16 @@
 <?php
+require_once '../../interfaces/IStoreObject.php';
+require_once '../../interfaces/IUpdateObject.php';
+require_once '../../interfaces/IDeleteObject.php';
+require_once '../../interfaces/IReadObject.php';
+require_once '../../interfaces/ICommand.php';
+require_once '../ProxyDP/DatabaseManagerProxy.php';
+require_once '../Appointment.php';
+require_once '../Employee.php';
+require_once '../Admin.php';
+require_once 'ChangeAppointmentNoteCommand.php';
+require_once 'ChangeDonationDescriptionCommand.php';
+
 class ChangeAppointmentStatusCommand implements ICommand {
     private $employee;
     private $appointment;
@@ -10,10 +22,10 @@ class ChangeAppointmentStatusCommand implements ICommand {
         $this->newStatus = $newStatus;
         $this->previousStatus = $previousStatus;
         $donorProxy = new DatabaseManagerProxy('admin');
-        $row = $donorProxy->run_select_query("SELECT * FROM employees WHERE 'role' = 'Manager' ")->fetch_assoc();
-        $user_id = $row['id'];
-        $row2 = $donorProxy->run_select_query("SELECT * FROM users WHERE id = $user_id ")->fetch_assoc();
-        $this->employee = new Employee($row2['email']);
+        $row = $donorProxy->run_select_query("SELECT * FROM users WHERE id = 1")->fetch_assoc();
+        if(isset($row)) {
+            $this->employee = new Employee($row['email']);
+        }
     }
     public function execute(): void{
         $this->employee->changeAppointmentStatus($this->appointment, $this->newStatus);
@@ -64,4 +76,78 @@ class ChangeAppointmentStatusCommand implements ICommand {
 
     }
 }
+
+// // Simulate an appointment
+// $appointment = new Appointment(1);
+// echo "Initial Appointment Status: " . $appointment->getStatus() . "\n";
+// echo "Initial Appointment Note: " . $appointment->getNote() . "\n\n";
+
+// // Simulate donation details
+// $donationDetails = new DonationDetails(1);
+// echo "Initial Donation Description: " . $donationDetails->getDescription() . "\n\n";
+
+// // Create an Admin (invoker)
+// $admin = new Admin(1); // Assuming Admin ID is 1
+
+// // Create an Employee (receiver)
+// $employee = new Employee("7amada@belganzabeel.com");
+
+// // Create commands
+// $changeNoteCommand = new ChangeAppointmentNoteCommand($appointment, "Updated Note", $appointment->getNote());
+// $changeStatusCommand = new ChangeAppointmentStatusCommand($appointment, "Confirmed", $appointment->getStatus());
+// $changeDescriptionCommand = new ChangeDonationDescriptionCommand($donationDetails, "Updated Description", $donationDetails->getDescription());
+
+
+
+// echo "Executing commands...\n";
+// $admin->addToCommandsHistory($changeNoteCommand);
+// $admin->executeCommand(); // Execute ChangeAppointmentNoteCommand
+// $admin->addToCommandsHistory($changeStatusCommand);
+// $admin->executeCommand(); // Execute ChangeAppointmentStatusCommand
+// $admin->addToCommandsHistory($changeDescriptionCommand);
+// $admin->executeCommand(); // Execute ChangeDonationDescriptionCommand
+
+// $appointment = new Appointment(1);
+// $donationDetails = new DonationDetails(1);
+// // Display results after execution
+// echo "\nAfter Execution:\n";
+// echo "Appointment Status: " . $appointment->getStatus() . "\n";
+// echo "Appointment Note: " . $appointment->getNote() . "\n";
+// echo "Donation Description: " . $donationDetails->getDescription() . "\n\n";
+
+// // Undo the last command
+// echo "Undoing last command...\n";
+// $admin->undoCommand(); // Undo ChangeDonationDescriptionCommand
+
+// $appointment = new Appointment(1);
+// $donationDetails = new DonationDetails(1);
+// // Display results after undo
+// echo "\nAfter Undo:\n";
+// echo "Appointment Status: " . $appointment->getStatus() . "\n";
+// echo "Appointment Note: " . $appointment->getNote() . "\n";
+// echo "Donation Description: " . $donationDetails->getDescription() . "\n\n";
+
+// // Undo the second last command
+// echo "Undoing second last command...\n";
+// $admin->undoCommand(); // Undo ChangeAppointmentStatusCommand
+
+// $appointment = new Appointment(1);
+// $donationDetails = new DonationDetails(1);
+// // Display results after second undo
+// echo "\nAfter Second Undo:\n";
+// echo "Appointment Status: " . $appointment->getStatus() . "\n";
+// echo "Appointment Note: " . $appointment->getNote() . "\n";
+// echo "Donation Description: " . $donationDetails->getDescription() . "\n\n";
+
+// // Undo the third last command
+// echo "Undoing third last command...\n";
+// $admin->undoCommand(); // Undo ChangeAppointmentNoteCommand
+
+// $appointment = new Appointment(1);
+// $donationDetails = new DonationDetails(1);
+// // Display results after third undo
+// echo "\nAfter Third Undo:\n";
+// echo "Appointment Status: " . $appointment->getStatus() . "\n";
+// echo "Appointment Note: " . $appointment->getNote() . "\n";
+// echo "Donation Description: " . $donationDetails->getDescription() . "\n\n";
 ?>

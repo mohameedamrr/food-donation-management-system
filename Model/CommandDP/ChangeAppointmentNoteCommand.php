@@ -10,10 +10,10 @@ class ChangeAppointmentNoteCommand implements ICommand {
         $this->newNote = $newNote;
         $this->previousNote = $previousNote;
         $donorProxy = new DatabaseManagerProxy('admin');
-        $row = $donorProxy->run_select_query("SELECT * FROM employees WHERE 'role' = 'Manager' ")->fetch_assoc();
-        $user_id = $row['id'];
-        $row2 = $donorProxy->run_select_query("SELECT * FROM users WHERE id = $user_id ")->fetch_assoc();
-        $this->employee = new Employee($row2['email']);
+        $row = $donorProxy->run_select_query("SELECT * FROM users WHERE id = 1")->fetch_assoc();
+        if(isset($row)) {
+            $this->employee = new Employee($row['email']);
+        }
     }
     public function execute(): void{
         $this->employee->addNoteToAppointment($this->appointment, $this->newNote);

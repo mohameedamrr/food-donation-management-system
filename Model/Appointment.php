@@ -44,20 +44,17 @@ class Appointment {
         }
     }
 
-    /**
-     * @return mixed
-     */
     public function getNote()
     {
         return $this->note;
     }
 
-    /**
-     * @param mixed $note
-     */
     public function setNote($note): void
     {
         $this->note = $note;
+        $sql = "UPDATE `food_donation`.`appointments` SET note = '$this->note' WHERE appointmentID = $this->appointmentID";
+        $db = new DatabaseManagerProxy('admin');
+        $db->runQuery($sql);
     }
 
     public function getUserId(): mixed
