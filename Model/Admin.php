@@ -193,14 +193,12 @@ class Admin extends UserEntity implements ISubject, IUpdateObject, IStoreObject,
             // Fetch the user's email from the users table using the employee's ID
             $userId = $employeeData['id'];
             $userData = $adminProxy->run_select_query("SELECT email FROM users WHERE id = $userId")->fetch_assoc();
-
             if ($userData) {
                 // Create an Employee object using the email
                 $employee = new Employee($userData['email']);
                 $employeeObjects[] = $employee; // Add the Employee object to the list
             }
         }
-
         return $employeeObjects;
     }
 
