@@ -52,6 +52,8 @@ abstract class DonationItem {
 		$adminProxy->runQuery("UPDATE donation_items SET currency = '$value' WHERE id = '$this->itemID'"); // Should succeed
 		$this->currency = $value;
 	}
+
+	abstract public function validate(): bool;
 }
 ?>
 

@@ -6,7 +6,7 @@ class ClientReadyMeal extends DonationItem implements IStoreObject,IReadObject,I
 
 	private $readyMealType;
 
-	private $expiration;
+	private $readyMealExpiration;
 
 	private $packagingType;
 
@@ -28,12 +28,12 @@ class ClientReadyMeal extends DonationItem implements IStoreObject,IReadObject,I
 		$this->readyMealType = $readyMealType;
 	}
 
-	public function getExpiration() {
-		return $this->expiration;
+	public function getReadyMealExpiration() {
+		return $this->readyMealExpiration;
 	}
 
-	public function setExpiration($expiration) {
-		$this->expiration = $expiration;
+	public function setReadyMealExpiration($readyMealExpiration) {
+		$this->readyMealExpiration = $readyMealExpiration;
 	}
 
 	public function getPackagingType() {

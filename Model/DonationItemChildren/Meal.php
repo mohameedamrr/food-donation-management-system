@@ -46,6 +46,8 @@ class Meal extends DonationItem implements IStoreObject,IReadObject,IDeleteObjec
     }
 
     public function setExpiration($expiration) {
+        $adminProxy = new DatabaseManagerProxy('admin');
+		$adminProxy->runQuery("UPDATE donation_items SET 'expiration' = '$expiration' WHERE id = '$this->itemID'");
         $this->expiration = $expiration;
     }
 
@@ -55,7 +57,7 @@ class Meal extends DonationItem implements IStoreObject,IReadObject,IDeleteObjec
 
     public function setIngredients($ingredients) {
         $adminProxy = new DatabaseManagerProxy('admin');
-		$adminProxy->runQuery("UPDATE donation_items SET 'ingredients' = '$ingredients' WHERE id = '$this->itemID'"); // 
+		$adminProxy->runQuery("UPDATE donation_items SET 'ingredients' = '$ingredients' WHERE id = '$this->itemID'");
         $this->ingredients = $ingredients;
 
     }

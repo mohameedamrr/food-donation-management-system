@@ -100,6 +100,7 @@ $db->runQuery("
         animal_type VARCHAR(255),
         weight FLOAT,
         mealType VARCHAR(255),
+        expiration DATE,
         ingredients TEXT,
         initial_box_size FLOAT,
         initial_item_list TEXT
@@ -159,15 +160,17 @@ $db->runQuery("
 
 $db->runQuery(
     "INSERT INTO `food_donation`.`donation_items` (
-        `item_name`, `currency`, `cost`, `animal_type`, `weight`, `mealType`, `ingredients`, `initial_box_size`, `initial_item_list`
+        `item_name`, `currency`, `cost`, `animal_type`, `weight`, `mealType`, `expiration`, `ingredients`, `initial_box_size`, `initial_item_list`
     ) VALUES
-    ('Meal', 'EGP', 150, NULL, NULL, 'Vegetarian', 'Beans, Water, Salt', NULL, NULL),
-    ('Raw Materials', 'EGP', 0, NULL, NULL, NULL, NULL, NULL, NULL),
-    ('Client Ready Meal', 'EGP', 0, NULL, NULL, NULL, NULL, NULL, NULL),
-    ('Money', 'EGP', 0, NULL, NULL, NULL, NULL, NULL, NULL),
-    ('Sheep Sacrifice', 'EGP', 150, 'Sheep', 90, NULL, NULL, NULL, NULL),
-    ('Cow Sacrifice', 'EGP', 350, 'Cow', 290, NULL, NULL, NULL, NULL),
-    ('Initial Box', 'EGP', 100, NULL, NULL, NULL, NULL, 10, 'Oil, Pasta, Rice, Sugar');"
+    ('Vegetarian Meal', 'EGP', 150, NULL, NULL, 'Vegetarian', '2024-12-31', 'Beans, Water, Salt', NULL, NULL),
+    ('Chicken Meal', 'EGP', 250, NULL, NULL, 'Chicken', '2024-12-31', 'Chicken, Rice, Fries', NULL, NULL),
+    ('Raw Materials', 'EGP', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+    ('Client Ready Meal', 'EGP', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+    ('Money', 'EGP', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+    ('Sheep Sacrifice', 'EGP', 150, 'Sheep', 90, NULL, NULL, NULL, NULL, NULL),
+    ('Cow Sacrifice', 'EGP', 350, 'Cow', 290, NULL, NULL, NULL, NULL, NULL),
+    ('Goat Sacrifice', 'EGP', 250, 'Goat', 290, NULL, NULL, NULL, NULL, NULL),
+    ('Initial Box', 'EGP', 100, NULL, NULL, NULL, NULL, NULL, 10, 'Oil, Pasta, Rice, Sugar');"
 );
 
 $db->runQuery(
