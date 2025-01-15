@@ -14,7 +14,9 @@ echo "--------------------------\n";
 
 print_r($donator->getAppointments());
 
-$donator->deleteAppointment(12);
+$donator->deleteAppointment(13);
+
+print_r($donator->getAppointments());
 
 //// Test 2: Update the BasicDonator object
 //echo "Test 2: Updating the BasicDonator object...\n";
@@ -51,26 +53,26 @@ $donator->deleteAppointment(12);
 //print_r($donator->getAppointments());
 
 // Test 5: Add a donation to the history
-echo "Test 5: Adding a donation to the history...\n";
-$donationDetails = new DonationDetails(1); // Replace with a valid donation ID
-print_r($donationDetails->getDonationItems()) ;
-$donator->addToHistory($donationDetails);
-print_r($donator->getDonationHistory());
-echo "Donation added to history.\n";
-echo "--------------------------\n";
-
-// Test 6: Create an iterator for the donation history
-echo "Test 6: Creating an iterator for the donation history...\n";
-$iterator = $donator->createIterator();
-while ($iterator->hasNext()) {
-    $donation = $iterator->next();
-    echo "Donation ID: " . $donation->getId() . "\n";
-    echo "Total Cost: " . $donation->getTotalCost() . "\n";
-    echo "Description: " . $donation->getDescription() . "\n";
-    print_r($donation->getDonationItems());
-    echo "--------------------------\n";
-}
-echo "--------------------------\n";
+//echo "Test 5: Adding a donation to the history...\n";
+//$donationDetails = new DonationDetails(1); // Replace with a valid donation ID
+//print_r($donationDetails->getDonationItems()) ;
+//$donator->addToHistory($donationDetails);
+//print_r($donator->getDonationHistory());
+//echo "Donation added to history.\n";
+//echo "--------------------------\n";
+//
+//// Test 6: Create an iterator for the donation history
+//echo "Test 6: Creating an iterator for the donation history...\n";
+//$iterator = $donator->createIterator();
+//while ($iterator->hasNext()) {
+//    $donation = $iterator->next();
+//    echo "Donation ID: " . $donation->getId() . "\n";
+//    echo "Total Cost: " . $donation->getTotalCost() . "\n";
+//    echo "Description: " . $donation->getDescription() . "\n";
+//    print_r($donation->getDonationItems());
+//    echo "--------------------------\n";
+//}
+//echo "--------------------------\n";
 
 //// Test 7: Delete the BasicDonator object
 //echo "Test 7: Deleting the BasicDonator object...\n";

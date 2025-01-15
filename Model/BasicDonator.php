@@ -169,7 +169,7 @@ class BasicDonator extends UserEntity implements IStoreObject, IUpdateObject, ID
             echo gettype($appointmentID);
             Appointment::deleteObject($appointmentID);
             $this->appointments = array_filter($this->appointments, function ($appointment) use ($appointmentID) {
-                return $appointment->getAppointmentID() !== $appointmentID;
+                return $appointment->getAppointmentID() != $appointmentID;
             });
 
             return true;

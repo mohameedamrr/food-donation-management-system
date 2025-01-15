@@ -24,7 +24,7 @@ class Appointment {
 
     public function __construct($appointmentID) {
         $sql = "SELECT * FROM `food_donation`.`appointments` WHERE appointmentID = $appointmentID";
-        $db = DatabaseManager::getInstance();
+        $db = new DatabaseManagerProxy('admin');
         $row = $db->run_select_query($sql)->fetch_assoc();
         if(isset($row)) {
             $this->appointmentID = $row["appointmentID"];
@@ -43,7 +43,8 @@ class Appointment {
     public function updateStatus($status){
         $this->status = $status;
         $sql = "UPDATE `food_donation`.`appointments` SET status = '$this->status' WHERE appointmentID = $this->appointmentID";
-        DatabaseManager::getInstance()->runQuery($sql);
+        $db = new DatabaseManagerProxy('admin');
+        $db->runQuery($sql);
     }
 
     public function getStatus() {
@@ -58,7 +59,8 @@ class Appointment {
     public function setDate($date) {
         $this->date = $date;
         $sql = "UPDATE `food_donation`.`appointments` SET date = '".$this->date."' WHERE appointmentID = $this->appointmentID";
-        DatabaseManager::getInstance()->runQuery($sql);
+        $db = new DatabaseManagerProxy('admin');
+        $db->runQuery($sql);
     }
 
     // Appointment ID
@@ -69,7 +71,8 @@ class Appointment {
     public function setAppointmentID($appointmentID) {
         $this->appointmentID = $appointmentID;
         $sql = "UPDATE `food_donation`.`appointments` SET appointmentID = '$this->appointmentID' WHERE appointmentID = $this->appointmentID";
-        DatabaseManager::getInstance()->runQuery($sql);
+        $db = new DatabaseManagerProxy('admin');
+        $db->runQuery($sql);
     }
 
     // Appointment Location (Location object)
@@ -89,7 +92,8 @@ class Appointment {
     public function assignEmployee($employeeID): void {
         $sql = "UPDATE `food_donation`.`appointments` SET employeeAssignedID = $employeeID WHERE appointmentID = $this->appointmentID";
         $this->employeeAssignedID = $employeeID;
-        DatabaseManager::getInstance()->runQuery($sql);
+        $db = new DatabaseManagerProxy('admin');
+        $db->runQuery($sql);
     }
 
     public function updateObject(array $data) {
@@ -100,12 +104,13 @@ class Appointment {
             $updates[] = "`$prop` = $value";
         }
         $sql = "UPDATE `food_donation`.`appointments` SET " . implode(", ", $updates) . " WHERE appointmentID = $this->appointmentID";
-        DatabaseManager::getInstance()->runQuery($sql);
+        $db = new DatabaseManagerProxy('admin');
+        $db->runQuery($sql);
     }
 
     public static function deleteObject($appointmentID) {
         $sql = "DELETE FROM `food_donation`.`appointments` WHERE appointmentID = $appointmentID";
-        $db = new DatabaseManagerProxy('donor');
+        $db = new DatabaseManagerProxy('admin');
         $db->runQuery($sql);
     }
 
@@ -124,7 +129,7 @@ class Appointment {
         $columns = implode(", ", array_map(fn($key) => "`$key`", array_keys($data)));
         $placeholders = implode(", ", array_map(fn($value) => is_numeric($value) ? $value : "'" . addslashes($value) . "'", array_values($data)));
         $sql = "INSERT INTO `food_donation`.`appointments` ($columns) VALUES ($placeholders)";
-        $db = DatabaseManager::getInstance();
+        $db = new DatabaseManagerProxy('admin');
         $db->runQuery($sql);
         $lastInsertedId = $db->getLastInsertId();
         return new Appointment($lastInsertedId, null);
