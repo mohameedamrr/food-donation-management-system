@@ -19,6 +19,8 @@ class Admin extends UserEntity implements ISubject, IUpdateObject, IStoreObject,
     private array $appointmentsList = []; // array of tasks
     private array $observersList = []; // array of IObserver objects
 
+    private array $commandsHistory = [];
+
     public function __construct($id) {
         $db = new DatabaseManagerProxy('admin');
         $sql = "SELECT * FROM `food_donation`.`users` WHERE id = $id";
@@ -282,9 +284,29 @@ class Admin extends UserEntity implements ISubject, IUpdateObject, IStoreObject,
     public function getId() {
         return $this->id;
     }
+ 
 
+    public function addToCommandsHistory($command) {
+        $this->commandsHistory[] = $command;
+    }
+    
+    public function getCommandsHistory()
+    {
+        return $this->commandsHistory;
+    }
+    public function setCommandsHistory($commandsHistory)
+    {
+        $this->commandsHistory = $commandsHistory;
 
+    }
+    public function executeCommand(): void {
+        $this->commandsHistory[count($this->commandsHistory) - 1]->execute();
+    }
+    public function undoCommand(): void {
+        $this->commandsHistory[count($this->commandsHistory) - 1]->undo();
+        array_pop($this->commandsHistory);
 
+    }
 }
 ?>
 

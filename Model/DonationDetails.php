@@ -13,7 +13,7 @@ require_once 'DonationItemChildren/Sacrifice.php';
 require_once 'DonationItemChildren/ClientReadyMeal.php';
 require_once 'DecoratorDP/BasicBox.php';
 
-class DonationDetails implements IStoreObject,IReadObject,IDeleteObject {
+class DonationDetails implements IStoreObject,IReadObject,IDeleteObject, IUpdateObject {
 
     private $id;
 
@@ -83,6 +83,7 @@ class DonationDetails implements IStoreObject,IReadObject,IDeleteObject {
         }
     }
 
+
     public function getId() {
         return $this->id;
     }
@@ -140,6 +141,17 @@ class DonationDetails implements IStoreObject,IReadObject,IDeleteObject {
     public static function deleteObject($id) {
         $adminProxy = new DatabaseManagerProxy('admin');
         $adminProxy->runQuery("DELETE FROM donation_history WHERE id = $id");
+    }
+    public function updateObject(array $data) {
+
+        $updates = [];
+        foreach ($data as $prop => $value) {
+            $this->{$prop} = $value;
+            $value = is_numeric($value) ? $value : "'" . addslashes($value) . "'";
+            $updates[] = "`$prop` = $value";
+        }
+        $adminProxy = new DatabaseManagerProxy('admin');
+        $adminProxy->runQuery("UPDATE donation_history SET " . implode(", ", $updates) . " WHERE id = '$this->id'");
     }
 }
 ?>

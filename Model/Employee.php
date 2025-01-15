@@ -199,14 +199,14 @@ class Employee extends UserEntity implements IObserver, IUpdateObject {
     //     return new Employee($data["email"]);
     // }
 
-    // public static function readObject($email){
-    //     // $sql = "SELECT * FROM `food_donation`.`Employees` WHERE id = $id";
-    //     // $db = DatabaseManager::getInstance();
-    //     // $row = $db->run_select_query($sql)->fetch_assoc();
-    //     // if(isset($row)) {
-    //     //     return new Employee($row["id"], null);
-    //     // }
-    //     // return null;
+    // public static function readObject($id){
+    //     $sql = "SELECT * FROM `food_donation`.`Employees` WHERE id = $id";
+    //     $db = DatabaseManager::getInstance();
+    //     $row = $db->run_select_query($sql)->fetch_assoc();
+    //     if(isset($row)) {
+    //         return new Employee($row["id"], null);
+    //     }
+    //     return null;
     //     return new Employee($email, null);
     // }
 
