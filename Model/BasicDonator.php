@@ -19,23 +19,25 @@ class BasicDonator extends UserEntity implements IStoreObject, IUpdateObject, ID
     private $donationHistory; // array of Donation details
     private $location;
 
-    public function __construct($id) {
+    public function __construct($id, $loginMethod = new NormalMethod()) {
         $sql = "SELECT * FROM `food_donation`.`users` WHERE id = $id";
         $db = new DatabaseManagerProxy('donor');
         $row = $db->run_select_query($sql)->fetch_assoc();
         if(isset($row)) {
-            parent::__construct($row["id"], $row["name"], $row["email"], $row["phone"], $row["password"], new NormalMethod());
+            parent::__construct($row["id"], $row["name"], $row["email"], $row["phone"], $row["password"], $loginMethod);
         }
     }
 
-    public static function storeObject(array $data) {
+    public static function storeObject(array $data, $loginMethod = new NormalMethod()) {
+        $hashedPassword = md5($data['password']);
+        $data['password'] = $hashedPassword;
         $columns = implode(", ", array_map(fn($key) => "`$key`", array_keys($data)));
         $placeholders = implode(", ", array_map(fn($value) => is_numeric($value) ? $value : "'" . addslashes($value) . "'", array_values($data)));
         $sql = "INSERT INTO `food_donation`.`users` ($columns) VALUES ($placeholders)";
         $db = new DatabaseManagerProxy('donor');
         $db->runQuery($sql);
         $lastInsertedId = $db->getLastInsertId();
-        return new BasicDonator($lastInsertedId);
+        return new BasicDonator($lastInsertedId, $loginMethod);
     }
 
     // public static function readObject($id) {

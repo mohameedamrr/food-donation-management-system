@@ -15,15 +15,20 @@ spl_autoload_register(function ($class_name) {
     }
 });
 
+require_once 'ProxyDP/DatabaseManagerProxy.php';
+
 class NormalMethod implements ILogin {
     private $hashedPassword;
 
     public function authenticate(string $email, string $password): bool {
         // Prepare the SQL query to select user by email
         $sql = "SELECT * FROM `food_donation`.`users` WHERE email = '$email'";
-        $db = DatabaseManager::getInstance();
+        $db = new DatabaseManagerProxy('admin');
         $row=$db->run_select_query($sql)->fetch_assoc();
-        if($row["password"] == $password){
+        $hashedPassword = md5($password);
+        echo $row["password"].'<br>';
+        //echo $hashedPassword.'<br>';
+        if($row["password"] == $hashedPassword){
             return true;
         }
         
@@ -31,6 +36,6 @@ class NormalMethod implements ILogin {
     }
 }
 
-$normal = new NormalMethod();
-echo $normal->authenticate('bertha.wilkinson@example.com','b95925ed0aa3897a613c7534ae7abeef')? "Login Successfully": "Failed to Login";
+// $normal = new NormalMethod();
+// echo $normal->authenticate('bertha.wilkinson@example.com','b95925ed0aa3897a613c7534ae7abeef')? "Login Successfully": "Failed to Login";
 ?>
