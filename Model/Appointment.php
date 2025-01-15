@@ -21,6 +21,9 @@ class Appointment {
     private $date; // DateTime object
     private $appointmentLocation; // Location object
     private $employeeAssignedID; // Employee object
+    private $note;
+    private $userId;
+
 
     public function __construct($appointmentID) {
         $sql = "SELECT * FROM `food_donation`.`appointments` WHERE appointmentID = $appointmentID";
@@ -28,6 +31,8 @@ class Appointment {
         $row = $db->run_select_query($sql)->fetch_assoc();
         if(isset($row)) {
             $this->appointmentID = $row["appointmentID"];
+            $this->userId = $row["userId"];
+            $this->note = $row["note"];
             $this->status = $row["status"];
             $this->date = $row["date"];
             $this->appointmentLocation = $row["location"];
@@ -39,6 +44,26 @@ class Appointment {
         }
     }
 
+    /**
+     * @return mixed
+     */
+    public function getNote()
+    {
+        return $this->note;
+    }
+
+    /**
+     * @param mixed $note
+     */
+    public function setNote($note): void
+    {
+        $this->note = $note;
+    }
+
+    public function getUserId(): mixed
+    {
+        return $this->userId;
+    } // Employee object
 
     public function updateStatus($status){
         $this->status = $status;
