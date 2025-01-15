@@ -1,6 +1,6 @@
 <?php
-//require __DIR__ . '/../ProxyDP/DatabaseManagerProxy.php'; 
 require_once '..\ProxyDP\DatabaseManagerProxy.php';
+
 class EmployeesReport extends ReportTemplate {
     private $employees;
 
@@ -26,24 +26,18 @@ class EmployeesReport extends ReportTemplate {
         for($i = 0; $i< count($this->employees); $i++){
             $this->employees[$i]['name'] = $adminProxy->run_select_query("SELECT * FROM users where id = {$this->employees[$i]['id']}")->fetch_all(MYSQLI_ASSOC)[0]['name'];
         }
-        // foreach ($this->employees as $employee){
-        //     $employee['name'] = $adminProxy->run_select_query("SELECT * FROM users where id = {$employee['id']}")->fetch_all(MYSQLI_ASSOC)[0]['name'];
-        //     $this->employees->array_push($employee);
-        //     echo $employee['name'] ;
-        // } 
     }
 
     protected function generateBody() {
-        $body = "Employee Details:\n";
+        $body = "<h2>Employee Details:</h2>";
         foreach ($this->employees as $employee) {
-            $body .= "- Name: " . $employee['name'] . ", Role: " . $employee['role'] . ", Salary: $" . "{$employee['salary']}" . "\n";
+            $body .= "<p><strong>Name:</strong> " . $employee['name'] . ", <strong>Role:</strong> " . $employee['role'] . ", <strong>Salary:</strong> $" . $employee['salary'] . "</p>";
         }
-        $body .= "-------------------\n";
-        $body .= "Total Employees: " . $this->calculateTotalRecords() . "\n";
+        $body .= "<hr>";
+        $body .= "<p><strong>Total Employees:</strong> " . $this->calculateTotalRecords() . "</p>";
         $highestSalaryDetails = $this->getHighestSalary();
-        $body .= "Highest Salary: $" . $highestSalaryDetails['salary'] . " (Employee: " . $highestSalaryDetails['name'] . ", Role: " . $highestSalaryDetails['role'] . ")\n";        
-        $body .= "Average Salary: $" . number_format($this->calculateAverageSalary(), 2) . "\n";
-        //$body .= "Top Performer: " . $this->getTopPerformer() . "\n";
+        $body .= "<p><strong>Highest Salary:</strong> $" . $highestSalaryDetails['salary'] . " (Employee: " . $highestSalaryDetails['name'] . ", Role: " . $highestSalaryDetails['role'] . ")</p>";        
+        $body .= "<p><strong>Average Salary:</strong> $" . number_format($this->calculateAverageSalary(), 2) . "</p>";
         return $body;
     }
 
@@ -68,13 +62,6 @@ class EmployeesReport extends ReportTemplate {
     private function calculateAverageSalary() {
         $totalSalary = array_sum(array_column($this->employees, 'salary'));
         return $totalSalary / count($this->employees);
-    }
-
-    private function getTopPerformer() {
-        $performances = array_column($this->employees, 'performance');
-        //$maxPerformance = max($performances);
-        //$index = array_search($maxPerformance, $performances);
-        //return $this->employees[$index]['name'];
     }
 }
 ?>

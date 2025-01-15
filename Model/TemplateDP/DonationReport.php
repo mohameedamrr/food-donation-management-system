@@ -45,34 +45,34 @@ class DonationReport extends ReportTemplate {
     }
 
     protected function generateBody() {
-        $body = "Donation Details:\n";
+        $body = "<h2>Donation Details:</h2>";
         foreach ($this->donations as $donation) {
-            $body .= "- Doner: " . $donation['doner'] . ", Date: " . $donation['donation_date'] . ", Total Cost: $" . $donation['total_cost'] . "\n";
-            $body .= "  Description: " . $donation['description'] . "\n";
+            $body .= "<p><strong>Doner:</strong> " . $donation['doner'] . ", <strong>Date:</strong> " . $donation['donation_date'] . ", <strong>Total Cost:</strong> $" . $donation['total_cost'] . "</p>";
+            $body .= "<p><strong>Description:</strong> " . $donation['description'] . "</p>";
 
             // Add details based on donation type
             if ($donation['meal_id']) {
-                $body .= "  Meal Donation: " . $donation['meal_quantity'] . " meals at $" . $donation['meal_cost'] . " each\n";
+                $body .= "<p><strong>Meal Donation:</strong> " . $donation['meal_quantity'] . " meals at $" . $donation['meal_cost'] . " each</p>";
             }
             if ($donation['raw_materials_id']) {
-                $body .= "  Raw Materials: " . $donation['material_quantity'] . " units of " . $donation['material_type'] . " at $" . $donation['raw_materials_cost'] . " total\n";
+                $body .= "<p><strong>Raw Materials:</strong> " . $donation['material_quantity'] . " units of " . $donation['material_type'] . " at $" . $donation['raw_materials_cost'] . " total</p>";
             }
             if ($donation['client_ready_meal_id']) {
-                $body .= "  Ready Meal: " . $donation['ready_meal_quantity'] . " " . $donation['ready_meal_type'] . " meals expiring on " . $donation['ready_meal_expiration'] . "\n";
+                $body .= "<p><strong>Ready Meal:</strong> " . $donation['ready_meal_quantity'] . " " . $donation['ready_meal_type'] . " meals expiring on " . $donation['ready_meal_expiration'] . "</p>";
             }
             if ($donation['money_id']) {
-                $body .= "  Monetary Donation: $" . $donation['money_amount'] . " for " . $donation['money_donation_purpose'] . "\n";
+                $body .= "<p><strong>Monetary Donation:</strong> $" . $donation['money_amount'] . " for " . $donation['money_donation_purpose'] . "</p>";
             }
             if ($donation['sacrifice_id']) {
-                $body .= "  Sacrifice: $" . $donation['sacrifice_cost'] . " for a " . ($donation['material_type'] ?? 'animal') . "\n";
+                $body .= "<p><strong>Sacrifice:</strong> $" . $donation['sacrifice_cost'] . " for a " . ($donation['material_type'] ?? 'animal') . "</p>";
             }
             if ($donation['box_id']) {
-                $body .= "  Custom Box: $" . $donation['box_cost'] . " with items: " . $donation['final_item_list'] . "\n";
+                $body .= "<p><strong>Custom Box:</strong> $" . $donation['box_cost'] . " with items: " . $donation['final_item_list'] . "</p>";
             }
-            $body .= "-------------------\n";
+            $body .= "<hr>";
         }
-        $body .= "Total Donations: " . $this->calculateTotalRecords() . "\n";
-        $body .= "Most Donated Item: " . $this->getMostDonatedItem() . "\n";
+        $body .= "<p><strong>Total Donations:</strong> " . $this->calculateTotalRecords() . "</p>";
+        $body .= "<p><strong>Most Donated Item:</strong> " . $this->getMostDonatedItem() . "</p>";
         return $body;
     }
 

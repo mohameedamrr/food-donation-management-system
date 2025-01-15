@@ -19,24 +19,24 @@ abstract class ReportTemplate {
     }
 
     protected function generateHeader() {
-        return "=== Admin Report ===\n" .
-               "Date: " . date('Y-m-d H:i:s') . "\n" .
-               "-------------------\n";
+        return "<h1>Admin Report</h1>" .
+               "<p>Date: " . date('Y-m-d H:i:s') . "</p>" .
+               "<hr>";
     }
 
     protected function generateSummary() {
-        return "Summary:\n" .
-               "- Report Type: " . $this->getReportType() . "\n" .
-               "- Total Records: " . $this->calculateTotalRecords() . "\n" .
-               "-------------------\n";
+        return "<h2>Summary</h2>" .
+               "<p><strong>Report Type:</strong> " . $this->getReportType() . "</p>" .
+               "<p><strong>Total Records:</strong> " . $this->calculateTotalRecords() . "</p>" .
+               "<hr>";
     }
 
     abstract protected function generateBody();
 
     protected function generateFooter() {
-        return "-------------------\n" .
-               "End of Report\n" .
-               "================\n";
+        return "<hr>" .
+               "<p>End of Report</p>" .
+               "<p>================</p>";
     }
 
     abstract protected function getReportType();
@@ -58,10 +58,30 @@ abstract class ReportTemplate {
 
     protected function saveReportToFile() {
         // Generate the filename using today's date and report type
-        $filename = date('Y-m-d') . '_' . strtolower(str_replace(' ', '_', $this->getReportType())) . '.txt';
+        $filename = date('Y-m-d') . '_' . strtolower(str_replace(' ', '_', $this->getReportType())) . '.html';
+
+        // Wrap the report string in HTML tags
+        $htmlContent = "<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>" . $this->getReportType() . "</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        h1 { color: #333; }
+        h2 { color: #555; }
+        p { color: #666; }
+        hr { border: 1px solid #ddd; }
+    </style>
+</head>
+<body>
+    " . $this->reportString . "
+</body>
+</html>";
 
         // Save the report string to the file
-        file_put_contents($filename, $this->reportString);
+        file_put_contents($filename, $htmlContent);
         echo "Report saved to $filename\n";
     }
 }
