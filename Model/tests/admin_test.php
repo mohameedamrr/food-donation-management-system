@@ -5,8 +5,8 @@
 
 // // Helper function to display test results
 // //function displayTestResult(string $testName, bool $passed): void {
-// //echo $testName . ": <br>";
-// //echo $passed ? "PASSED<br>" : "FAILED<br>";
+// //echo $testName . ": \n";
+// //echo $passed ? "PASSED\n" : "FAILED\n";
 // //}
 
 // // Test storeObject with valid data
@@ -21,7 +21,7 @@
 // displayTestResult("storeObject with valid data", $result instanceof Admin);
 // } catch (Exception $e) {
 // displayTestResult("storeObject with valid data", false);
-// echo "Error: " . $e->getMessage() . "<br>";
+// echo "Error: " . $e->getMessage() . "\n";
 // }
 
 // // Test storeObject with missing data (invalid data)
@@ -36,7 +36,7 @@
 // displayTestResult("storeObject with missing data", false);
 // } catch (Exception $e) {
 // displayTestResult("storeObject with missing data", true);
-// echo "Error: " . $e->getMessage() . "<br>";
+// echo "Error: " . $e->getMessage() . "\n";
 // }
 
 // // Test updateObject with valid data
@@ -51,7 +51,7 @@
 // displayTestResult("updateObject with valid data", $result);
 // } catch (Exception $e) {
 // displayTestResult("updateObject with valid data", false);
-// echo "Error: " . $e->getMessage() . "<br>";
+// echo "Error: " . $e->getMessage() . "\n";
 // }
 
 // // Test updateObject with non-existent ID
@@ -66,7 +66,7 @@
 // displayTestResult("updateObject with non-existent ID", false);
 // } catch (Exception $e) {
 // displayTestResult("updateObject with non-existent ID", true);
-// echo "Error: " . $e->getMessage() . "<br>";
+// echo "Error: " . $e->getMessage() . "\n";
 // }
 
 // // Test deleteObject with valid ID
@@ -76,7 +76,7 @@
 // displayTestResult("deleteObject with valid ID", $result);
 // } catch (Exception $e) {
 // displayTestResult("deleteObject with valid ID", false);
-// echo "Error: " . $e->getMessage() . "<br>";
+// echo "Error: " . $e->getMessage() . "\n";
 // }
 
 // // Test deleteObject with non-existent ID
@@ -86,7 +86,7 @@
 // displayTestResult("deleteObject with non-existent ID", false);
 // } catch (Exception $e) {
 // displayTestResult("deleteObject with non-existent ID", true);
-// echo "Error: " . $e->getMessage() . "<br>";
+// echo "Error: " . $e->getMessage() . "\n";
 // }
 
 
@@ -98,45 +98,45 @@ require_once '../Employee.php';
 require_once '../Appointment.php';
 
 // Create an Admin object
-echo "<br>Creating Admin...<br>";
+echo "\nCreating Admin...\n";
 $admin = new Admin(1); // Assuming admin with ID 1 exists in the database
-echo "<br>Admin Name: " . $admin->getName() . "<br>";
-echo "Admin Email: " . $admin->getEmail() . "<br>";
-echo "Admin Phone: " . $admin->getPhone() . "<br>";
+echo "\nAdmin Name: " . $admin->getName() . "\n";
+echo "Admin Email: " . $admin->getEmail() . "\n";
+echo "Admin Phone: " . $admin->getPhone() . "\n";
 
 // Test Admin functionalities
-echo "<br>Testing Admin functionalities...<br>";
+echo "\nTesting Admin functionalities...\n";
 
 // Create a new user
-// echo "Creating a new user...<br>";
+// echo "Creating a new user...\n";
 // $newUser = $admin->createUser([
 //     'name' => 'Test User',
 //     'email' => 'testuser@example.com',
 //     'phone' => '+123456789',
 //     'password' => 'password123'
 // ]);
-// echo "New User ID: " . $newUser->getId() . "<br>";
+// echo "New User ID: " . $newUser->getId() . "\n";
 
 // Create a new employee
-echo "<br>Creating a new employee...<br>";
+echo "\nCreating a new employee...\n";
 $newEmployee = $admin->createEmployee([
     'name' => 'Test Employee',
-    'email' => 'testemployee32ee@example.com',
+    'email' => 't979@example.com',
     'phone' => '+987654321',
     'password' => 'password123',
     'role' => 'Tester',
     'department' => 'QA',
     'salary' => 50000
 ]);
-echo "New Employee ID: " . $newEmployee->getId() . "<br>";
-echo "New Employee Name: " . $newEmployee->getName() . "<br>";
+echo "New Employee ID: " . $newEmployee->getId() . "\n";
+echo "New Employee Name: " . $newEmployee->getName() . "\n";
 
 // Assign the Admin to the Employee (so the Employee can observe changes)
-echo "<br>Assigning Admin to Employee...<br>";
+echo "\nAssigning Admin to Employee...\n";
 $newEmployee->setAdmin($admin);
 
 // Create a new appointment
-echo "<br>Creating a new appointment...<br>";
+echo "\nCreating a new appointment...\n";
 $date = new DateTime();
 $newAppointment = Appointment::storeObject([
     'status' => 'pending',
@@ -144,50 +144,55 @@ $newAppointment = Appointment::storeObject([
     'employeeAssignedID' => null,
     'location' => 'Test Location'
 ]);
-echo "New Appointment ID: " . $newAppointment->getAppointmentID() . "<br>";
+echo "New Appointment ID: " . $newAppointment->getAppointmentID() . "\n";
 
 // Add the appointment to the Admin's list
-echo "Adding appointment to Admin's list...<br>";
+echo "Adding appointment to Admin's list...\n";
 $admin->addAppointment($newAppointment);
 
 // Assign the appointment to the Employee
-echo "Assigning appointment to Employee...<br>";
+echo "Assigning appointment to Employee...\n";
 $admin->assignAppointment($newAppointment, $newEmployee->getId());
 
 // Test Observer pattern
-echo "<br>Testing Observer pattern...<br>";
+echo "\nTesting Observer pattern...\n";
 
 // Check if the Employee's appointment list is updated
-echo "Employee's assigned appointments:<br>";
+echo "Employee's assigned appointments:\n";
 $assignedAppointments = $newEmployee->getAssignedAppointments();
 foreach ($assignedAppointments as $appointment) {
-    echo "Appointment ID: " . $appointment->getAppointmentID() . ", Status: " . $appointment->getStatus() . "<br>";
+    echo "Appointment ID: " . $appointment->getAppointmentID() . ", Status: " . $appointment->getStatus() . "\n";
 }
 
 // Change the status of the appointment and notify observers
-echo "<br>Changing appointment status to 'ongoing'...<br>";
+echo "\nChanging appointment status to 'ongoing'...\n";
 $newAppointment->updateStatus('ongoing');
 
 // Check if the Employee's appointment list reflects the status change
-echo "Employee's assigned appointments after status change:<br>";
+echo "Employee's assigned appointments after status change:\n";
 foreach ($assignedAppointments as $appointment) {
-    echo "Appointment ID: " . $appointment->getAppointmentID() . ", Status: " . $appointment->getStatus() . "<br>";
+    echo "Appointment ID: " . $appointment->getAppointmentID() . ", Status: " . $appointment->getStatus() . "\n";
 }
 
 // Remove the appointment and notify observers
-echo "<br>Removing appointment from Admin's list...<br>";
+echo "\nRemoving appointment from Admin's list...\n";
 $admin->removeAppointment($newAppointment->getAppointmentID());
 
 // Check if the Employee's appointment list is updated after removal
-echo "Employee's assigned appointments after removal:<br>";
+echo "Employee's assigned appointments after removal:\n";
 $assignedAppointments = $newEmployee->getAssignedAppointments();
 if (empty($assignedAppointments)) {
-    echo "No appointments assigned.<br>";
+    echo "No appointments assigned.\n";
 } else {
     foreach ($assignedAppointments as $appointment) {
-        echo "Appointment ID: " . $appointment->getAppointmentID() . ", Status: " . $appointment->getStatus() . "<br>";
+        echo "Appointment ID: " . $appointment->getAppointmentID() . ", Status: " . $appointment->getStatus() . "\n";
     }
 }
 
-echo "<br>Testing complete.<br>";
+$employees = $admin->getAllEmployees();
+foreach ($employees as $employee) {
+    echo "Employee: " . $employee->getName() ."salary: " . $employee->getSalary() . " id: " . $employee->getId() . "\n";
+}
+
+echo "\nTesting complete.\n";
 ?>

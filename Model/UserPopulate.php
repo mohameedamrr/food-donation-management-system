@@ -37,11 +37,13 @@ $db->runQuery(
 $db->runQuery(
     "CREATE TABLE `food_donation`.`appointments` (
     `appointmentID` int NOT NULL AUTO_INCREMENT,
+    `userID` int NOT NULL,
     `status` VARCHAR(50) NOT NULL,
     `date` DATETIME NOT NULL,
     `employeeAssignedID` int,
     `location` VARCHAR(150) NOT NULL,
-    PRIMARY KEY (`appointmentID`)
+    PRIMARY KEY (`appointmentID`),
+    FOREIGN KEY appointments(userID) REFERENCES users (id)
 );"
 );
 
@@ -66,15 +68,28 @@ $db->runQuery(
 );
 
 
-$db->runQuery(
-    "INSERT INTO `food_donation`.`appointments` (`status`, `date`, `employeeAssignedID`, `location`) VALUES
-    ('Scheduled', '2024-11-14 10:30:00', 1, 'asdasdasdadasd'),
-    ('Completed', '2024-11-13 15:00:00', 2, 'asdasdasdadasd'),
-    ('Cancelled', '2024-11-12 09:00:00', 3, 'asdasdasdadasd'),
-    ('Scheduled', '2024-11-15 11:00:00', 1, 'asdasdasdadasd'),
-    ('In Progress', '2024-11-15 14:00:00', 2, 'asdasdasdadasd');"
-);
+//$db->runQuery(
+//    "INSERT INTO `food_donation`.`appointments` (`status`, `date`, `employeeAssignedID`, `location`) VALUES
+//    ('Scheduled', '2024-11-14 10:30:00', 1, 'asdasdasdadasd'),
+//    ('Completed', '2024-11-13 15:00:00', 2, 'asdasdasdadasd'),
+//    ('Cancelled', '2024-11-12 09:00:00', 3, 'asdasdasdadasd'),
+//    ('Scheduled', '2024-11-15 11:00:00', 1, 'asdasdasdadasd'),
+//    ('In Progress', '2024-11-15 14:00:00', 2, 'asdasdasdadasd');"
+//);
 
+$db->runQuery(
+    "INSERT INTO `food_donation`.`appointments` (`userID`, `status`, `date`, `employeeAssignedID`, `location`) VALUES
+    (1, 'Scheduled', '2024-11-14 10:30:00', 1, '123 Main St, City A'),
+    (2, 'Completed', '2024-11-13 15:00:00', 2, '456 Elm St, City B'),
+    (3, 'Cancelled', '2024-11-12 09:00:00', 3, '789 Oak St, City C'),
+    (4, 'Scheduled', '2024-11-15 11:00:00', 1, '101 Pine St, City D'),
+    (5, 'In Progress', '2024-11-15 14:00:00', 2, '202 Maple St, City E'),
+    (6, 'Scheduled', '2024-11-16 10:00:00', 4, '303 Birch St, City F'),
+    (1, 'Completed', '2024-11-17 12:00:00', 5, '404 Cedar St, City G'),
+    (2, 'Scheduled', '2024-11-18 13:00:00', 6, '505 Walnut St, City H'),
+    (3, 'In Progress', '2024-11-19 14:00:00', 1, '606 Spruce St, City I'),
+    (4, 'Cancelled', '2024-11-20 15:00:00', 2, '707 Fir St, City J');"
+);
 
 
 
