@@ -22,7 +22,7 @@ class Sacrifice extends DonationItem implements IStoreObject,IReadObject,IDelete
 
     public function setAnimalType($animalType) {
         $adminProxy = new DatabaseManagerProxy('admin');
-		$adminProxy->runQuery("UPDATE donation_items SET 'animal_type' = '$animalType' WHERE id = '$this->itemID'"); // Should succeed
+		$adminProxy->runQuery("UPDATE donation_items SET 'animal_type' = '$animalType' WHERE item_id = '$this->itemID'"); // Should succeed
         $this->animalType = $animalType;
     }
 
@@ -32,7 +32,7 @@ class Sacrifice extends DonationItem implements IStoreObject,IReadObject,IDelete
 
     public function setWeight($weight) {
         $adminProxy = new DatabaseManagerProxy('admin');
-		$adminProxy->runQuery("UPDATE donation_items SET 'weight' = '$weight' WHERE id = '$this->itemID'"); // Should succeed
+		$adminProxy->runQuery("UPDATE donation_items SET 'weight' = '$weight' WHERE item_id = '$this->itemID'"); // Should succeed
         $this->weight = $weight;
     }
 
@@ -50,7 +50,14 @@ class Sacrifice extends DonationItem implements IStoreObject,IReadObject,IDelete
             return 0;
         }
     }
-
+    public function validate(): bool{
+        if($this->weight < 0 || $this->weight > 10000){
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
     public static function readObject($item_id) {
         return new Sacrifice($item_id);
     }

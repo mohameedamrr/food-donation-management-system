@@ -51,7 +51,14 @@ class RawMaterials extends DonationItem implements IStoreObject,IReadObject,IDel
     public function setSupplier($supplier) {
         $this->supplier = $supplier;
     }
-
+    public function validate(): bool{
+        if($this->quantity<0 || $this->rawMaterialWeight < 0 || $this->rawMaterialWeight >10000){
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
     public static function readObject($item_id) {
         return new RawMaterials($item_id);
     }

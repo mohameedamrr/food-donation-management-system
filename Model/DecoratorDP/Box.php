@@ -69,5 +69,14 @@ abstract class Box extends DonationItem {
         $this->totalCost = $totalCost;
 
     }
+    public function validate(): bool{
+        if ($this->initialBoxSize <= 0 || $this->finalBoxSize < 0 || $this->initialItemList == null || $this->finalItemList == null || $this->finalBoxSize >500){   
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
 }
+    
 ?>

@@ -23,7 +23,7 @@ abstract class DonationItem {
 
 	public function setItemName($value) {
 		$adminProxy = new DatabaseManagerProxy('admin');
-		$adminProxy->runQuery("UPDATE donation_items SET item_name = '$value' WHERE id = '$this->itemID'");
+		$adminProxy->runQuery("UPDATE donation_items SET item_name = '$value' WHERE item_id = '$this->itemID'");
 		$this->itemName = $value;
 	}
 

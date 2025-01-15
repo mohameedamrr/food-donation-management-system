@@ -26,7 +26,7 @@ class BasicBox extends Box implements IDeleteObject, IReadObject, IStoreObject, 
         $this->totalCost = $this->cost;
         return $this->totalCost;
     }
-
+ 
     public static function readObject($item_id) {
         return new BasicBox($item_id);
     }
@@ -86,6 +86,7 @@ class BasicBox extends Box implements IDeleteObject, IReadObject, IStoreObject, 
         $adminProxy = new DatabaseManagerProxy('admin');
         $adminProxy->runQuery("DELETE FROM donation_items WHERE item_id = $id");
     }
+
 }
 // $basicBox = new BasicBox(7);
 

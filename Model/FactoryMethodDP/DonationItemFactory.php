@@ -1,21 +1,21 @@
 <?php
 class DonationItemFactory extends DonationFactory {
 
-    protected function createDonationItem(String $type, array $details): DonationItem {
+    protected function createDonationItem(String $type, array $details): DonationItem | bool {
         if($type == "Vegetarian Meal") {
             $meal = new Meal(1);
-            $meal->setMealType($details["mealType"]);
+            //$meal->setMealType($details["mealType"]);
             $meal->setMealQuantity($details["mealQuantity"]);
-            $meal->setExpiration($details["expiration"]);
-            $meal->setIngredients($details["ingredients"]);
+            //$meal->setExpiration($details["expiration"]);
+            //$meal->setIngredients($details["ingredients"]);
             return $meal;
         }
         else if($type == "Chicken Meal") {
             $meal = new Meal(2);
-            $meal->setMealType($details["mealType"]);
+            //$meal->setMealType($details["mealType"]);
             $meal->setMealQuantity($details["mealQuantity"]);
-            $meal->setExpiration($details["expiration"]);
-            $meal->setIngredients($details["ingredients"]);
+            //$meal->setExpiration($details["expiration"]);
+            //$meal->setIngredients($details["ingredients"]);
             return $meal;
         }
         else if($type == "Raw Materials") {
@@ -42,29 +42,32 @@ class DonationItemFactory extends DonationFactory {
         }
         else if($type == "Sheep Sacrifice") {
             $sacrifice = new Sacrifice(6);
-            $sacrifice->setAnimalType($details["animalType"]);
-            $sacrifice->setWeight($details["weight"]);
+            //$sacrifice->setAnimalType($details["animalType"]);
+            //$sacrifice->setWeight($details["weight"]);
             return $sacrifice;
         }
         else if($type == "Cow Sacrifice") {
             $sacrifice = new Sacrifice(7);
-            $sacrifice->setAnimalType($details["animalType"]);
-            $sacrifice->setWeight($details["weight"]);
+            //$sacrifice->setAnimalType($details["animalType"]);
+            //$sacrifice->setWeight($details["weight"]);
             return $sacrifice;
         }
         else if($type == "Goat Sacrifice") {
             $sacrifice = new Sacrifice(8);
-            $sacrifice->setAnimalType($details["animalType"]);
-            $sacrifice->setWeight($details["weight"]);
+            //$sacrifice->setAnimalType($details["animalType"]);
+            //$sacrifice->setWeight($details["weight"]);
             return $sacrifice;
         }
         else if($type == "Box") {
             $box = new BasicBox(9);
-            $box->setInitialBoxSize($details["boxSize"]);
-            $box->setInitialItemList($details["initialItemList"]);
+            //$box->setInitialBoxSize($details["boxSize"]);
+            //$box->setInitialItemList($details["initialItemList"]);
             $box->addItem($details["initialItemList"]);
             $box->calculateCost();
             return $box;
+        }
+        else {
+            return false;
         }
     }
 }

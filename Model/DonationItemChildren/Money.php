@@ -31,7 +31,14 @@ class Money extends DonationItem implements IStoreObject,IReadObject,IDeleteObje
         $this->donationPurpose = $donationPurpose;
 
     }
-
+    public function validate(): bool{
+        if($this->amount < 0){
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
     public static function readObject($item_id) {
         return new Money($item_id);
     }

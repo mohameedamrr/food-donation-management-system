@@ -17,6 +17,7 @@ class Meal extends DonationItem implements IStoreObject,IReadObject,IDeleteObjec
         if(isset($row)) {
             $this->mealType = $row['mealType'];
             $this->ingredients = $row['ingredients'];
+            $this->expiration = $row['expiration'];
             parent::__construct($row['item_id'],$row['item_name'],$row['currency'],$row['cost']);
         }
     }
@@ -27,7 +28,7 @@ class Meal extends DonationItem implements IStoreObject,IReadObject,IDeleteObjec
 
     public function setMealType($value) {
         $adminProxy = new DatabaseManagerProxy('admin');
-		$adminProxy->runQuery("UPDATE donation_items SET 'mealType' = '$value' WHERE id = '$this->itemID'"); // Should succeed
+		$adminProxy->runQuery("UPDATE donation_items SET 'mealType' = '$value' WHERE 'item_id' = '$this->itemID'"); // Should succeed
         $this->mealType = $value;
 
     }
@@ -47,7 +48,7 @@ class Meal extends DonationItem implements IStoreObject,IReadObject,IDeleteObjec
 
     public function setExpiration($expiration) {
         $adminProxy = new DatabaseManagerProxy('admin');
-		$adminProxy->runQuery("UPDATE donation_items SET 'expiration' = '$expiration' WHERE id = '$this->itemID'");
+		$adminProxy->runQuery("UPDATE donation_items SET 'expiration' = '$expiration' WHERE item_id = '$this->itemID'");
         $this->expiration = $expiration;
     }
 
@@ -57,9 +58,19 @@ class Meal extends DonationItem implements IStoreObject,IReadObject,IDeleteObjec
 
     public function setIngredients($ingredients) {
         $adminProxy = new DatabaseManagerProxy('admin');
-		$adminProxy->runQuery("UPDATE donation_items SET 'ingredients' = '$ingredients' WHERE id = '$this->itemID'");
+		$adminProxy->runQuery("UPDATE donation_items SET 'ingredients' = '$ingredients' WHERE item_id = '$this->itemID'");
         $this->ingredients = $ingredients;
 
+    }
+    public function validate(): bool{
+        $date = new DateTime('today');
+        $expirationDate = new DateTime($this->expiration);
+        if($expirationDate < $date || $this->mealQuantity < 0){
+            return false;
+        }
+        else{
+            return true;
+        }
     }
 
     public static function readObject($item_id) {

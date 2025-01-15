@@ -53,7 +53,7 @@ class DonationDetails implements IStoreObject,IReadObject,IDeleteObject {
                 $clientReadyMeal = new ClientReadyMeal($row['client_ready_meal_id']);
                 $clientReadyMeal->setCost($row['client_ready_meal_cost']);
                 $clientReadyMeal->setReadyMealType($row['ready_meal_type']);
-                $clientReadyMeal->setExpiration($row['ready_meal_expiration']);
+                $clientReadyMeal->setReadyMealExpiration($row['ready_meal_expiration']);
                 $clientReadyMeal->setReadyMealQuantity($row['ready_meal_quantity']);
                 $clientReadyMeal->setPackagingType($row['ready_meal_packaging_type']);
                 $donationItems[] = $clientReadyMeal;
