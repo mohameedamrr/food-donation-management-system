@@ -1,5 +1,5 @@
 <?php
-require_once '..\ProxyDP\DatabaseManagerProxy.php';
+// require_once '..\ProxyDP\DatabaseManagerProxy.php';
 
 class DonationReport extends ReportTemplate {
     private $donations;

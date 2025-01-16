@@ -93,19 +93,19 @@
 
 
 // Include necessary files
-require_once '../Admin.php';
-require_once '../Employee.php';
-require_once '../Appointment.php';
+// require_once '../Admin.php';
+// require_once '../Employee.php';
+// require_once '../Appointment.php';
 
 // Create an Admin object
-echo "\nCreating Admin...\n";
-$admin = new Admin(1); // Assuming admin with ID 1 exists in the database
-echo "\nAdmin Name: " . $admin->getName() . "\n";
-echo "Admin Email: " . $admin->getEmail() . "\n";
-echo "Admin Phone: " . $admin->getPhone() . "\n";
+// echo "\nCreating Admin...\n";
+// $admin = new Admin(1); // Assuming admin with ID 1 exists in the database
+// echo "\nAdmin Name: " . $admin->getName() . "\n";
+// echo "Admin Email: " . $admin->getEmail() . "\n";
+// echo "Admin Phone: " . $admin->getPhone() . "\n";
 
-// Test Admin functionalities
-echo "\nTesting Admin functionalities...\n";
+// // Test Admin functionalities
+// echo "\nTesting Admin functionalities...\n";
 
 // Create a new user
 // echo "Creating a new user...\n";
@@ -118,82 +118,82 @@ echo "\nTesting Admin functionalities...\n";
 // echo "New User ID: " . $newUser->getId() . "\n";
 
 // Create a new employee
-echo "\nCreating a new employee...\n";
-$newEmployee = $admin->createEmployee([
-    'name' => 'Test Employee',
-    'email' => 'htrhtr@example.com',
-    'phone' => '+987654321',
-    'password' => 'password123',
-    'role' => 'Tester',
-    'department' => 'QA',
-    'salary' => 50000
-]);
-echo "New Employee ID: " . $newEmployee->getId() . "\n";
-echo "New Employee Name: " . $newEmployee->getName() . "\n";
+// echo "\nCreating a new employee...\n";
+// $newEmployee = $admin->createEmployee([
+//     'name' => 'Test Employee',
+//     'email' => 'htrhtr@example.com',
+//     'phone' => '+987654321',
+//     'password' => 'password123',
+//     'role' => 'Tester',
+//     'department' => 'QA',
+//     'salary' => 50000
+// ]);
+// echo "New Employee ID: " . $newEmployee->getId() . "\n";
+// echo "New Employee Name: " . $newEmployee->getName() . "\n";
 
-// Assign the Admin to the Employee (so the Employee can observe changes)
-echo "\nAssigning Admin to Employee...\n";
-$newEmployee->setAdmin($admin);
+// // Assign the Admin to the Employee (so the Employee can observe changes)
+// echo "\nAssigning Admin to Employee...\n";
+// $newEmployee->setAdmin($admin);
 
-// Create a new appointment
-echo "\nCreating a new appointment...\n";
-$date = new DateTime();
-$newAppointment = Appointment::storeObject([
-    'userID' => 1,
-    'status' => 'pending',
-    'date' => $date->format('Y-m-d'),
-    'employeeAssignedID' => null,
-    'location' => 'Test Location'
-]);
-echo "New Appointment ID: " . $newAppointment->getAppointmentID() . "\n";
+// // Create a new appointment
+// echo "\nCreating a new appointment...\n";
+// $date = new DateTime();
+// $newAppointment = Appointment::storeObject([
+//     'userID' => 1,
+//     'status' => 'pending',
+//     'date' => $date->format('Y-m-d'),
+//     'employeeAssignedID' => null,
+//     'location' => 'Test Location'
+// ]);
+// echo "New Appointment ID: " . $newAppointment->getAppointmentID() . "\n";
 
-// Add the appointment to the Admin's list
-echo "Adding appointment to Admin's list...\n";
-$admin->addAppointment($newAppointment);
+// // Add the appointment to the Admin's list
+// echo "Adding appointment to Admin's list...\n";
+// $admin->addAppointment($newAppointment);
 
-// Assign the appointment to the Employee
-echo "Assigning appointment to Employee...\n";
-$admin->assignAppointment($newAppointment, $newEmployee->getId());
+// // Assign the appointment to the Employee
+// echo "Assigning appointment to Employee...\n";
+// $admin->assignAppointment($newAppointment, $newEmployee->getId());
 
-// Test Observer pattern
-echo "\nTesting Observer pattern...\n";
+// // Test Observer pattern
+// echo "\nTesting Observer pattern...\n";
 
-// Check if the Employee's appointment list is updated
-echo "Employee's assigned appointments:\n";
-$assignedAppointments = $newEmployee->getAssignedAppointments();
-foreach ($assignedAppointments as $appointment) {
-    echo "Appointment ID: " . $appointment->getAppointmentID() . ", Status: " . $appointment->getStatus() . "\n";
-}
+// // Check if the Employee's appointment list is updated
+// echo "Employee's assigned appointments:\n";
+// $assignedAppointments = $newEmployee->getAssignedAppointments();
+// foreach ($assignedAppointments as $appointment) {
+//     echo "Appointment ID: " . $appointment->getAppointmentID() . ", Status: " . $appointment->getStatus() . "\n";
+// }
 
-// Change the status of the appointment and notify observers
-echo "\nChanging appointment status to 'ongoing'...\n";
-$newAppointment->updateStatus('ongoing');
+// // Change the status of the appointment and notify observers
+// echo "\nChanging appointment status to 'ongoing'...\n";
+// $newAppointment->updateStatus('ongoing');
 
-// Check if the Employee's appointment list reflects the status change
-echo "Employee's assigned appointments after status change:\n";
-foreach ($assignedAppointments as $appointment) {
-    echo "Appointment ID: " . $appointment->getAppointmentID() . ", Status: " . $appointment->getStatus() . "\n";
-}
+// // Check if the Employee's appointment list reflects the status change
+// echo "Employee's assigned appointments after status change:\n";
+// foreach ($assignedAppointments as $appointment) {
+//     echo "Appointment ID: " . $appointment->getAppointmentID() . ", Status: " . $appointment->getStatus() . "\n";
+// }
 
-// Remove the appointment and notify observers
-echo "\nRemoving appointment from Admin's list...\n";
-$admin->removeAppointment($newAppointment->getAppointmentID());
+// // Remove the appointment and notify observers
+// echo "\nRemoving appointment from Admin's list...\n";
+// $admin->removeAppointment($newAppointment->getAppointmentID());
 
-// Check if the Employee's appointment list is updated after removal
-echo "Employee's assigned appointments after removal:\n";
-$assignedAppointments = $newEmployee->getAssignedAppointments();
-if (empty($assignedAppointments)) {
-    echo "No appointments assigned.\n";
-} else {
-    foreach ($assignedAppointments as $appointment) {
-        echo "Appointment ID: " . $appointment->getAppointmentID() . ", Status: " . $appointment->getStatus() . "\n";
-    }
-}
+// // Check if the Employee's appointment list is updated after removal
+// echo "Employee's assigned appointments after removal:\n";
+// $assignedAppointments = $newEmployee->getAssignedAppointments();
+// if (empty($assignedAppointments)) {
+//     echo "No appointments assigned.\n";
+// } else {
+//     foreach ($assignedAppointments as $appointment) {
+//         echo "Appointment ID: " . $appointment->getAppointmentID() . ", Status: " . $appointment->getStatus() . "\n";
+//     }
+// }
 
-$employees = $admin->getAllEmployees();
-foreach ($employees as $employee) {
-    echo "Employee: " . $employee->getName() ."salary: " . $employee->getSalary() . " id: " . $employee->getId() . "\n";
-}
+// $employees = $admin->getAllEmployees();
+// foreach ($employees as $employee) {
+//     echo "Employee: " . $employee->getName() ."salary: " . $employee->getSalary() . " id: " . $employee->getId() . "\n";
+// }
 
-echo "\nTesting complete.\n";
+// echo "\nTesting complete.\n";
 ?>

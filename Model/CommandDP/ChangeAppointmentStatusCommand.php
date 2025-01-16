@@ -1,15 +1,15 @@
 <?php
-require_once '../../interfaces/IStoreObject.php';
-require_once '../../interfaces/IUpdateObject.php';
-require_once '../../interfaces/IDeleteObject.php';
-require_once '../../interfaces/IReadObject.php';
-require_once '../../interfaces/ICommand.php';
-require_once '../ProxyDP/DatabaseManagerProxy.php';
-require_once '../Appointment.php';
-require_once '../Employee.php';
-require_once '../Admin.php';
-require_once 'ChangeAppointmentNoteCommand.php';
-require_once 'ChangeDonationDescriptionCommand.php';
+// require_once '../../interfaces/IStoreObject.php';
+// require_once '../../interfaces/IUpdateObject.php';
+// require_once '../../interfaces/IDeleteObject.php';
+// require_once '../../interfaces/IReadObject.php';
+// require_once '../../interfaces/ICommand.php';
+// require_once '../ProxyDP/DatabaseManagerProxy.php';
+// require_once '../Appointment.php';
+// require_once '../Employee.php';
+// require_once '../Admin.php';
+// require_once 'ChangeAppointmentNoteCommand.php';
+// require_once 'ChangeDonationDescriptionCommand.php';
 
 class ChangeAppointmentStatusCommand implements ICommand {
     private $employee;

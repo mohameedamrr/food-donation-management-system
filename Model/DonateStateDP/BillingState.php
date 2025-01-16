@@ -1,7 +1,7 @@
 <?php
 
-require_once 'DonateState.php';
-require_once '../Bill.php';
+// require_once 'DonateState.php';
+// require_once '../Bill.php';
 
 class BillingState extends DonateState
 {
@@ -22,7 +22,7 @@ class BillingState extends DonateState
         if ($bill->getIsPaid() === true) {
             $donate->setNextState(new CreateDonationDetailsState($this->amountToPay));
         } else {
-            $donate->setNextState(new DonateFailedState("Payment Failed. Please retry."));
+            $donate->setNextState(new DonateFailedState());
         }
     }
 

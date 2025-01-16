@@ -1,7 +1,7 @@
 <?php
 // require_once 'NonBillableDonate.php';
 // require_once 'DatabaseManager.php';
-require_once 'DonationItem.php';
+// require_once 'DonationItem.php';
 class ClientReadyMeal extends DonationItem implements IStoreObject,IReadObject,IDeleteObject,IUpdateObject{
 
 	private $readyMealType;

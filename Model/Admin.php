@@ -1,20 +1,20 @@
 <?php
-spl_autoload_register(function ($class_name) {
-    $directories = [
-        '../Model/',
-        '../Controller/',
-        '../View/',
-        '../interfaces/',
-    ];
-    foreach ($directories as $directory) {
-        $file = __DIR__ . '/' . $directory . $class_name . '.php';
-        if (file_exists($file)) {
-            require_once $file;
-            return;
-        }
-    }
-});
-require_once 'ProxyDP/DatabaseManagerProxy.php';
+// spl_autoload_register(function ($class_name) {
+//     $directories = [
+//         '../Model/',
+//         '../Controller/',
+//         '../View/',
+//         '../interfaces/',
+//     ];
+//     foreach ($directories as $directory) {
+//         $file = __DIR__ . '/' . $directory . $class_name . '.php';
+//         if (file_exists($file)) {
+//             require_once $file;
+//             return;
+//         }
+//     }
+// });
+// require_once 'ProxyDP/DatabaseManagerProxy.php';
 class Admin extends UserEntity implements ISubject, IUpdateObject, IStoreObject, IDeleteObject {
     private array $appointmentsList = []; // array of tasks
     private array $observersList = []; // array of IObserver objects

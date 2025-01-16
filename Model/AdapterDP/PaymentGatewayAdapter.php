@@ -14,8 +14,8 @@
 //         }
 //     }
 // });
-require_once '../../interfaces/IPayment.php';
-require_once 'ThirdPartyPaymentGateway.php';
+// require_once '../../interfaces/IPayment.php';
+// require_once 'ThirdPartyPaymentGateway.php';
 class PaymentGatewayAdapter implements IPayment {
 
     private $paymentGateway; 

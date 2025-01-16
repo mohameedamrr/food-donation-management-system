@@ -1,6 +1,6 @@
 <?php
 
-require_once 'DonateState.php';
+// require_once 'DonateState.php';
 
 class SendMailState extends DonateState
 {

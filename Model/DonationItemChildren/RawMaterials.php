@@ -1,6 +1,6 @@
 <?php
 // require_once 'DatabaseManager.php';
-require_once 'DonationItem.php';
+// require_once 'DonationItem.php';
 class RawMaterials extends DonationItem implements IStoreObject,IReadObject,IDeleteObject,IUpdateObject{
 
     private $materialType;

@@ -1,6 +1,6 @@
 <?php
 // Correct the path for the phpmailerFacade.php file
-require __DIR__ . '/../FacadeDP/phpmailerFacade.php'; // Ensure the path is correct
+// require __DIR__ . '/../FacadeDP/phpmailerFacade.php'; // Ensure the path is correct
 
 abstract class ReportTemplate {
     protected $reportString = ""; 

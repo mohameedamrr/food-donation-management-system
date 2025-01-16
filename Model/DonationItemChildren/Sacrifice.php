@@ -1,5 +1,5 @@
 <?php
-require_once 'DonationItem.php';
+// require_once 'DonationItem.php';
 class Sacrifice extends DonationItem implements IStoreObject,IReadObject,IDeleteObject,IUpdateObject{
 
     private $animalType;

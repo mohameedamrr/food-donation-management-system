@@ -1,19 +1,19 @@
 <?php
-spl_autoload_register(function ($class_name) {
-    $directories = [
-        '../Model/',
-        '../Controller/',
-        '../View/',
-        '../interfaces/',
-    ];
-    foreach ($directories as $directory) {
-        $file = __DIR__ . '/' . $directory . $class_name . '.php';
-        if (file_exists($file)) {
-            require_once $file;
-            return;
-        }
-    }
-});
+// spl_autoload_register(function ($class_name) {
+//     $directories = [
+//         '../Model/',
+//         '../Controller/',
+//         '../View/',
+//         '../interfaces/',
+//     ];
+//     foreach ($directories as $directory) {
+//         $file = __DIR__ . '/' . $directory . $class_name . '.php';
+//         if (file_exists($file)) {
+//             require_once $file;
+//             return;
+//         }
+//     }
+// });
 
 class Appointment {
     private $appointmentID;
@@ -144,7 +144,7 @@ class Appointment {
         //     return new Appointment($row["appointmentID"], null);
         // }
         // return null;
-        return new Appointment($appointmentID, null);
+        return new Appointment($appointmentID);
     }
 
     public static function storeObject(array $data) {
@@ -154,7 +154,7 @@ class Appointment {
         $db = new DatabaseManagerProxy('admin');
         $db->runQuery($sql);
         $lastInsertedId = $db->getLastInsertId();
-        return new Appointment($lastInsertedId, null);
+        return new Appointment($lastInsertedId);
     }
 }
 ?>

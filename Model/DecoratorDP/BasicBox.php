@@ -1,9 +1,9 @@
 <?php
-require_once 'Box.php';
-require_once 'BoxDecorator.php';
-require_once 'BoxAdditionalRice.php';
-require_once 'BoxAdditionalPasta.php';
-require_once 'BoxAdditionalOil.php';
+// require_once 'Box.php';
+// require_once 'BoxDecorator.php';
+// require_once 'BoxAdditionalRice.php';
+// require_once 'BoxAdditionalPasta.php';
+// require_once 'BoxAdditionalOil.php';
 
 class BasicBox extends Box implements IDeleteObject, IReadObject, IStoreObject, IUpdateObject {
 
