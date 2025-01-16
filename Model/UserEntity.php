@@ -20,15 +20,13 @@ abstract class UserEntity {
     protected $email;
     protected $phone;
     protected $password;
-    protected $loginMethod;
 
-    public function __construct($id, $name, $email, $phone, $password, $loginMethod) {
+    public function __construct($id, $name, $email, $phone, $password) {
         $this->id = $id;
         $this->name = $name;
         $this->email = $email;
         $this->phone = $phone;
         $this->password = $password;
-        $this->loginMethod = $loginMethod;
     }
 
     public function getId() {
@@ -79,24 +77,6 @@ abstract class UserEntity {
         $this->password = $password;
         $sql = "UPDATE `food_donation`.`users` SET password = '$this->password' WHERE id = $this->id";
         DatabaseManager::getInstance()->runQuery($sql);
-    }
-
-    public function getLoginMethod() {
-        return $this->loginMethod;
-    }
-
-    public function setLoginMethod($loginMethod) {
-        $this->loginMethod = $loginMethod;
-    }
-
-    public function login($email, $password): bool {
-        //echo $this->password;
-        return $this->loginMethod->authenticate($email, $password);
-    }
-
-    public function logout(&$reference): bool {
-        $reference = null;
-        return true;
     }
 
     public function updateProfile(array $profileData): void {

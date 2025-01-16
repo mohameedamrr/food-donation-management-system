@@ -20,12 +20,12 @@ class BasicDonator extends UserEntity implements IStoreObject, IUpdateObject, IR
     private $location;
     private $appointments;
 
-    public function __construct($email, $loginMethod = new NormalMethod()) {
+    public function __construct($email) {
         $sql = "SELECT * FROM users WHERE email = '$email'";
         $db = new DatabaseManagerProxy('donor');
         $row = $db->run_select_query($sql)->fetch_assoc();
         if(isset($row)) {
-            parent::__construct($row["id"], $row["name"], $row["email"], $row["phone"], $row["password"], $loginMethod);
+            parent::__construct($row["id"], $row["name"], $row["email"], $row["phone"], $row["password"]);
             $this->donationHistory = $this->fetchDonationHistory($row["id"]);
             $this->appointments = $this->fetchAppointments($row["id"]);
         }
@@ -69,7 +69,7 @@ class BasicDonator extends UserEntity implements IStoreObject, IUpdateObject, IR
 
         return $appointments;
     }
-    public static function storeObject(array $data, $loginMethod = new NormalMethod()) {
+    public static function storeObject(array $data) {
         $hashedPassword = md5($data['password']);
         $data['password'] = $hashedPassword;
         $columns = implode(", ", array_map(fn($key) => "`$key`", array_keys($data)));
@@ -78,7 +78,7 @@ class BasicDonator extends UserEntity implements IStoreObject, IUpdateObject, IR
         $db = new DatabaseManagerProxy('donor');
         $db->runQuery($sql);
         $lastInsertedId = $db->getLastInsertId();
-        return new BasicDonator($lastInsertedId, $loginMethod);
+        return new BasicDonator($lastInsertedId);
     }
 
     // public static function readObject($id) {

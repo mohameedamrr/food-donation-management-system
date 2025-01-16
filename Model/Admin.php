@@ -21,14 +21,14 @@ class Admin extends UserEntity implements ISubject, IUpdateObject, IStoreObject,
 
     private array $commandsHistory = [];
 
-    public function __construct($id, $loginMethod = new NormalMethod()) {
+    public function __construct($id) {
         $db = new DatabaseManagerProxy('admin');
         $sql = "SELECT * FROM `food_donation`.`users` WHERE id = $id";
 
 
         $row = $db->run_select_query($sql)->fetch_assoc();
         if(isset($row)) {
-            parent::__construct($row["id"], $row["name"], $row["email"], $row["phone"], $row["password"], $loginMethod);
+            parent::__construct($row["id"], $row["name"], $row["email"], $row["phone"], $row["password"]);
         }
         $sql3 = "SELECT * FROM `food_donation`.`appointments`";
         $rows = $db->run_select_query($sql3)->fetch_all(MYSQLI_ASSOC);
@@ -61,7 +61,7 @@ class Admin extends UserEntity implements ISubject, IUpdateObject, IStoreObject,
     //edit donation item cost
 
 
-    public function createEmployee(array $employeeData, $loginMethod = new NormalMethod()) {
+    public function createEmployee(array $employeeData) {
         // return Employee::storeObject($employeeData);
 
         $db = new DatabaseManagerProxy('admin'); 
@@ -99,7 +99,7 @@ class Admin extends UserEntity implements ISubject, IUpdateObject, IStoreObject,
         $db->runQuery($employeeSql);
     
         // Return the newly created Employee object
-        return new Employee($userData["email"], $loginMethod);
+        return new Employee($userData["email"]);
     }
 
     // public function createUser(array $userData) {
@@ -202,7 +202,7 @@ class Admin extends UserEntity implements ISubject, IUpdateObject, IStoreObject,
         return $employeeObjects;
     }
 
-    public static function storeObject(array $data, $loginMethod = new NormalMethod()) {
+    public static function storeObject(array $data) {
         $hashedPassword = md5($data['password']);
         $data['password'] = $hashedPassword;
         $proxy = new DatabaseManagerProxy('admin');
@@ -224,7 +224,7 @@ class Admin extends UserEntity implements ISubject, IUpdateObject, IStoreObject,
             if (!$proxy->runQuery($queryEmployees)) {
                 throw new Exception("Failed to store admin object in employees table.");
             }
-            return new self($id, $loginMethod);
+            return new self($id);
         } catch (Exception $e) {
 
             throw $e;

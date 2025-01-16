@@ -20,10 +20,10 @@ require_once 'ProxyDP/DatabaseManagerProxy.php';
 class GoogleMethod implements ILogin {
     private $googleToken;
 
-    public function authenticate(string $email, string $password): bool {
+    public function authenticate(string $email, string $password, string $type): UserEntity|NULL {
         // Check if the email contains "@gmail.com"
         if (!preg_match('/@gmail\.com$/i', $email)) {
-            return false; // Login fails if the email is not a Gmail address
+            return NULL; // Login fails if the email is not a Gmail address
         }
 
         // Prepare the SQL query to select user by email
@@ -35,10 +35,18 @@ class GoogleMethod implements ILogin {
 
         // Check if the user exists and the password matches
         if ($row && $row["password"] == $hashedPassword) {
-            return true; // Login successful
+            if ($type == "Donator"){
+                return new BasicDonator($email);
+            }
+            elseif ($type == "Employee"){
+                return new Employee($email);
+            }
+            elseif ($type == "Admin"){
+                return new Admin(1);
+            }
         }
-
-        return false; // Login fails if the user doesn't exist or the password is incorrect
+        
+        return NULL; // Login fails if the user doesn't exist or the password is incorrect
     }
 }
 ?>
