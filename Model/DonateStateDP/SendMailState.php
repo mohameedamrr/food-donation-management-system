@@ -45,7 +45,7 @@ class SendMailState extends DonateState
         $mailFacade = new MailFacade();
         $user = BasicDonator::readObject($donate->getUserId());
         $mailFacade->setRecipient('ziadayman087@gmail.com', $user->getName());
-        echo $user->getEmail();
+        //echo $user->getEmail();
         $emailContent = '<h1>Donation Receipt</h1>';
         $emailContent .= '<p>Hello, here are the details of your donation:</p>';
 

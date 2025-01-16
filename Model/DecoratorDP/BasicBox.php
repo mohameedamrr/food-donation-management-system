@@ -11,7 +11,6 @@ class BasicBox extends Box implements IDeleteObject, IReadObject, IStoreObject, 
         $donorProxy = new DatabaseManagerProxy('donor');
         $row = $donorProxy->run_select_query("SELECT * FROM donation_items WHERE item_id = $item_id")->fetch_assoc();
         if(isset($row)) {
-            echo 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
             parent::__construct($row['item_id'],$row['item_name'],$row['currency'],$row['cost'], $row['initial_box_size'], explode(", ", $row['initial_item_list']));
         }
     }
