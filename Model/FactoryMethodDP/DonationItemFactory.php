@@ -18,6 +18,14 @@ class DonationItemFactory extends DonationFactory {
             //$meal->setIngredients($details["ingredients"]);
             return $meal;
         }
+        else if($type == "Beef Meal") {
+            $meal = new Meal(10);
+            //$meal->setMealType($details["mealType"]);
+            $meal->setMealQuantity($details["mealQuantity"]);
+            //$meal->setExpiration($details["expiration"]);
+            //$meal->setIngredients($details["ingredients"]);
+            return $meal;
+        }
         else if($type == "Raw Materials") {
             $rawMaterials = new RawMaterials(3);
             $rawMaterials->setMaterialType($details["materialType"]);
