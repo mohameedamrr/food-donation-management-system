@@ -39,13 +39,19 @@ class GoogleMethod implements ILogin {
                 return new BasicDonator($email);
             }
             elseif ($type == "Employee"){
-                return new Employee($email);
+                $user_id = $row['id'];
+                $sql2 = "SELECT * FROM `food_donation`.`employees` WHERE id = $user_id";
+                $row2 = $db->run_select_query($sql2)->fetch_assoc();
+                if(isset($row2)) {
+                    return new Employee($email);
+                } else {
+                    return null;
+                }
             }
             elseif ($type == "Admin"){
                 return new Admin(1);
             }
         }
-        
         return NULL; // Login fails if the user doesn't exist or the password is incorrect
     }
 }
