@@ -50,7 +50,7 @@ class Bill {
         $this->paymentState = $state;
     }
 
-    public function proceeedPayment(): void {
+    public function proceedPayment(): void {
         $this->paymentState->nextPaymentState($this);
     }
 }
