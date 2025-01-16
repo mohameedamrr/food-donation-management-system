@@ -1,0 +1,24 @@
+=== Admin Report ===
+Date: 2025-01-16 00:53:32
+-------------------
+Summary:
+- Report Type: Employees Report
+- Total Records: 9
+-------------------
+Employee Details:
+- Name: Bertha, Role: Manager, Salary: $20000
+- Name: Demarcus, Role: Volunteer, Salary: $0
+- Name: Kyla, Role: Coordinator, Salary: $17000
+- Name: Lacey, Role: Driver, Salary: $5000
+- Name: 7amada, Role: Technician, Salary: $15000
+- Name: Pearl, Role: Assistant, Salary: $10000
+- Name: Alice Johnson, Role: employee, Salary: $7000
+- Name: Test Employee, Role: Driver, Salary: $6000
+- Name: Test Employee, Role: Developer, Salary: $6000
+-------------------
+Total Employees: 9
+Highest Salary: $20000 (Employee: Bertha, Role: Manager)
+Average Salary: $9,555.56
+-------------------
+End of Report
+================
