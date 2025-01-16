@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donor Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .dashboard-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .section:last-child {
+            border-bottom: none;
+        }
+
+        .section h3 {
+            color: #28a745;
+            margin-bottom: 15px;
+        }
+
+        .section input[type="text"],
+        .section input[type="number"],
+        .section input[type="date"],
+        .section select,
+        .section textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .section button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .section button:hover {
+            background-color: #218838;
+        }
+
+        .cart-icon {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #28a745;
+            color: white;
+            padding: 10px;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            text-align: center;
+            line-height: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .cart-icon span {
+            font-size: 14px;
+        }
+
+        .proceed-button {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Cart Icon -->
+    <div class="cart-icon">
+        <span id="cart-count">0</span>
+    </div>
+
+    <div class="dashboard-container">
+        <h2>Donor Dashboard</h2>
+
+        <!-- Meal Donation Section -->
+        <div class="section">
+            <h3>Meal Donation</h3>
+            <form method="POST" action="../Controller/DonorDashboardController.php">
+                <select name="mealType" required>
+                    <option value="Beef Meal">Beef</option>
+                    <option value="Chicken Meal">Chicken</option>
+                    <option value="Vegetarian Meal">Vegetarian</option>
+                </select>
+                <input type="number" name="mealQuantity" placeholder="Quantity" required>
+                <button type="submit" name="add_meal">Add to Cart</button>
+            </form>
+        </div>
+
+        <!-- Raw Materials Donation Section -->
+        <div class="section">
+            <h3>Raw Materials Donation</h3>
+            <form method="POST" action="../Controller/DonorDashboardController.php">
+                <input type="text" name="materialType" placeholder="Material Type (e.g., Grain)" required>
+                <input type="number" name="quantity" placeholder="Quantity" required>
+                <input type="number" name="rawMaterialWeight" placeholder="Weight (kg)" required>
+                <input type="text" name="supplier" placeholder="Supplier" required>
+                <button type="submit" name="add_raw_materials">Add to Cart</button>
+            </form>
+        </div>
+
+        <!-- Money Donation Section -->
+        <div class="section">
+            <h3>Money Donation</h3>
+            <form method="POST" action="../Controller/DonorDashboardController.php">
+                <input type="number" name="amount" placeholder="Amount" required>
+                <input type="text" name="donationPurpose" placeholder="Purpose (e.g., School Supplies)" required>
+                <button type="submit" name="add_money">Add to Cart</button>
+            </form>
+        </div>
+
+        <!-- Sacrifice Donation Section -->
+        <div class="section">
+            <h3>Sacrifice Donation</h3>
+            <form method="POST" action="../Controller/DonorDashboardController.php">
+                <select name="animalType" id="animalType" required>
+                    <option value="Sheep Sacrifice">Sheep</option>
+                    <option value="Cow Sacrifice">Cow</option>
+                    <option value="Goat Sacrifice">Goat</option>
+                </select>
+                <input type="number" name="weight" id="weight" placeholder="Weight (kg)" readonly required>
+                <button type="submit" name="add_sacrifice">Add to Cart</button>
+            </form>
+        </div>
+
+        <!-- Client Ready Meal Section -->
+        <div class="section">
+            <h3>Client Ready Meal</h3>
+            <form method="POST" action="../Controller/DonorDashboardController.php">
+                <input type="text" name="readyMealType" placeholder="Meal Type (e.g., Frozen Pizza)" required>
+                <input type="date" name="readyMealExpiration" placeholder="Expiration Date" required>
+                <input type="text" name="packagingType" placeholder="Packaging Type (e.g., Plastic Wrap)" required>
+                <input type="number" name="readyMealQuantity" placeholder="Quantity" required>
+                <button type="submit" name="add_ready_meal">Add to Cart</button>
+            </form>
+        </div>
+
+        <!-- Box Section -->
+        <div class="section">
+            <h3>Box Donation</h3>
+            <form method="POST" action="../Controller/DonorDashboardController.php">
+                <input type="number" name="boxQuantity" placeholder="Number of Boxes" required>
+                <button type="submit" name="add_box">Add Box to Cart</button>
+            </form>
+        </div>
+
+        <!-- Proceed Button -->
+        <div class="proceed-button">
+            <a href="checkout.php"><button>Proceed</button></a>
+        </div>
+    </div>
+
+    <script>
+        // Fetch the cart item count from the server
+        async function fetchCartItemCount() {
+            const response = await fetch('../Controller/getCartItemCount.php');
+            const data = await response.json();
+            document.getElementById('cart-count').textContent = data.count;
+        }
+
+        // Update the cart count when the page loads
+        fetchCartItemCount();
+
+        // Automatically set the weight based on the animal type
+        const animalTypeSelect = document.getElementById('animalType');
+        const weightInput = document.getElementById('weight');
+
+        animalTypeSelect.addEventListener('change', () => {
+            switch (animalTypeSelect.value) {
+                case 'Sheep Sacrifice':
+                    weightInput.value = 100;
+                    break;
+                case 'Cow Sacrifice':
+                    weightInput.value = 510;
+                    break;
+                case 'Goat Sacrifice':
+                    weightInput.value = 90;
+                    break;
+            }
+        });
+
+        // Initialize the weight on page load
+        animalTypeSelect.dispatchEvent(new Event('change'));
+    </script>
+</body>
+</html>

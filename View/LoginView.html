@@ -39,10 +39,6 @@
             box-sizing: border-box;
         }
 
-        .login-container input[type="radio"] {
-            margin: 10px 5px;
-        }
-
         .login-container button {
             width: 100%;
             padding: 10px;
@@ -74,16 +70,52 @@
 
         .radio-group {
             margin: 10px 0;
+            text-align: left;
         }
 
         .radio-group label {
+            display: block;
+            margin: 5px 0;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .radio-group label:hover {
+            background-color: #f1f1f1;
+        }
+
+        .radio-group input[type="radio"] {
             margin-right: 10px;
+        }
+
+        .error-message {
+            color: #dc3545;
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
     <div class="login-container">
         <h2>Login</h2>
+        <?php if (isset($_GET['error'])): ?>
+            <div class="error-message">
+                <?php
+                switch ($_GET['error']) {
+                    case 'invalid_credentials':
+                        echo "Invalid email or password.";
+                        break;
+                    case 'invalid_user_type':
+                        echo "Invalid user type.";
+                        break;
+                    default:
+                        echo "An error occurred. Please try again.";
+                }
+                ?>
+            </div>
+        <?php endif; ?>
         <form action="../Controller/LoginController.php" method="POST">
             <div class="radio-group">
                 <label>Login as:</label>
@@ -101,7 +133,7 @@
             <button type="submit">Login</button>
         </form>
         <div class="signup-link">
-            Don't have an account? <a href="signup.php">Sign Up</a>
+            Don't have an account? <a href="SignupView.html">Sign Up</a>
         </div>
     </div>
 </body>
