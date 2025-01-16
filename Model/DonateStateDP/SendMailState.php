@@ -11,41 +11,11 @@ class SendMailState extends DonateState
         $this->donationDetails = $donationDetails;
     }
 
-    protected function saveReportToFile($reportString) {
-        // Generate the filename using today's date and report type
-        $filename = date('Y-m-d') . '_' . strtolower('da') . '.html';
-
-        // Wrap the report string in HTML tags
-        $htmlContent = "<!DOCTYPE html>
-<html lang='en'>
-<head>
-    <meta charset='UTF-8'>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-    <title>" ."</title>
-    <style>
-        body { font-family: Arial, sans-serif; }
-        h1 { color: #333; }
-        h2 { color: #555; }
-        p { color: #666; }
-        hr { border: 1px solid #ddd; }
-    </style>
-</head>
-<body>
-    " . $reportString . "
-</body>
-</html>";
-
-        // Save the report string to the file
-        file_put_contents($filename, $htmlContent);
-        echo "Report saved to $filename\n";
-    }
-
     public function nextDonationState(Donate $donate, array $donationItems, IPayment $paymentMethod): void
     {
         $mailFacade = new MailFacade();
         $user = BasicDonator::readObject($donate->getUserId());
-        $mailFacade->setRecipient('ziadayman087@gmail.com', $user->getName());
-        //echo $user->getEmail();
+        $mailFacade->setRecipient($user->getEmail(), $user->getName());
         $emailContent = '<h1>Donation Receipt</h1>';
         $emailContent .= '<p>Hello, here are the details of your donation:</p>';
 
@@ -102,8 +72,6 @@ class SendMailState extends DonateState
         $mailFacade->setContent('Donation Receipt', '<p1>'.$emailContent.'</p1>', true);
 
         $mailStatus = $mailFacade->send();
-
-        $this->saveReportToFile($emailContent);
 
         if (!$mailStatus) {
             $donate->setNextState(new DonateFailedState());
