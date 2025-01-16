@@ -1,7 +1,7 @@
 <?php
-require_once '../Bill.php';
-require_once 'CompletedState.php';
-require_once 'FailedState.php';
+// require_once '../Bill.php';
+// require_once 'CompletedState.php';
+// require_once 'FailedState.php';
  class ProcessingState extends PaymentState{
 
     public function nextPaymentState(Bill $bill): void {

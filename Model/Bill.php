@@ -1,10 +1,10 @@
 <?php
-require_once '../interfaces/IPayment.php';
-require_once 'StateDP/PaymentState.php';
-require_once 'StateDP/InitialState.php';
-require_once 'PaymentStrategyDP/Cash.php';
-require_once 'PaymentStrategyDP/Card.php';
-require_once 'PaymentStrategyDP/InstaPay.php';
+// require_once '../interfaces/IPayment.php';
+// require_once 'StateDP/PaymentState.php';
+// require_once 'StateDP/InitialState.php';
+// require_once 'PaymentStrategyDP/Cash.php';
+// require_once 'PaymentStrategyDP/Card.php';
+// require_once 'PaymentStrategyDP/InstaPay.php';
 class Bill {
     private $paymentStrategy; // IPayment
     private $billAmount;      // float

@@ -124,7 +124,7 @@ class MailFacade
         try {
             return $this->mailer->send();
         } catch (Exception $e) {
-            throw new Exception("Message could not be sent. Mailer Error: {$this->mailer->ErrorInfo}");
+           return false;
         }
     }
 }

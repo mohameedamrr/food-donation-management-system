@@ -2,7 +2,7 @@
 
 require_once 'DonateState.php';
 
-class sendMailState extends DonateState
+class SendMailState extends DonateState
 {
     private DonationDetails $donationDetails;
 
@@ -11,31 +11,105 @@ class sendMailState extends DonateState
         $this->donationDetails = $donationDetails;
     }
 
-    /**
-     * 5 - Send mail (confirmation)
-     */
+    protected function saveReportToFile($reportString) {
+        // Generate the filename using today's date and report type
+        $filename = date('Y-m-d') . '_' . strtolower('da') . '.html';
+
+        // Wrap the report string in HTML tags
+        $htmlContent = "<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>" ."</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        h1 { color: #333; }
+        h2 { color: #555; }
+        p { color: #666; }
+        hr { border: 1px solid #ddd; }
+    </style>
+</head>
+<body>
+    " . $reportString . "
+</body>
+</html>";
+
+        // Save the report string to the file
+        file_put_contents($filename, $htmlContent);
+        echo "Report saved to $filename\n";
+    }
+
     public function nextDonationState(Donate $donate, array $donationItems, IPayment $paymentMethod): void
     {
-        // Send mail to user with donation summary
         $mailFacade = new MailFacade();
-        $mailFacade->setFrom("donations@example.org", "Donation Service")
-                   ->setRecipient("user@example.com", "User Name")  // you'd pull from $donate->getUserId() or user table
-                   ->setContent(
-                       "Thank you for your donation!",
-                       "We appreciate your donation of " . $this->donationDetails->totalCost . " units.",
-                       true
-                   );
-        $mailSent = $mailFacade->send();
+        $user = BasicDonator::readObject($donate->getUserId());
+        $mailFacade->setRecipient('ziadayman087@gmail.com', $user->getName());
+        echo $user->getEmail();
+        $emailContent = '<h1>Donation Receipt</h1>';
+        $emailContent .= '<p>Hello, here are the details of your donation:</p>';
 
-        if (!$mailSent) {
-            // If sending fails, we might either ignore or mark as fail
-            $donate->setNextState(new failedState("Could not send email to user."));
-            return;
+        $emailContent .= '<h2>Donation Summary</h2>';
+        $emailContent .= '<p><strong>Total Cost:</strong> ' . $this->donationDetails->getTotalCost() . '</p>';
+        $emailContent .= '<p><strong>Description:</strong> Donation for user: ' . $user->getName() . '</p>';
+        $emailContent .= '<p><strong>Donation ID:</strong> ' . $donate->getDonationID() . '</p>';
+
+        $emailContent .= '<h2>Donation Items</h2>';
+        $emailContent .= '<ul>';
+
+        foreach ($donationItems as $donationItem) {
+            $emailContent .= '<li>';
+            if ($donationItem instanceof Meal) {
+                $emailContent .= '<strong>Meal:</strong> ' . $donationItem->getItemName() . '<br>';
+                $emailContent .= '<strong>Cost:</strong> ' . $donationItem->getCost() . '<br>';
+                $emailContent .= '<strong>Quantity:</strong> ' . $donationItem->getMealQuantity() . '<br>';
+            } elseif ($donationItem instanceof RawMaterials) {
+                $emailContent .= '<strong>Raw Materials:</strong> ' . $donationItem->getItemName() . '<br>';
+                $emailContent .= '<strong>Cost:</strong> ' . $donationItem->getCost() . '<br>';
+                $emailContent .= '<strong>Material Type:</strong> ' . $donationItem->getMaterialType() . '<br>';
+                $emailContent .= '<strong>Quantity:</strong> ' . $donationItem->getQuantity() . '<br>';
+                $emailContent .= '<strong>Weight:</strong> ' . $donationItem->getRawMaterialWeight() . '<br>';
+                $emailContent .= '<strong>Supplier:</strong> ' . $donationItem->getSupplier() . '<br>';
+            } elseif ($donationItem instanceof ClientReadyMeal) {
+                $emailContent .= '<strong>Client Ready Meal:</strong> ' . $donationItem->getItemName() . '<br>';
+                $emailContent .= '<strong>Cost:</strong> ' . $donationItem->getCost() . '<br>';
+                $emailContent .= '<strong>Meal Type:</strong> ' . $donationItem->getReadyMealType() . '<br>';
+                $emailContent .= '<strong>Expiration:</strong> ' . $donationItem->getReadyMealExpiration() . '<br>';
+                $emailContent .= '<strong>Quantity:</strong> ' . $donationItem->getReadyMealQuantity() . '<br>';
+                $emailContent .= '<strong>Packaging Type:</strong> ' . $donationItem->getPackagingType() . '<br>';
+            } elseif ($donationItem instanceof Money) {
+                $emailContent .= '<strong>Money Donation:</strong> ' . $donationItem->getItemName() . '<br>';
+                $emailContent .= '<strong>Amount:</strong> ' . $donationItem->getAmount() . '<br>';
+                $emailContent .= '<strong>Purpose:</strong> ' . $donationItem->getDonationPurpose() . '<br>';
+            } elseif ($donationItem instanceof Sacrifice) {
+                $emailContent .= '<strong>Sacrifice:</strong> ' . $donationItem->getItemName() . '<br>';
+                $emailContent .= '<strong>Cost:</strong> ' . $donationItem->getCost() . '<br>';
+                $emailContent .= '<strong>Animal Type:</strong> ' . $donationItem->getAnimalType() . '<br>';
+                $emailContent .= '<strong>Weight:</strong> ' . $donationItem->getWeight() . '<br>';
+            } elseif ($donationItem instanceof Box) {
+                $emailContent .= '<strong>Box:</strong> ' . $donationItem->getItemName() . '<br>';
+                $emailContent .= '<strong>Cost:</strong> ' . $donationItem->getCost() . '<br>';
+                $emailContent .= '<strong>Box Size:</strong> ' . $donationItem->getFinalBoxSize() . '<br>';
+                $emailContent .= '<strong>Items in Box:</strong> ' . implode(', ', $donationItem->getFinalItemList()) . '<br>';
+            }
+            $emailContent .= '</li>';
         }
 
-        // If everything is good, we might consider the donation flow complete
-        // or continue to another finalization step if you desire.
-        // For simplicity, let's just say we do nothing more. 
-        // The donation is done successfully.
+        $emailContent .= '</ul>';
+
+        $emailContent .= '<p>Thank you for your generous donation!</p>';
+
+        $mailFacade->setContent('Donation Receipt', '<p1>'.$emailContent.'</p1>', true);
+
+        $mailStatus = $mailFacade->send();
+
+        $this->saveReportToFile($emailContent);
+
+        if (!$mailStatus) {
+            $donate->setNextState(new DonateFailedState());
+        } else {
+            $donate->setNextState(new DonateCompletedState());
+        }
+
     }
 }

@@ -1,55 +1,31 @@
 <?php
-
-require_once 'DonateState.php';
-require_once 'totalCostState.php';
-require_once 'billingState.php';
-require_once 'createDonationDetailsState.php';
-require_once 'storeDonationDetailsState.php';
-require_once 'sendMailState.php';
-require_once 'failedState.php';
-
-class Donate
-{
+class Donate implements IDeleteObject, IStoreObject, IReadObject {
     private int $donationID;
     private DateTime $donationDate;
     private string $userId;
     private DonateState $donationState;
+    private bool $isDonationSuccessful;
 
     public function __construct(int $donationID, string $userId)
     {
         $this->donationID    = $donationID;
         $this->userId        = $userId;
         $this->donationDate  = new DateTime();
-        
-        // Initial state: let's assume we start by calculating total cost
-        $this->donationState = new totalCostState();
+        $this->isDonationSuccessful = false;
+        $this->donationState = new TotalCostState();
     }
 
-    /**
-     * Set the next state of the donation process.
-     *
-     * @param DonateState $state
-     */
     public function setNextState(DonateState $state): void
     {
         $this->donationState = $state;
     }
 
-    /**
-     * Proceed with donation process by calling the current state's logic.
-     *
-     * @param DonationItem[] $donationItems
-     * @param IPayment       $paymentMethod
-     * @return bool
-     */
     public function proceedDonation(array $donationItems, IPayment $paymentMethod): void
     {
 
         $this->donationState->nextDonationState($this, $donationItems, $paymentMethod);
-            
     }
 
-    // Getters and Setters (if needed)
     public function getDonationID(): int
     {
         return $this->donationID;
@@ -67,6 +43,9 @@ class Donate
 
     public function setDonationDate(DateTime $donationDate): void
     {
+        $adminProxy = new DatabaseManagerProxy('admin');
+        $date = $donationDate->format('Y-m-d H:i:s');
+		$adminProxy->runQuery("UPDATE donations SET 'donation_date' = '$date' WHERE donation_id = '$this->donationID'");
         $this->donationDate = $donationDate;
     }
 
@@ -84,4 +63,61 @@ class Donate
     {
         return $this->donationState;
     }
+
+    public function getIsDonationSuccessful()
+    {
+        return $this->isDonationSuccessful;
+    }
+
+    public function setIsDonationSuccessful($isDonationSuccessful)
+    {
+        $adminProxy = new DatabaseManagerProxy('admin');
+		$adminProxy->runQuery("UPDATE donations SET 'is_donation_successful' = '$isDonationSuccessful' WHERE donation_id = '$this->donationID'");
+        $this->isDonationSuccessful = $isDonationSuccessful;
+    }
+
+    public static function storeObject(array $data) {
+        $db = new DatabaseManagerProxy('donor');
+
+        // Insert into donations table
+        $donationDate = $data['donation_date']->format('Y-m-d H:i:s');
+        $userId = $data['user_id'];
+        $query = "INSERT INTO donations (donation_date, user_id, is_successful) VALUES ('$donationDate', $userId, FALSE)";
+        $db->runQuery($query);
+
+        // Get the last inserted ID
+        $donationId = $db->getLastInsertId();
+
+        return new self($donationId, $userId);
+    }
+
+    public static function deleteObject($id) {
+        $db = new DatabaseManagerProxy('admin');
+
+        // Delete from donation_history table
+        $queryHistory = "DELETE FROM donation_history WHERE donation_id = $id";
+        $db->runQuery($queryHistory);
+
+        // Delete from donations table
+        $query = "DELETE FROM donations WHERE donation_id = $id";
+        $db->runQuery($query);
+
+        return true;
+    }
+
+    public static function readObject($id) {
+        $donorProxy = new DatabaseManagerProxy('donor');
+        $row = $donorProxy->run_select_query("SELECT * FROM donations WHERE donation_id = $id")->fetch_assoc();
+        if(isset($row)) {
+            $donation = new self($row['donation_id'], $row['user_id']);
+            $donation->donationDate = new DateTime($row['donation_date']);
+            $donation->isDonationSuccessful = $row['is_successful'];
+            if($donation->isDonationSuccessful) {
+                $donation->donationState = new DonateCompletedState();
+            } else {
+                $donation->donationState = new DonateFailedState();
+            }
+        }
+    }
+
 }

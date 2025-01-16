@@ -15,7 +15,7 @@ spl_autoload_register(function ($class_name) {
     }
 });
 
-class BasicDonator extends UserEntity implements IStoreObject, IUpdateObject, IDeleteObject, IBasicDonatorAggregate {
+class BasicDonator extends UserEntity implements IStoreObject, IUpdateObject, IReadObject, IDeleteObject, IBasicDonatorAggregate {
     private $donationHistory; // array of Donation details
     private $location;
     private $appointments;
@@ -104,6 +104,14 @@ class BasicDonator extends UserEntity implements IStoreObject, IUpdateObject, ID
         $db->runQuery($sql);
     }
 
+    public static function readObject($id) {
+        $sql = "SELECT * FROM users WHERE id = $id";
+        $db = new DatabaseManagerProxy('donor');
+        $row = $db->run_select_query($sql)->fetch_assoc();
+        if(isset($row)) {
+            return new BasicDonator($row["email"]);
+        }
+    }
 
     public static function deleteObject($id) {
         $sql = "DELETE FROM users WHERE id = $id";
@@ -111,9 +119,33 @@ class BasicDonator extends UserEntity implements IStoreObject, IUpdateObject, ID
         $db->runQuery($sql);
     }
 
-    public function makeDonation(array $items, int $id, Donate $donation): bool {
-        array_push($this->donationHistory, $donation);
-        return $donation->donate($items, $id);
+    public function makeDonation(array $items, IPayment $paymentStrategy = new NoPaymentMethod()): Donate {
+        $data = [
+            'donation_date' => new DateTime('today'),
+            'user_id' => $this->getId(),
+        ];
+        $donationObject = Donate::storeObject($data);
+        $donationObject->proceedDonation($items, $paymentStrategy);
+        return $donationObject;
+    }
+
+    public function proceedToNextStepDonation(Donate $donate, array $items, IPayment $paymentStrategy = new NoPaymentMethod()): bool {
+        if($donate->getDonationState() instanceof CompletedState) {
+            $donorProxy = new DatabaseManagerProxy('donor');
+            $donation_id = $donate->getDonationID();
+            $row = $donorProxy->run_select_query("SELECT * FROM donation_history WHERE donation_id = $donation_id")->fetch_assoc();
+            if(isset($row)) {
+                $donationDetails = new DonationDetails($row["id"]);
+                $donationHistory[] = $donationDetails;
+                return true;
+            }
+            return false;
+        } else if ($donate->getDonationState() instanceof FailedState) {
+            return false;
+        } else {
+            $donate->proceedDonation($items, $paymentStrategy);
+            return true;
+        }
     }
 
     public function getDonationHistory(): array {

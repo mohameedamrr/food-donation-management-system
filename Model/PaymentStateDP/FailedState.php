@@ -1,5 +1,5 @@
 <?php
-require_once 'Bill.php';
+// require_once 'Bill.php';
 require_once 'ProcessingState.php';
  class FailedState extends PaymentState{
 

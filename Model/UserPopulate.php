@@ -117,6 +117,7 @@ $db->runQuery("
         donation_id INT AUTO_INCREMENT PRIMARY KEY,
         donation_date DATETIME NOT NULL,
         user_id INT NOT NULL,
+        is_successful BOOLEAN NOT NULL,
         FOREIGN KEY donations(user_id) REFERENCES users(id) ON DELETE CASCADE
     );
 ");
@@ -180,13 +181,13 @@ $db->runQuery(
 
 $db->runQuery(
     "INSERT INTO `food_donation`.`donations` (
-        `donation_date`, `user_id`
+        `donation_date`, `user_id`, `is_successful`
     ) VALUES
-    ('2023-10-01 15:00:00', 1),
-    ('2023-10-02 15:00:00', 2),
-    ('2023-10-03 15:00:00', 3),
-    ('2023-10-04 15:00:00', 4),
-    ('2023-10-05 15:00:00', 5);"
+    ('2023-10-01 15:00:00', 1, TRUE),
+    ('2023-10-02 15:00:00', 2, FALSE),
+    ('2023-10-03 15:00:00', 3, FALSE),
+    ('2023-10-04 15:00:00', 4, TRUE),
+    ('2023-10-05 15:00:00', 5, FALSE);"
 );
 
 $db->runQuery(
