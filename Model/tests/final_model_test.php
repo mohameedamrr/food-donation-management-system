@@ -1,41 +1,35 @@
 <?php
-// require_once '../../interfaces/IStoreObject.php';
-// require_once '../../interfaces/IUpdateObject.php';
-// require_once '../../interfaces/IDeleteObject.php';
-// require_once '../../interfaces/IReadObject.php';
-// require_once '../../interfaces/IPayment.php';
-// require_once '../Bill.php';
-// require_once '../PaymentStateDP/PaymentState.php';
-// require_once '../PaymentStateDP/InitialState.php';
-// require_once '../PaymentStateDP/CompletedState.php';
-// require_once '../PaymentStateDP/FailedState.php';
-// require_once '../PaymentStrategyDP/Cash.php';
-// require_once '../PaymentStrategyDP/Card.php';
-// require_once '../PaymentStrategyDP/InstaPay.php';
-// require_once '../ProxyDP/DatabaseManagerProxy.php';
-// require_once "../FactoryMethodDP/DonationFactory.php";
-// require_once "../FactoryMethodDP/DonationItemFactory.php";
-// require_once '../DonationItemChildren/Meal.php';            
-// require_once '../DonationItemChildren/RawMaterials.php';    
-// require_once '../DonationItemChildren/ClientReadyMeal.php'; 
-// require_once '../DonationItemChildren/Money.php';           
-// require_once '../DonationItemChildren/Sacrifice.php';       
-// require_once '../DecoratorDP/BasicBox.php';
-// require_once '../BasicDonator.php';
-// require_once '../PaymentStrategyDP/Cash.php';
-// require_once '../DonateStateDP/DonateState.php';
-// require_once '../DonateStateDP/TotalCostState.php';
-// require_once '../DonateStateDP/BillingState.php';
-// require_once '../DonateStateDP/CreateDonationDetailsState.php';
-// require_once '../DonateStateDP/SendMailState.php';
-// require_once '../DonateStateDP/DonateFailedState.php';
-// require_once '../DonateStateDP/DonateCompletedState.php';
-// require_once '../DonateStateDP/Donate.php';
-// require_once '../FacadeDP/phpmailerFacade.php';
+// spl_autoload_register(function ($class_name) {
+//     $directories = [
+//         '../Controller/',
+//         '../View/',
+//         '../../interfaces/',
+//         '../AdapterDP/',
+//         '../CommandDP/',
+//         '../DecoratorDP/',
+//         '../DonateStateDP/',
+//         '../DonationItemChildren/',
+//         '../FacadeDP/',
+//         '../FactoryMethodDP/',
+//         '../IteratorDP/',
+//         '../PaymentStateDP/',
+//         '../PaymentStrategyDP/',
+//         '../ProxyDP/',
+//         '../TemplateDP/',
+//         '../',
+//     ];
+//     foreach ($directories as $directory) {
+//         $file = __DIR__ . '/' . $directory . $class_name . '.php';
+//         if (file_exists($file)) {
+//             require_once $file;
+//             return;
+//         }
+//     }
+// });
 
 
 // // Step 1: Create a BasicDonator
-// $donator = new BasicDonator('ziadayman087@gmail.com');
+// $donator = new BasicDonator('floppyfire52@gmail.com');
 
 // // Step 2: Create a list of donation items
 // $factory = new DonationItemFactory();
