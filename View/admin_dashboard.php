@@ -1,4 +1,6 @@
 <?php
+session_start(); // Start the session at the top
+
 spl_autoload_register(function ($class_name) {
     $directories = [
         '../Model/',
@@ -26,6 +28,11 @@ spl_autoload_register(function ($class_name) {
         }
     }
 });
+
+// Initialize the last action in the session if not set
+if (!isset($_SESSION['last_action'])) {
+    $_SESSION['last_action'] = null;
+}
 ?>
 
 <!DOCTYPE html>
@@ -178,6 +185,26 @@ spl_autoload_register(function ($class_name) {
         .assign-employee-section button {
             margin-left: 10px;
         }
+
+        .undo-button {
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background-color: #dc3545;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .undo-button:hover {
+            background-color: #c82333;
+        }
+
+        .undo-button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
@@ -185,9 +212,11 @@ spl_autoload_register(function ($class_name) {
         <h1>Admin Dashboard</h1>
 
         <?php
-        session_start();
         echo "<h2> Hello " . $_SESSION['user']->getName() . ",</h2>";
         ?>
+
+        <!-- Undo Button -->
+        <button class="undo-button" id="undoButton" onclick="undoLastAction()" <?php echo $_SESSION['last_action'] ? '' : 'disabled'; ?>>Undo Last Action</button>
 
         <div class="section">
             <h3>Filter Appointments</h3>
@@ -284,7 +313,23 @@ spl_autoload_register(function ($class_name) {
             });
         }
 
-        // Other functions (filterAppointments, etc.) can be reused from the Employee Dashboard
+        // Function to undo the last action
+        function undoLastAction() {
+            fetch('../Controller/AdminDashboardController.php', {
+                method: 'POST',
+                body: new URLSearchParams({ undo_last_action: 'true' }),
+            })
+            .then(response => {
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    console.error('Failed to undo last action');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
     </script>
 </body>
 </html>
