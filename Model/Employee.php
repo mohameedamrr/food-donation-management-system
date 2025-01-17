@@ -80,6 +80,20 @@ class Employee extends UserEntity implements IObserver, IUpdateObject {
                 $updatedAppointmentList[] = $existingAppointment;
             }
         }
+
+        // for ($i = 0; $i < count($updatedAppointmentList); $i++) {
+        //     $existingAppointment = $updatedAppointmentList[$i];
+        //     for ($j = 0; $j < count($appointmentTempList); $j++) {
+        //         $appointment = $appointmentTempList[$j];
+        //         if ($existingAppointment->getAppointmentID() == $appointment->getAppointmentID()) {
+        //             if ($existingAppointment->getNote() != $appointment->getNote()) {
+        //                 $existingAppointment->setNote($appointment->getNote());
+        //             } else if ($existingAppointment->getStatus() != $appointment->getStatus()) {
+        //                 $existingAppointment->updateStatus($appointment->getStatus());
+        //             }
+        //         }
+        //     }
+        // }
         $this->appointmentList = $updatedAppointmentList;
     }
 
@@ -162,7 +176,9 @@ class Employee extends UserEntity implements IObserver, IUpdateObject {
 
     public function addNoteToAppointment(Appointment $appointment, String $note): void {
         $appointment->setNote($note);
+        error_log(count($this->appointmentList));
         for($i=0; $i <= count($this->appointmentList); $i++) {
+            error_log($this->appointmentList[$i]->getAppointmentID());
             if ($this->appointmentList[$i]->getAppointmentID() == $appointment->getAppointmentID()) {
                 $this->appointmentList[$i]->setNote($note);
                 return;

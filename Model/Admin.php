@@ -58,8 +58,6 @@ class Admin extends UserEntity implements ISubject, IUpdateObject, IStoreObject,
     //     $this->notifyObservers();
     // }
 
-    //edit donation item cost
-
 
     public function createEmployee(array $employeeData) {
         // return Employee::storeObject($employeeData);
@@ -311,10 +309,15 @@ class Admin extends UserEntity implements ISubject, IUpdateObject, IStoreObject,
         $this->commandsHistory[count($this->commandsHistory) - 1]->execute();
     }
     public function undoCommand(): void {
-        $this->commandsHistory[count($this->commandsHistory) - 1]->undo();
-        array_pop($this->commandsHistory);
+        if (count($this->commandsHistory) != 0) {
+            $this->commandsHistory[count($this->commandsHistory) - 1]->undo();
+            array_pop($this->commandsHistory);
+        }
+    }
 
+    public function setAppointmentsList($appointmentsList) {
+        $this->appointmentsList = $appointmentsList;
+        $this->notifyObservers();
     }
 }
 ?>
-

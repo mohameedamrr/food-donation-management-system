@@ -5,7 +5,7 @@
         if($currency != 'EGP'){
             return false;
         }
-        if ($amount <= 1000) {
+        if ($amount <= 10000) {
             return true;
         } else {
             return false;

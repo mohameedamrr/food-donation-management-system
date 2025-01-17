@@ -31,19 +31,19 @@ if(!isset($_SESSION)){
 }
 
 
-class EmployeesDashboardController {
-    private $employee;
+class AdminDashboardController {
+    private $admin;
 
     public function __construct() {
-        if (!isset($_SESSION['employee'])) {
+        if (!isset($_SESSION['admin'])) {
             header('Location: ../View/LoginView.html');
             exit();
         }
-        $this->employee = $_SESSION['employee'];
+        $this->admin = $_SESSION['admin'];
     }
 
     public function getAllAppointmentsData() {
-        $appointments = $this->employee->getAssignedAppointments();
+        $appointments = $this->admin->getAppointmentsList();
         $appointmentsData = [];
 
         foreach ($appointments as $appointment) {
@@ -54,22 +54,58 @@ class EmployeesDashboardController {
                 'status' => $appointment->getStatus(),
                 'location' => $appointment->getAppointmentLocation(),
                 'note' => $appointment->getNote(),
+                'employeeAssignedID' => $appointment->getEmployeeAssignedID(),
             ];
         }
         return $appointmentsData;
     }
 
+    public function getEmployeesData() {
+        $employees = $this->admin->getAllEmployees();
+        $employeesData = [];
+
+        foreach ($employees as $employee) {
+            $employeesData[] = [
+                'name' => $employee->getName(),
+                'id' => $employee->getId(),
+            ];
+        }
+        return $employeesData;
+    }
+
     public function updateAppointmentStatus($appointmentID, $status) {
-        $appointment = new Appointment($appointmentID);
-        $this->employee->changeAppointmentStatus($appointment, $status);
-        header('Location: ../View/employee_dashboard.php');
-        //$appointment->updateStatus($status);
+        $appointment = new Appointment((int)$appointmentID);
+        $changeStatusCommand = new ChangeAppointmentStatusCommand($appointment, $status, $appointment->getStatus());
+        $this->admin->addToCommandsHistory($changeStatusCommand);
+        $this->admin->executeCommand();
+        $appointments = $this->admin->getAppointmentsList();
+        foreach ($appointments as $appointment) {
+            if($appointment->getAppointmentID() == $appointmentID) {
+                $appointment->updateStatus($status);
+            }
+        }
+        $this->admin->setAppointmentsList($appointments);
+        error_log($appointments[0]->getAppointmentID());
+        error_log($appointments[0]->getStatus());
     }
 
     public function addNoteToAppointment($appointmentID, $note) {
         $appointment = new Appointment($appointmentID);
-        $this->employee->addNoteToAppointment($appointment,$note);
-        header('Location: ../View/employee_dashboard.php');
+        $prevNote = $appointment->getNote();
+        $appointments = $this->admin->getAppointmentsList();
+        $changeNoteCommand = new ChangeAppointmentNoteCommand($appointment, $note, $prevNote);
+        $this->admin->addToCommandsHistory($changeNoteCommand);
+        $this->admin->executeCommand();
+        foreach ($appointments as $appointment) {
+            if($appointment->getAppointmentID() == $appointmentID) {
+                $appointment->setNote($note);
+            }
+        }
+        $this->admin->setAppointmentsList($appointments);
+    }
+
+    public function undoCommand() {
+        $this->admin->undoCommand();
     }
 
     public function convertAppointmentsToDictionary($appointments) {
@@ -89,35 +125,16 @@ class EmployeesDashboardController {
         return $appointmentsData;
     }
 
-    public function getAppointmentsByStatus($status) {
-        $appointmentsData = [];
-
-        switch ($status) {
-            case 'Scheduled':
-            case 'Completed':
-            case 'Cancelled':
-            case 'Postponed':
-                $appointmentsData = $this->convertAppointmentsToDictionary($_SESSION['employee']->getAppointmentByStatus($status));
-                break;
-            case 'Upcoming':
-                $appointmentsData = $this->convertAppointmentsToDictionary($_SESSION['employee']->getUpcomingAppointments());
-                break;
-            case 'Past':
-                $appointmentsData = $this->convertAppointmentsToDictionary($_SESSION['employee']->getPastAppointments());
-                break;
-            case 'All':
-            default:
-            $appointmentsData = $this->getAllAppointmentsData();
-                break;
-        }
-        return $appointmentsData;
+    public function assignAppointment($appointmentID, $employeeID) {
+        $appointment = new Appointment($appointmentID);
+        $this->admin->addAppointment($appointment);
+        $this->admin->assignAppointment($appointment, $employeeID);
     }
-
 }
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $controller = new EmployeesDashboardController();
+    $controller = new AdminDashboardController();
 
     if (isset($_POST['filterStatus'])) {
         $filterStatus = $_POST['filterStatus'];
@@ -135,7 +152,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $status = $_POST['status'];
         $controller->updateAppointmentStatus($appointmentID, $status);
     }
-    header('Location: ../View/employee_dashboard.php');
+
+    if (isset($_POST['undo'])) {
+        $controller->undoCommand();
+    }
+
+    if (isset($_POST['assign_employee'])) {
+        $appointmentID = $_POST['appointmentID'];
+        $employeeID = $_POST['employeeID'];
+        $controller->assignAppointment($appointmentID, $employeeID);
+    }
+
+    if (isset($_POST['employees'])) {
+        header('Location: ../View/employess.php');
         exit();
+    }
+
+    if (isset($_POST['donation_history'])) {
+        header('Location: ../View/donation_history_dashboard.php');
+        exit();
+    }
+
+    header('Location: ../View/admin_dashboard.php');
+    exit();
 }
 ?>

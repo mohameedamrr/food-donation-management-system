@@ -170,10 +170,9 @@ spl_autoload_register(function ($class_name) {
     <div class="dashboard-container">
         <h1>Employee Dashboard</h1>
 
-        <?php 
+        <?php
         session_start();
-        $_SESSION['filterStatus'] = "All";
-            echo "<h2> Hello ".$_SESSION['user']->getName().",</h2>";
+            echo "<h2> Hello ".$_SESSION['employee']->getName().",</h2>";
         ?>
 
         <div class="section">
@@ -195,10 +194,7 @@ spl_autoload_register(function ($class_name) {
                 <?php
                 $controller = new EmployeesDashboardController();
                 if(isset($_SESSION['filterStatus'])){
-                    
-                    $appointments =$controller->getAppointmentsByStatus($_SESSION['filterStatus']) ; 
-                    error_log($appointments[0]['location'].'');
-                    error_log('kjllllllljdlkklsdkldkdsdkl;l;');
+                    $appointments =$controller->getAppointmentsByStatus($_SESSION['filterStatus']);
                 }else{
                     $appointments = $controller->getAllAppointmentsData();
                 }
@@ -242,6 +238,8 @@ spl_autoload_register(function ($class_name) {
     </div>
 
     <script>
+        var filterData = <?php echo json_encode($_SESSION['filterStatus']); ?>;
+        document.getElementById('filterStatus').value = filterData;
         function showNoteForm(appointmentID) {
             document.getElementById('note-section-' + appointmentID).style.display = 'block';
         }
