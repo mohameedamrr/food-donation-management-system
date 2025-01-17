@@ -100,10 +100,14 @@ class LoginController {
      * @param string $error The error message to display.
      * @return void
      */
-    private function redirectToLoginPage($error) {
-        header('Location: ../View/LoginView.html?error=' . $error);
+    private function redirectToLoginPage($error = null) {
+        $url = '../View/LoginView.html';
+        if ($error) {
+            $url .= '?error=' . urlencode($error);
+        }
+        header('Location: ' . $url);
         exit();
-    }
+}
 }
 
 // Handle form submission

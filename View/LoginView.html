@@ -96,6 +96,16 @@
             margin-bottom: 10px;
         }
     </style>
+    <script>
+        // Check if the URL contains an error parameter
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const error = urlParams.get('error');
+            if (error === 'invalid_credentials') {
+                alert('Incorrect username or password');
+            }
+        };
+    </script>
 </head>
 <body>
     <div class="login-container">
