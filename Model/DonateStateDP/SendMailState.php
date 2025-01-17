@@ -74,8 +74,10 @@ class SendMailState extends DonateState
         $mailStatus = $mailFacade->send();
 
         if (!$mailStatus) {
+            error_log("fffffffffffffffffffffff");
             $donate->setNextState(new DonateFailedState());
         } else {
+            error_log("ggggggggggggggggggggggggg");
             $donate->setNextState(new DonateCompletedState());
         }
 

@@ -54,8 +54,7 @@ class ClientReadyMeal extends DonationItem implements IStoreObject,IReadObject,I
 
 	}
     public function validate(): bool{
-        $date = new DateTime();
-        if($this->readyMealExpiration < $date || $this->readyMealQuantity < 0){
+        if($this->readyMealQuantity < 0){
             return false;
         }
         else{

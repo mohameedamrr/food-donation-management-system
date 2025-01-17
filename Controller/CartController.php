@@ -26,23 +26,22 @@ spl_autoload_register(function ($class_name) {
         }
     }
 });
-if(!isset($_SESSION)) 
-{ 
-    session_start(); 
-} 
+if(!isset($_SESSION))
+{
+    session_start();
+}
 
 class CartController {
     private $cart;
-    private $totalCost;
     private $donate;
     private $cartDict = [];
 
     public function __construct() {
-        // Initialize the cart from the session
         if (!isset($_SESSION['cart'])) {
             $_SESSION['cart'] = [];
         }
         $this->cart = &$_SESSION['cart'];
+        $this->donate = $_SESSION['donate'];
     }
 
     public function getCartData(){
@@ -92,64 +91,47 @@ class CartController {
                         "mealQuantity"=> $item->getReadyMealQuantity(),
                     ];
                 }
-                
             }
             return $this->cartDict;
 
-        }  
-            
+        }
     }
 
-    /**
-     * Remove an item from the cart by its index.
-     *
-     * @param int $index The index of the item to remove.
-     */
     public function removeItem($index) {
         if (isset($this->cart[$index])) {
             array_splice($this->cart, $index, 1);
         }
     }
 
-    /**
-     * Get all items in the cart.
-     *
-     * @return array The cart items.
-     */
     public function getCartItems() {
         return $this->cart;
     }
 
-    /**
-     * Clear the cart.
-     */
     public function clearCart() {
         $this->cart = [];
     }
 
-    /**
-     * Start the donation process.
-     */
-    public function startDonation() {
+    public function proceedDonation() {
         if (empty($this->cart)) {
-            return false; // No items to donate
+            return false;
         }
-        $paymentMethod = new Cash();
-        // Create a new Donate object and proceed with the donation
-        // $donate = $_SESSION['user']->makeDonation($this->cart, $paymentMethod);
-        // $paymentMethod = new Cash(); // Default payment method (can be changed based on user selection)
-        $this->donate->proceedDonation($this->cart, $paymentMethod);
-        $this->donate->proceedDonation($this->cart, $paymentMethod);
-        $this->donate->proceedDonation($this->cart, $paymentMethod);
+        $this->donate->proceedDonation($this->cart, $_SESSION['paymentMethod']);
+        if ($this->donate->getDonationState() instanceof DonateFailedState) {
+            header('Location: ../View/failedPayment.html');
+            exit();
+        } else {
+            $this->donate->proceedDonation($this->cart, $_SESSION['paymentMethod']);
+            $this->donate->proceedDonation($this->cart, $_SESSION['paymentMethod']);
+            $this->donate->proceedDonation($this->cart, $_SESSION['paymentMethod']);
+        }
 
-        // Clear the cart after donation
+
         $this->clearCart();
 
         return true;
     }
 }
 
-// Handle form submissions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $controller = new CartController();
 
@@ -158,18 +140,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $controller->removeItem($index);
     }
 
-    if (isset($_POST['donate'])) {
-        if ($controller->startDonation()) {
-            header('Location: donation_success.php'); // Redirect to success page
+    if (isset($_POST['donate']) && isset($_POST['paymentType'])) {
+        $type = $_POST['paymentType'];
+        if ($type == 'Card') {
+            $cardHolderName = $_POST['cardHolderName'];
+            $cardNumber = $_POST['cardNumber'];
+            $expiryDate = $_POST['expiryDate'];
+            $date = new DateTime($expiryDate);
+            $_SESSION['paymentMethod'] = new Card($cardHolderName, $cardNumber, $date);
+        } else if ($type == 'InstaPay') {
+            $instapayAddress = $_POST['instapayAddress'];
+            $_SESSION['paymentMethod'] = new InstaPay($instapayAddress);
+        } else if ($type == 'Paypal') {
+            $_SESSION['paymentMethod'] = new PaymentGatewayAdapter();
+        } else {
+            $_SESSION['paymentMethod'] = new Cash();
+        }
+        if ($controller->proceedDonation()) {
+            header('Location: donation_success.php');
             exit();
         } else {
-            header('Location: donation_failed.php'); // Redirect to failure page
+            header('Location: donation_failed.php');
             exit();
         }
     }
 
-    // Redirect back to the cart page to avoid form resubmission
-    header('Location: ../View/Checkout.php');
+    header('Location: ../View/Checkout.html');
     exit();
 }
 ?>

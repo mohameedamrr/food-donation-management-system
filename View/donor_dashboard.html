@@ -175,11 +175,29 @@
 
         <!-- Proceed Button -->
         <div class="proceed-button">
-            <a href="../View/Checkout.php"><button>Proceed</button></a>
+            <button onclick="handleProceed()">Proceed</button>
         </div>
     </div>
 
     <script>
+        function handleProceed() {
+            const formData = new FormData();
+            formData.append('proceed', 'true');
+            fetch('../Controller/DonorDashboardController.php', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => {
+                if (response.ok) {
+                    window.location.href = '../View/Checkout.php';
+                } else {
+                    console.error('Failed to send request to the controller');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
         // Fetch the cart item count from the server
         async function fetchCartItemCount() {
             const response = await fetch('../Controller/getCartItemCount.php');

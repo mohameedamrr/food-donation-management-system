@@ -142,6 +142,32 @@ $cartItems = $controller->getCartData();
         .cart-icon span {
             font-size: 14px;
         }
+
+        .payment-method {
+            margin-top: 20px;
+        }
+
+        .payment-method label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .payment-method input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        .payment-details {
+            margin-top: 20px;
+            display: none;
+        }
+
+        .payment-details input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
@@ -199,9 +225,36 @@ $cartItems = $controller->getCartData();
 
             <?php endif; ?>
         </div>
+        <div class="payment-method">
+            <h3>Select Payment Method</h3>
+            <label>
+                <input type="radio" name="paymentType" value="Cash" checked> Cash
+            </label>
+            <label>
+                <input type="radio" name="paymentType" value="Card"> Card
+            </label>
+            <label>
+                <input type="radio" name="paymentType" value="InstaPay"> InstaPay
+            </label>
+            <label>
+                <input type="radio" name="paymentType" value="Paypal"> PayPal
+            </label>
+        </div>
+
+        <div class="payment-details" id="card-details">
+            <input type="text" name="cardHolderName" placeholder="Card Holder Name">
+            <input type="text" name="cardNumber" placeholder="Card Number">
+            <input type="month" name="expiryDate" placeholder="Expiry Date (MM/YY)">
+        </div>
+
+        <div class="payment-details" id="instapay-details">
+            <input type="text" name="instapayAddress" placeholder="InstaPay Address">
+        </div>
 
         <div class="donate-button">
             <form method="POST" action="../Controller/CartController.php">
+                <input type="hidden" name="paymentType" id="paymentType" value="Cash">
+                <div id="dynamic-fields"></div>
                 <button type="submit" name="donate">Donate</button>
             </form>
         </div>
@@ -217,6 +270,41 @@ $cartItems = $controller->getCartData();
 
         // Update the cart count when the page loads
         fetchCartItemCount();
+
+        function updatePaymentDetails() {
+            const paymentType = document.querySelector('input[name="paymentType"]:checked').value;
+            document.getElementById('paymentType').value = paymentType;
+
+            const cardDetails = document.getElementById('card-details');
+            const instapayDetails = document.getElementById('instapay-details');
+            const dynamicFields = document.getElementById('dynamic-fields');
+
+            cardDetails.style.display = 'none';
+            instapayDetails.style.display = 'none';
+            dynamicFields.innerHTML = '';
+
+            if (paymentType === 'Card') {
+                cardDetails.style.display = 'block';
+                dynamicFields.innerHTML = `
+                    <input type="hidden" name="cardHolderName" value="${cardDetails.querySelector('input[name="cardHolderName"]').value}">
+                    <input type="hidden" name="cardNumber" value="${cardDetails.querySelector('input[name="cardNumber"]').value}">
+                    <input type="hidden" name="expiryDate" value="${cardDetails.querySelector('input[name="expiryDate"]').value}">
+                `;
+            } else if (paymentType === 'InstaPay') {
+                instapayDetails.style.display = 'block';
+                dynamicFields.innerHTML = `
+                    <input type="hidden" name="instapayAddress" value="${instapayDetails.querySelector('input[name="instapayAddress"]').value}">
+                `;
+            }
+        }
+
+        // Add event listeners to payment method radio buttons
+        document.querySelectorAll('input[name="paymentType"]').forEach(radio => {
+            radio.addEventListener('change', updatePaymentDetails);
+        });
+
+        // Initialize payment details on page load
+        updatePaymentDetails();
     </script>
 </body>
 </html>

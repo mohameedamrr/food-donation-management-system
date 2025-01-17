@@ -169,7 +169,7 @@
 //         `item_name`, `currency`, `cost`, `animal_type`, `weight`, `mealType`, `expiration`, `ingredients`, `initial_box_size`, `initial_item_list`
 //     ) VALUES
 //     ('Vegetarian Meal', 'EGP', 150, NULL, NULL, 'Vegetarian', '2025-12-16', 'Beans, Water, Salt', NULL, NULL),
-//     ('Chicken Meal', 'EGP', 250, NULL, NULL, 'Chicken', '2024-12-31', 'Chicken, Rice, Fries', NULL, NULL),
+//     ('Chicken Meal', 'EGP', 250, NULL, NULL, 'Chicken', '2027-12-31', 'Chicken, Rice, Fries', NULL, NULL),
 //     ('Raw Materials', 'EGP', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 //     ('Client Ready Meal', 'EGP', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 //     ('Money', 'EGP', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL),

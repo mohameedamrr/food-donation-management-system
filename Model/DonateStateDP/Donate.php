@@ -45,7 +45,8 @@ class Donate implements IDeleteObject, IStoreObject, IReadObject {
     {
         $adminProxy = new DatabaseManagerProxy('admin');
         $date = $donationDate->format('Y-m-d H:i:s');
-		$adminProxy->runQuery("UPDATE donations SET 'donation_date' = '$date' WHERE donation_id = '$this->donationID'");
+        $id = $this->donationID;
+		$adminProxy->runQuery("UPDATE donations SET donation_date = '$date' WHERE donation_id = $id");
         $this->donationDate = $donationDate;
     }
 
@@ -72,7 +73,12 @@ class Donate implements IDeleteObject, IStoreObject, IReadObject {
     public function setIsDonationSuccessful($isDonationSuccessful)
     {
         $adminProxy = new DatabaseManagerProxy('admin');
-		$adminProxy->runQuery("UPDATE donations SET 'is_donation_successful' = '$isDonationSuccessful' WHERE donation_id = '$this->donationID'");
+        $id = $this->donationID;
+        if ($isDonationSuccessful) {
+            $adminProxy->runQuery("UPDATE donations SET is_successful = TRUE WHERE donation_id = $id");
+        } else {
+            $adminProxy->runQuery("UPDATE donations SET is_successful = FALSE WHERE donation_id = $id");
+        }
         $this->isDonationSuccessful = $isDonationSuccessful;
     }
 
