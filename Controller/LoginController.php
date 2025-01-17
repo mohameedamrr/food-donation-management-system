@@ -60,8 +60,7 @@ class LoginController {
 
         if ($user) {
             // Redirect based on user type
-            $_SESSION['user'] = $user;
-            $this->redirectUser($userType);
+            $this->redirectUser($userType, $user);
         } else {
             // Redirect back to the login page with an error message
             $this->redirectToLoginPage('invalid_credentials');
@@ -74,21 +73,27 @@ class LoginController {
      * @param string $userType The type of user (Donator, Employee, Admin).
      * @return void
      */
-    private function redirectUser($userType) {
+    private function redirectUser($userType, $user) {
         $_SESSION['cart']= [];
         switch ($userType) {
             case 'Donator':
+                $_SESSION['user'] = $user;
                 header('Location: ../View/donor_dashboard.html');
                 break;
             case 'Employee':
+                $_SESSION['employee'] = $user;
+                if (isset($_SESSION["admin"])) {
+                    $user->setAdmin($_SESSION["admin"]);
+                }
                 header('Location: ../View/employee_dashboard.php');
                 break;
             case 'Admin':
-                header('Location: admin_dashboard.php');
+                $_SESSION['admin'] = $user;
+                header('Location: ../View/admin_dashboard.php');
                 break;
             default:
                 // Default redirection if user type is invalid
-                header('Location: login.php?error=invalid_user_type');
+                header('Location: ../View/LoginView.html?error=invalid_user_type');
                 break;
         }
         exit();

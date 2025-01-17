@@ -96,7 +96,7 @@ class CartController {
                     error_log($item->getTotalCost());
                     $this->cartDict [] = [
                         "type" => "Box",
-                        "name"=>  $item->getItemName(),
+                        "name"=>  "Box",
                         "items"=> implode(", ", $item->getFinalItemList()),
                         "cost"=>  $item->getTotalCost(),
                         "boxSize"=> $item->getFinalBoxSize(),

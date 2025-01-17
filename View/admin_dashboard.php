@@ -1,6 +1,4 @@
 <?php
-session_start(); // Start the session at the top
-
 spl_autoload_register(function ($class_name) {
     $directories = [
         '../Model/',
@@ -28,11 +26,14 @@ spl_autoload_register(function ($class_name) {
         }
     }
 });
-
-// Initialize the last action in the session if not set
-if (!isset($_SESSION['last_action'])) {
-    $_SESSION['last_action'] = null;
+if(!isset($_SESSION))
+{
+    session_start();
 }
+// Initialize the last action in the session if not set
+// if (!isset($_SESSION['last_action'])) {
+//     $_SESSION['last_action'] = null;
+// }
 ?>
 
 <!DOCTYPE html>
@@ -212,36 +213,18 @@ if (!isset($_SESSION['last_action'])) {
         <h1>Admin Dashboard</h1>
 
         <?php
-        echo "<h2> Hello " . $_SESSION['user']->getName() . ",</h2>";
+        echo "<h2> Hello " . $_SESSION['admin']->getName() . ",</h2>";
         ?>
 
         <!-- Undo Button -->
-        <button class="undo-button" id="undoButton" onclick="undoLastAction()" <?php echo $_SESSION['last_action'] ? '' : 'disabled'; ?>>Undo Last Action</button>
-
-        <div class="section">
-            <h3>Filter Appointments</h3>
-            <select id="filterStatus" onchange="filterAppointments()">
-                <option value="All">All</option>
-                <option value="Scheduled">Scheduled</option>
-                <option value="Completed">Completed</option>
-                <option value="Cancelled">Cancelled</option>
-                <option value="Postponed">Postponed</option>
-                <option value="Upcoming">Upcoming</option>
-                <option value="Past">Past</option>
-            </select>
-        </div>
+        <button class="undo-button" id="undoButton" onclick="undoLastAction()">Undo Last Action</button>
 
         <div class="section">
             <h3>Appointments</h3>
             <div id="appointmentsList">
                 <?php
                 $controller = new AdminDashboardController();
-                if (isset($_SESSION['filterStatus'])) {
-                    $appointments = $controller->getAppointmentsByStatus($_SESSION['filterStatus']);
-                } else {
-                    $appointments = $controller->getAllAppointmentsData();
-                }
-
+                $appointments = $controller->getAllAppointmentsData();
                 if (empty($appointments)) {
                     echo '<p>No appointments found.</p>';
                 } else {
@@ -257,13 +240,44 @@ if (!isset($_SESSION['last_action'])) {
                         // Assign Employee Section
                         echo '<div class="assign-employee-section">';
                         echo '<select id="employee-select-' . $appointment['appointmentID'] . '">';
-                        echo '<option value="">Select Employee</option>';
-                        $employees = $controller->getAllEmployees();
+                        $employees = $controller->getEmployeesData();
+                        if ($appointment['employeeAssignedID'] == 0 || $appointment['employeeAssignedID'] == NULL ) {
+                            echo '<option value="Select Employee">Select Employee</option>';
+                        } else {
+                            foreach ($employees as $employee) {
+                               if ($employee['id'] == $appointment['employeeAssignedID']) {
+                                echo '<p>'.$employee['id'].'</p>';
+                                echo '<option value="'. $employee['id'] . '">ID: '. $employee['id'] . ' ' . $employee['name'] .'</option>';
+                               }
+                            }
+                        }
                         foreach ($employees as $employee) {
-                            echo '<option value="' . $employee['employeeID'] . '">' . $employee['name'] . '</option>';
+                            if ($employee['id'] == $appointment['employeeAssignedID']) {
+                                continue;
+                            }
+                            echo '<option value="'. $employee['id'] . '">ID: '. $employee['id'] . ' ' . $employee['name'] .'</option>';
                         }
                         echo '</select>';
-                        echo '<button onclick="assignEmployee(' . $appointment['appointmentID'] . ')" disabled>Assign Employee</button>';
+                        echo '<button onclick="assignEmployee(' . $appointment['appointmentID'] . ')" disabled>Assign Employee</button><br><br>';
+                        echo '</div>';
+
+                        echo '<button onclick="showNoteForm(' . $appointment['appointmentID'] . ')">Add Note</button><br><br>';
+                        echo '<div class="dropdown">';
+                        echo '<button>Change Status</button>';
+                        echo '<div class="dropdown-content">';
+                        echo '<button onclick="changeStatus(' . $appointment['appointmentID'] . ', \'Scheduled\')">Scheduled</button>';
+                        echo '<button onclick="changeStatus(' . $appointment['appointmentID'] . ', \'Completed\')">Completed</button>';
+                        echo '<button onclick="changeStatus(' . $appointment['appointmentID'] . ', \'Cancelled\')">Cancelled</button>';
+                        echo '<button onclick="changeStatus(' . $appointment['appointmentID'] . ', \'Postponed\')">Postponed</button>';
+                        echo '</div>';
+                        echo '</div>';
+
+                        echo '<div id="note-section-' . $appointment['appointmentID'] . '" class="note-section">';
+                        echo '<textarea name="note" placeholder="Enter note"></textarea>';
+                        echo '<button onclick="submitNote(' . $appointment['appointmentID'] . ')">Done</button>';
+                        echo '<button onclick="hideNoteForm(' . $appointment['appointmentID'] . ')">Cancel</button>';
+                        echo '</div>';
+
                         echo '</div>';
 
                         echo '</div>';
@@ -275,6 +289,37 @@ if (!isset($_SESSION['last_action'])) {
     </div>
 
     <script>
+        function showNoteForm(appointmentID) {
+            document.getElementById('note-section-' + appointmentID).style.display = 'block';
+        }
+
+        function hideNoteForm(appointmentID) {
+            document.getElementById('note-section-' + appointmentID).style.display = 'none';
+        }
+
+        function submitNote(appointmentID) {
+            const note = document.querySelector('#note-section-' + appointmentID + ' textarea').value;
+            const formData = new FormData();
+            formData.append('appointmentID', appointmentID);
+            formData.append('note', note);
+            formData.append('add_note', 'true');
+
+            fetch('../Controller/AdminDashboardController.php', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => {
+                if (response.ok) {
+                   window.location.reload();
+                } else {
+                    console.error('Failed to submit note');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
         // Enable/Disable Assign Employee Button based on dropdown selection
         document.querySelectorAll('select[id^="employee-select-"]').forEach(select => {
             select.addEventListener('change', function () {
@@ -301,11 +346,25 @@ if (!isset($_SESSION['last_action'])) {
                 method: 'POST',
                 body: formData,
             })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function changeStatus(appointmentID, status) {
+            const formData = new FormData();
+            formData.append('appointmentID', appointmentID);
+            formData.append('status', status);
+
+            fetch('../Controller/AdminDashboardController.php', {
+                method: 'POST',
+                body: formData,
+            })
             .then(response => {
                 if (response.ok) {
                     window.location.reload();
                 } else {
-                    console.error('Failed to assign employee');
+                    console.error('Failed to change status');
                 }
             })
             .catch(error => {
@@ -313,7 +372,6 @@ if (!isset($_SESSION['last_action'])) {
             });
         }
 
-        // Function to undo the last action
         function undoLastAction() {
             fetch('../Controller/AdminDashboardController.php', {
                 method: 'POST',
