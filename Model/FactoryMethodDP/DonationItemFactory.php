@@ -70,7 +70,7 @@ class DonationItemFactory extends DonationFactory {
             $box = new BasicBox(9);
             //$box->setInitialBoxSize($details["boxSize"]);
             //$box->setInitialItemList($details["initialItemList"]);
-            $box->addItem($details["initialItemList"]);
+            $box->addItem('');
             $box->calculateCost();
             return $box;
         }
