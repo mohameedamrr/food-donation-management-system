@@ -173,9 +173,9 @@
 //     ('Raw Materials', 'EGP', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 //     ('Client Ready Meal', 'EGP', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 //     ('Money', 'EGP', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-//     ('Sheep Sacrifice', 'EGP', 150, 'Sheep', 90, NULL, NULL, NULL, NULL, NULL),
-//     ('Cow Sacrifice', 'EGP', 350, 'Cow', 290, NULL, NULL, NULL, NULL, NULL),
-//     ('Goat Sacrifice', 'EGP', 250, 'Goat', 290, NULL, NULL, NULL, NULL, NULL),
+//     ('Sheep Sacrifice', 'EGP', 150, 'Sheep', 100, NULL, NULL, NULL, NULL, NULL),
+//     ('Cow Sacrifice', 'EGP', 350, 'Cow', 510, NULL, NULL, NULL, NULL, NULL),
+//     ('Goat Sacrifice', 'EGP', 250, 'Goat', 90, NULL, NULL, NULL, NULL, NULL),
 //     ('Initial Box', 'EGP', 100, NULL, NULL, NULL, NULL, NULL, 10, 'Oil, Pasta, Rice, Sugar'),
 //     ('Beef Meal', 'EGP', 350, NULL, NULL, 'Beef', '2026-12-31', 'Beef, Pasta, Fries', NULL, NULL);"
 // );
