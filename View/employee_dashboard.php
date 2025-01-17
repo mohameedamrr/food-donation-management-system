@@ -89,7 +89,7 @@ spl_autoload_register(function ($class_name) {
             color: white;
             font-size: 16px;
             cursor: pointer;
-            margin-right: 10px; /* Add spacing between buttons */
+            margin-right: 10px;
         }
 
         .section button:hover {
@@ -130,6 +130,40 @@ spl_autoload_register(function ($class_name) {
         .note-section button {
             margin-right: 10px;
         }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content button {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            width: 100%;
+            text-align: left;
+            border: none;
+            background-color: #f9f9f9;
+            cursor: pointer;
+        }
+
+        .dropdown-content button:hover {
+            background-color: #ddd;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -138,43 +172,72 @@ spl_autoload_register(function ($class_name) {
 
         <?php 
         session_start();
+        $_SESSION['filterStatus'] = "All";
             echo "<h2> Hello ".$_SESSION['user']->getName().",</h2>";
         ?>
 
         <div class="section">
+            <h3>Filter Appointments</h3>
+            <select id="filterStatus" onchange="filterAppointments()">
+                <option value="All">All</option>
+                <option value="Scheduled">Scheduled</option>
+                <option value="Completed">Completed</option>
+                <option value="Cancelled">Cancelled</option>
+                <option value="Postponed">Postponed</option>
+                <option value="Upcoming">Upcoming</option>
+                <option value="Past">Past</option>
+            </select>
+        </div>
+
+        <div class="section">
             <h3>Assigned Appointments</h3>
-            <?php
-            $controller = new EmployeesDashboardController();
-            $appointments = $controller->getAllAppointmentsData();
-
-            if (empty($appointments)) {
-                echo '<p>No appointments assigned.</p>';
-            } else {
-                foreach ($appointments as $appointment) {
-                    echo '<div class="appointment">';
-                    echo '<h4>Appointment ID: ' . $appointment['appointmentID'] . '</h4>';
-                    echo '<p>Date: ' . $appointment['date'] . '</p>';
-                    echo '<p>User ID: ' . $appointment['userID'] . '</p>';
-                    echo '<p>Status: ' . $appointment['status'] . '</p>';
-                    echo '<p>Location: ' . $appointment['location'] . '</p>';
-                    echo '<p>Note: ' . $appointment['note'] . '</p>';
-
-                    echo '<button onclick="showNoteForm(' . $appointment['appointmentID'] . ')">Add Note</button>';
-                    echo '<form method="POST" action="../Controller/EmployeesDashboardController.php" style="display:inline;">';
-                    echo '<input type="hidden" name="appointmentID" value="' . $appointment['appointmentID'] . '">';
-                    echo '<button type="submit" name="complete_appointment">Complete</button>';
-                    echo '</form>';
-
-                    echo '<div id="note-section-' . $appointment['appointmentID'] . '" class="note-section">';
-                    echo '<textarea name="note" placeholder="Enter note"></textarea>';
-                    echo '<button onclick="submitNote(' . $appointment['appointmentID'] . ')">Done</button>';
-                    echo '<button onclick="hideNoteForm(' . $appointment['appointmentID'] . ')">Cancel</button>';
-                    echo '</div>';
-
-                    echo '</div>';
+            <div id="appointmentsList">
+                <?php
+                $controller = new EmployeesDashboardController();
+                if(isset($_SESSION['filterStatus'])){
+                    
+                    $appointments =$controller->getAppointmentsByStatus($_SESSION['filterStatus']) ; 
+                    error_log($appointments[0]['location'].'');
+                    error_log('kjllllllljdlkklsdkldkdsdkl;l;');
+                }else{
+                    $appointments = $controller->getAllAppointmentsData();
                 }
-            }
-            ?>
+                //$appointments = $controller->getAllAppointmentsData();
+
+                if (empty($appointments)) {
+                    echo '<p>No appointments assigned.</p>';
+                } else {
+                    foreach ($appointments as $appointment) {
+                        echo '<div class="appointment">';
+                        echo '<h4>Appointment ID: ' . $appointment['appointmentID'] . '</h4>';
+                        echo '<p>Date: ' . $appointment['date'] . '</p>';
+                        echo '<p>User ID: ' . $appointment['userID'] . '</p>';
+                        echo '<p>Status: ' . $appointment['status'] . '</p>';
+                        echo '<p>Location: ' . $appointment['location'] . '</p>';
+                        echo '<p>Note: ' . $appointment['note'] . '</p>';
+
+                        echo '<button onclick="showNoteForm(' . $appointment['appointmentID'] . ')">Add Note</button>';
+                        echo '<div class="dropdown">';
+                        echo '<button>Change Status</button>';
+                        echo '<div class="dropdown-content">';
+                        echo '<button onclick="changeStatus(' . $appointment['appointmentID'] . ', \'Scheduled\')">Scheduled</button>';
+                        echo '<button onclick="changeStatus(' . $appointment['appointmentID'] . ', \'Completed\')">Completed</button>';
+                        echo '<button onclick="changeStatus(' . $appointment['appointmentID'] . ', \'Cancelled\')">Cancelled</button>';
+                        echo '<button onclick="changeStatus(' . $appointment['appointmentID'] . ', \'Postponed\')">Postponed</button>';
+                        echo '</div>';
+                        echo '</div>';
+
+                        echo '<div id="note-section-' . $appointment['appointmentID'] . '" class="note-section">';
+                        echo '<textarea name="note" placeholder="Enter note"></textarea>';
+                        echo '<button onclick="submitNote(' . $appointment['appointmentID'] . ')">Done</button>';
+                        echo '<button onclick="hideNoteForm(' . $appointment['appointmentID'] . ')">Cancel</button>';
+                        echo '</div>';
+
+                        echo '</div>';
+                    }
+                }
+                ?>
+            </div>
         </div>
     </div>
 
@@ -201,9 +264,54 @@ spl_autoload_register(function ($class_name) {
             .then(response => {
                 if (response.ok) {
                    window.location.reload();
-                   //header('Location: ../View/employee_dashboard.php');
                 } else {
                     console.error('Failed to submit note');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function filterAppointments() {
+            const filterStatus = document.getElementById('filterStatus').value;
+            const formData = new FormData();
+            formData.append('filterStatus', filterStatus);
+
+            fetch('../Controller/EmployeesDashboardController.php', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => {
+                if (response.ok) {
+                   window.location.reload();
+                } else {
+                    console.error('Failed to submit note');
+                }
+            })
+            // .then(response => response.text())
+            // .then(data => {
+            //     document.getElementById('appointmentsList').innerHTML = data;
+            // })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function changeStatus(appointmentID, status) {
+            const formData = new FormData();
+            formData.append('appointmentID', appointmentID);
+            formData.append('status', status);
+
+            fetch('../Controller/EmployeesDashboardController.php', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => {
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    console.error('Failed to change status');
                 }
             })
             .catch(error => {
