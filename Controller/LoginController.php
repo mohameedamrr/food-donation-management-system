@@ -26,10 +26,7 @@ spl_autoload_register(function ($class_name) {
         }
     }
 });
-// require_once '../Model/Authenticator.php';
-// require_once '../Model/GoogleMethod.php';
-// require_once '../Model/NormalMethod.php';
-// require_once '../Model/ProxyDP/DatabaseManagerProxy.php';
+
 session_start(); // Start the session
 
 
@@ -84,7 +81,7 @@ class LoginController {
                 header('Location: ../View/donor_dashboard.html');
                 break;
             case 'Employee':
-                header('Location: employee_dashboard.php');
+                header('Location: ../View/employee_dashboard.php');
                 break;
             case 'Admin':
                 header('Location: admin_dashboard.php');
@@ -104,7 +101,7 @@ class LoginController {
      * @return void
      */
     private function redirectToLoginPage($error) {
-        header('Location: login.php?error=' . $error);
+        header('Location: ../View/LoginView.html?error=' . $error);
         exit();
     }
 }
