@@ -54,6 +54,10 @@ class DonorDashboardController {
         return $this->cart;
     }
 
+    public function setCartItem($index, $item) {
+        $this->cart[$index] = $item;
+    }
+
     public function clearCart() {
         $this->cart = [];
     }
@@ -148,15 +152,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // if (isset($_POST['box'])) {
-    //     $box = [
-    //         'type' => 'Box',
-    //         'intialItemList'=> '',
-    //         'weight' => $_POST['weight']
-    //     ];
-    //     $item = $factory->createAndValidate($_POST['animalType'], $sacrifice);
-    //     $controller->addToCart($item);
-    // }
+    if (isset($_POST['add_box'])) {
+        foreach($controller->getCartItems() as $item){
+            if($item instanceof Box){
+                header('Location: ../View/donor_dashboard.html');
+                exit();
+            }
+        }
+        $box = [
+            'intialItemList'=> [],
+        ];
+        $item = $factory->createAndValidate("Box", $box);
+        $controller->addToCart($item);
+    }
+
+    if (isset($_POST['additional_oil'])) {
+        $cartItems = $controller->getCartItems();
+        for($i = 0; $i < $controller->getCartItemCount(); $i++) {
+            if ($cartItems[$i] instanceof Box) {
+                $newItem = new BoxAdditionalOil($cartItems[$i], (int)$_POST['oilQuantity']);
+                $newItem->addItem('Oil Bottle');
+                $newItem->calculateCost();
+                $controller->setCartItem($i, $newItem);
+            }
+        }
+    }
+
+    if (isset($_POST['additional_pasta'])) {
+        $cartItems = $controller->getCartItems();
+        for($i = 0; $i < $controller->getCartItemCount(); $i++) {
+            if ($cartItems[$i] instanceof Box) {
+                $newItem = new BoxAdditionalOil($cartItems[$i], (int)$_POST['pastaQuantity']);
+                $newItem->addItem('Pasta');
+                $newItem->calculateCost();
+                $controller->setCartItem($i, $newItem);
+            }
+        }
+    }
+
+    if (isset($_POST['additional_rice'])) {
+        $cartItems = $controller->getCartItems();
+        for($i = 0; $i < $controller->getCartItemCount(); $i++) {
+            if ($cartItems[$i] instanceof Box) {
+                $newItem = new BoxAdditionalOil($cartItems[$i], (int)$_POST['riceQuantity']);
+                $newItem->addItem('Rice');
+                $newItem->calculateCost();
+                $controller->setCartItem($i, $newItem);
+            }
+        }
+    }
 
     if (isset($_POST['proceed'])) {
         $donate = $user->makeDonation($controller->getCartItems());
