@@ -105,7 +105,11 @@ class AdminDashboardController {
     }
 
     public function undoCommand() {
+        $oldCommands = $this->admin->getCommandsHistory();
         $this->admin->undoCommand();
+        $this->admin = new Admin('1');
+        $this->admin->setCommandsHistory($oldCommands);
+        $_SESSION['admin'] = $this->admin;
     }
 
     public function convertAppointmentsToDictionary($appointments) {
@@ -154,6 +158,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (isset($_POST['undo'])) {
+        error_log("fdsdfssdfds");
         $controller->undoCommand();
     }
 
