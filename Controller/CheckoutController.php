@@ -30,6 +30,8 @@ session_start();
 
 class CartController {
     private $cart;
+    private $totalCost;
+    private $donate;
 
     public function __construct() {
         // Initialize the cart from the session
@@ -75,11 +77,11 @@ class CartController {
         }
         $paymentMethod = new Cash();
         // Create a new Donate object and proceed with the donation
-        $donate = $_SESSION['user']->makeDonation($this->cart, $paymentMethod);
+        // $donate = $_SESSION['user']->makeDonation($this->cart, $paymentMethod);
         // $paymentMethod = new Cash(); // Default payment method (can be changed based on user selection)
-        $donate->proceedDonation($this->cart, $paymentMethod);
-        $donate->proceedDonation($this->cart, $paymentMethod);
-        $donate->proceedDonation($this->cart, $paymentMethod);
+        $this->donate->proceedDonation($this->cart, $paymentMethod);
+        $this->donate->proceedDonation($this->cart, $paymentMethod);
+        $this->donate->proceedDonation($this->cart, $paymentMethod);
 
         // Clear the cart after donation
         $this->clearCart();

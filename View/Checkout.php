@@ -152,6 +152,7 @@ $cartItems = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
             <?php if (empty($cartItems)): ?>
                 <p>Your cart is empty.</p>
             <?php else: ?>
+                <?php $totalCost=0 ?>
                 <?php foreach ($cartItems as $index => $item): ?>
                     <div class="cart-item">
                         <h3><?php echo htmlspecialchars($item->getItemName() ?? 'Unknown Item'); ?></h3>
@@ -159,6 +160,7 @@ $cartItems = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
                         // Display item details
                         if ($item instanceof Meal) {
                             echo '<p><strong>Quantity:</strong> ' . htmlspecialchars($item->getMealQuantity()) . '</p>';
+                            echo '<p><strong>Cost:</strong> ' . htmlspecialchars($item->getMealQuantity()*$item->getCost()) . '</p>';
                         } elseif ($item instanceof RawMaterials) {
                             echo '<p><strong>Material Type:</strong> ' . htmlspecialchars($item->getMaterialType()) . '</p>';
                             echo '<p><strong>Quantity:</strong> ' . htmlspecialchars($item->getQuantity()) . '</p>';
@@ -170,6 +172,7 @@ $cartItems = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
                         } elseif ($item instanceof Sacrifice) {
                             echo '<p><strong>Animal Type:</strong> ' . htmlspecialchars($item->getAnimalType()) . '</p>';
                             echo '<p><strong>Weight:</strong> ' . htmlspecialchars($item->getWeight()) . '</p>';
+                            echo '<p><strong>Cost:</strong> ' . htmlspecialchars($item->getCost()*$item->getWeight()) . '</p>';
                         } elseif ($item instanceof ClientReadyMeal) {
                             echo '<p><strong>Meal Type:</strong> ' . htmlspecialchars($item->getReadyMealType()) . '</p>';
                             echo '<p><strong>Expiration:</strong> ' . htmlspecialchars($item->getReadyMealExpiration()) . '</p>';
@@ -183,6 +186,7 @@ $cartItems = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
                         </form>
                     </div>
                 <?php endforeach; ?>
+
             <?php endif; ?>
         </div>
 

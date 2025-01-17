@@ -4,13 +4,13 @@
 
 class TotalCostState extends DonateState
 {
+    static $totalCost = 0.0;
     public function nextDonationState(Donate $donate, array $donationItems, IPayment $paymentMethod): void
     {
-        $totalCost = 0.0;
-
+        $this->totalCost = 0.0;
         foreach ($donationItems as $item) {
-            $totalCost += $item->getCost();
+            $this->totalCost += $item->getCost();
         }
-        $donate->setNextState(new BillingState($totalCost));
+        $donate->setNextState(new BillingState($this->totalCost));
     }
 }
