@@ -68,6 +68,11 @@ class AdminDashboardController {
             $employeesData[] = [
                 'name' => $employee->getName(),
                 'id' => $employee->getId(),
+                'email' => $employee->getEmail(),
+                'phone' => $employee->getPhone(),
+                'role' => $employee->getRole(),
+                'department' => $employee->getDepartment(),
+                'salary' => $employee->getSalary(),
             ];
         }
         return $employeesData;
@@ -105,7 +110,11 @@ class AdminDashboardController {
     }
 
     public function undoCommand() {
+        $oldCommands = $this->admin->getCommandsHistory();
         $this->admin->undoCommand();
+        $this->admin = new Admin('1');
+        $this->admin->setCommandsHistory($oldCommands);
+        $_SESSION['admin'] = $this->admin;
     }
 
     public function convertAppointmentsToDictionary($appointments) {
@@ -154,6 +163,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (isset($_POST['undo'])) {
+        error_log("fdsdfssdfds");
         $controller->undoCommand();
     }
 
