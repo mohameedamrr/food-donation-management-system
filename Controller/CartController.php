@@ -90,6 +90,17 @@ class CartController {
                         "packagingType"=> $item->getPackagingType(),
                         "mealQuantity"=> $item->getReadyMealQuantity(),
                     ];
+                } elseif ($item instanceof Box) {
+                    error_log('bbbbbbbbbbbbbbb');
+                    $item->calculateCost();
+                    error_log($item->getTotalCost());
+                    $this->cartDict [] = [
+                        "type" => "Box",
+                        "name"=>  $item->getItemName(),
+                        "items"=> implode(", ", $item->getFinalItemList()),
+                        "cost"=>  $item->getTotalCost(),
+                        "boxSize"=> $item->getFinalBoxSize(),
+                    ];
                 }
             }
             return $this->cartDict;

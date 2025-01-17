@@ -212,6 +212,11 @@ $cartItems = $controller->getCartData();
                             echo '<p><strong>Expiration:</strong> ' . htmlspecialchars($item['expiration']) . '</p>';
                             echo '<p><strong>Packaging Type:</strong> ' . htmlspecialchars($item['packagingType']) . '</p>';
                             echo '<p><strong>Quantity:</strong> ' . htmlspecialchars($item['mealQuantity']) . '</p>';
+                        } elseif ($item['type'] === "Box") {
+                            echo '<p><strong>Box Items:</strong> ' . htmlspecialchars($item['items']) . '</p>';
+                            echo '<p><strong>Box Cost:</strong> ' . htmlspecialchars($item['cost']) . '</p>';
+                            echo '<p><strong>Box Size:</strong> ' . htmlspecialchars($item['boxSize']) . '</p>';
+                            $totalCost += $item['cost'];
                         }
                         ?>
                         <form method="POST" action="../Controller/CartController.php" style="display: inline;">
