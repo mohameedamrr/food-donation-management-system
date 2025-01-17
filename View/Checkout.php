@@ -26,7 +26,10 @@ spl_autoload_register(function ($class_name) {
         }
     }
 });
-session_start();
+if(!isset($_SESSION)) 
+{ 
+    session_start(); 
+} 
 
 // Autoload classes
 
@@ -163,6 +166,7 @@ $cartItems = $controller->getCartData();
                         if ($item['type'] === "Meal") {
                             echo '<p><strong>Quantity:</strong> ' . htmlspecialchars($item['mealQuantity']) . '</p>';
                             echo '<p><strong>Cost:</strong> ' . htmlspecialchars($item['mealCost']) . '</p>';
+                            $totalCost += $item['mealCost'];
                         } elseif ($item['type'] === "RawMaterials") {
                             echo '<p><strong>Material Type:</strong> ' . htmlspecialchars($item['materialType']) . '</p>';
                             echo '<p><strong>Quantity:</strong> ' . htmlspecialchars($item['materialQuantity']) . '</p>';
@@ -171,10 +175,12 @@ $cartItems = $controller->getCartData();
                         } elseif ($item['type'] === "Money") {
                             echo '<p><strong>Amount:</strong> ' . htmlspecialchars($item["amount"]) . '</p>';
                             echo '<p><strong>Purpose:</strong> ' . htmlspecialchars($item['purpose']) . '</p>';
+                            $totalCost += $item["amount"];
                         } elseif ($item['type'] === "Sacrifice") {
                             echo '<p><strong>Animal Type:</strong> ' . htmlspecialchars($item['animalType']) . '</p>';
                             echo '<p><strong>Weight:</strong> ' . htmlspecialchars($item['weight']) . '</p>';
                             echo '<p><strong>Cost:</strong> ' . htmlspecialchars($item['cost']) . '</p>';
+                            $totalCost += $item['cost'];
                         } elseif ($item['type'] === "ClientReadyMeal") {
                             echo '<p><strong>Meal Type:</strong> ' . htmlspecialchars($item['readyMealType']) . '</p>';
                             echo '<p><strong>Expiration:</strong> ' . htmlspecialchars($item['expiration']) . '</p>';
@@ -188,6 +194,8 @@ $cartItems = $controller->getCartData();
                         </form>
                     </div>
                 <?php endforeach; ?>
+
+                <?php echo '<h1><strong>Total Cost: '.$totalCost.'</strong></h1>'?>
 
             <?php endif; ?>
         </div>

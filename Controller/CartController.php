@@ -26,7 +26,10 @@ spl_autoload_register(function ($class_name) {
         }
     }
 });
-session_start();
+if(!isset($_SESSION)) 
+{ 
+    session_start(); 
+} 
 
 class CartController {
     private $cart;
