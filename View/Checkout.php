@@ -37,7 +37,9 @@ if (!isset($_SESSION['user'])) {
 }
 
 // Retrieve the cart items from the session
-$cartItems = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
+// $cartItems = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
+$controller = new CartController();
+$cartItems = $controller->getCartData();
 ?>
 
 <!DOCTYPE html>
@@ -153,34 +155,34 @@ $cartItems = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
                 <p>Your cart is empty.</p>
             <?php else: ?>
                 <?php $totalCost=0 ?>
-                <?php foreach ($cartItems as $index => $item): ?>
+                <?php foreach ($cartItems as $index=>$item): ?>
                     <div class="cart-item">
-                        <h3><?php echo htmlspecialchars($item->getItemName() ?? 'Unknown Item'); ?></h3>
+                        <h3><?php echo htmlspecialchars($item['name'] ?? 'Unknown Item'); ?></h3>
                         <?php
                         // Display item details
-                        if ($item instanceof Meal) {
-                            echo '<p><strong>Quantity:</strong> ' . htmlspecialchars($item->getMealQuantity()) . '</p>';
-                            echo '<p><strong>Cost:</strong> ' . htmlspecialchars($item->getMealQuantity()*$item->getCost()) . '</p>';
-                        } elseif ($item instanceof RawMaterials) {
-                            echo '<p><strong>Material Type:</strong> ' . htmlspecialchars($item->getMaterialType()) . '</p>';
-                            echo '<p><strong>Quantity:</strong> ' . htmlspecialchars($item->getQuantity()) . '</p>';
-                            echo '<p><strong>Weight:</strong> ' . htmlspecialchars($item->getRawMaterialWeight()) . '</p>';
-                            echo '<p><strong>Supplier:</strong> ' . htmlspecialchars($item->getSupplier()) . '</p>';
-                        } elseif ($item instanceof Money) {
-                            echo '<p><strong>Amount:</strong> ' . htmlspecialchars($item->getAmount()) . '</p>';
-                            echo '<p><strong>Purpose:</strong> ' . htmlspecialchars($item->getDonationPurpose()) . '</p>';
-                        } elseif ($item instanceof Sacrifice) {
-                            echo '<p><strong>Animal Type:</strong> ' . htmlspecialchars($item->getAnimalType()) . '</p>';
-                            echo '<p><strong>Weight:</strong> ' . htmlspecialchars($item->getWeight()) . '</p>';
-                            echo '<p><strong>Cost:</strong> ' . htmlspecialchars($item->getCost()*$item->getWeight()) . '</p>';
-                        } elseif ($item instanceof ClientReadyMeal) {
-                            echo '<p><strong>Meal Type:</strong> ' . htmlspecialchars($item->getReadyMealType()) . '</p>';
-                            echo '<p><strong>Expiration:</strong> ' . htmlspecialchars($item->getReadyMealExpiration()) . '</p>';
-                            echo '<p><strong>Packaging Type:</strong> ' . htmlspecialchars($item->getPackagingType()) . '</p>';
-                            echo '<p><strong>Quantity:</strong> ' . htmlspecialchars($item->getReadyMealQuantity()) . '</p>';
+                        if ($item['type'] === "Meal") {
+                            echo '<p><strong>Quantity:</strong> ' . htmlspecialchars($item['mealQuantity']) . '</p>';
+                            echo '<p><strong>Cost:</strong> ' . htmlspecialchars($item['mealCost']) . '</p>';
+                        } elseif ($item['type'] === "RawMaterials") {
+                            echo '<p><strong>Material Type:</strong> ' . htmlspecialchars($item['materialType']) . '</p>';
+                            echo '<p><strong>Quantity:</strong> ' . htmlspecialchars($item['materialQuantity']) . '</p>';
+                            echo '<p><strong>Weight:</strong> ' . htmlspecialchars($item['materialWeight']) . '</p>';
+                            echo '<p><strong>Supplier:</strong> ' . htmlspecialchars($item['supplier']) . '</p>';
+                        } elseif ($item['type'] === "Money") {
+                            echo '<p><strong>Amount:</strong> ' . htmlspecialchars($item["amount"]) . '</p>';
+                            echo '<p><strong>Purpose:</strong> ' . htmlspecialchars($item['purpose']) . '</p>';
+                        } elseif ($item['type'] === "Sacrifice") {
+                            echo '<p><strong>Animal Type:</strong> ' . htmlspecialchars($item['animalType']) . '</p>';
+                            echo '<p><strong>Weight:</strong> ' . htmlspecialchars($item['weight']) . '</p>';
+                            echo '<p><strong>Cost:</strong> ' . htmlspecialchars($item['cost']) . '</p>';
+                        } elseif ($item['type'] === "ClientReadyMeal") {
+                            echo '<p><strong>Meal Type:</strong> ' . htmlspecialchars($item['readyMealType']) . '</p>';
+                            echo '<p><strong>Expiration:</strong> ' . htmlspecialchars($item['expiration']) . '</p>';
+                            echo '<p><strong>Packaging Type:</strong> ' . htmlspecialchars($item['packagingType']) . '</p>';
+                            echo '<p><strong>Quantity:</strong> ' . htmlspecialchars($item['mealQuantity']) . '</p>';
                         }
                         ?>
-                        <form method="POST" action="../Controller/CheckoutController.php" style="display: inline;">
+                        <form method="POST" action="../Controller/CartController.php" style="display: inline;">
                             <input type="hidden" name="item_index" value="<?php echo $index; ?>">
                             <button type="submit" name="remove_item" class="remove-button">Remove</button>
                         </form>
@@ -191,7 +193,7 @@ $cartItems = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
         </div>
 
         <div class="donate-button">
-            <form method="POST" action="../Controller/CheckoutController.php">
+            <form method="POST" action="../Controller/CartController.php">
                 <button type="submit" name="donate">Donate</button>
             </form>
         </div>

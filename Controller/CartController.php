@@ -32,6 +32,7 @@ class CartController {
     private $cart;
     private $totalCost;
     private $donate;
+    private $cartDict = [];
 
     public function __construct() {
         // Initialize the cart from the session
@@ -39,6 +40,61 @@ class CartController {
             $_SESSION['cart'] = [];
         }
         $this->cart = &$_SESSION['cart'];
+    }
+
+    public function getCartData(){
+        if (empty($this->cart)){
+            return [];
+        }
+        else{
+            foreach ($this->cart as $item){
+                if ($item instanceof Meal) {
+                    $this->cartDict [] = [
+                        "type" => "Meal",
+                        "name"=> $item->getItemName(),
+                        "mealQuantity"=> $item->getMealQuantity(),
+                        "mealCost"=> $item->getMealQuantity()*$item->getCost()
+                    ];
+                } elseif ($item instanceof RawMaterials) {
+                    $this->cartDict [] = [
+                        "type" => "RawMaterials",
+                        "name"=> $item->getItemName(),
+                        "materialType" => $item->getMaterialType(),
+                        "materialQuantity"=> $item->getQuantity(),
+                        "materialWeight"=> $item->getRawMaterialWeight(),
+                        "supplier"=>$item->getSupplier(),
+                    ];
+                } elseif ($item instanceof Money) {
+                    $this->cartDict [] = [
+                        "type" => "Money",
+                        "name"=> $item->getItemName(),
+                        "amount"=> $item->getAmount(),
+                        "purpose"=> $item->getDonationPurpose()
+                    ];
+                } elseif ($item instanceof Sacrifice) {
+                    $this->cartDict [] = [
+                        "type" => "Sacrifice",
+                        "name"=> $item->getItemName(),
+                        "animalType"=> $item->getAnimalType(),
+                        "weight"=> $item->getWeight(),
+                        "cost"=> $item->getCost()*$item->getWeight(),
+                    ];
+                } elseif ($item instanceof ClientReadyMeal) {
+                    $this->cartDict [] = [
+                        "type" => "ClientReadyMeal",
+                        "name"=> $item->getItemName(),
+                        "readyMealType"=>$item->getReadyMealType(),
+                        "expiration"=> $item->getReadyMealExpiration(),
+                        "packagingType"=> $item->getPackagingType(),
+                        "mealQuantity"=> $item->getReadyMealQuantity(),
+                    ];
+                }
+                
+            }
+            return $this->cartDict;
+
+        }  
+            
     }
 
     /**
