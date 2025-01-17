@@ -5,11 +5,11 @@
 // require_once '../../interfaces/IReadObject.php';
 // require_once '../ProxyDP/DatabaseManagerProxy.php';
 // require_once "DonationItemFactory.php";
-// require_once '../DonationItemChildren/Meal.php';            
-// require_once '../DonationItemChildren/RawMaterials.php';    
-// require_once '../DonationItemChildren/ClientReadyMeal.php'; 
-// require_once '../DonationItemChildren/Money.php';           
-// require_once '../DonationItemChildren/Sacrifice.php';       
+// require_once '../DonationItemChildren/Meal.php';
+// require_once '../DonationItemChildren/RawMaterials.php';
+// require_once '../DonationItemChildren/ClientReadyMeal.php';
+// require_once '../DonationItemChildren/Money.php';
+// require_once '../DonationItemChildren/Sacrifice.php';
 // require_once '../DecoratorDP/BasicBox.php';
 
 abstract class DonationFactory {
