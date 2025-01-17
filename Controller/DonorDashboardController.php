@@ -84,6 +84,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $factory = new DonationItemFactory();
 
     if (isset($_POST['add_meal'])) {
+        foreach($controller->getCartItems() as $item){
+            if($item instanceof Meal){
+                header('Location: ../View/donor_dashboard.html');
+                exit();
+            }
+        }
         $meal = [
             'mealQuantity' => $_POST['mealQuantity'],
         ];
@@ -92,6 +98,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (isset($_POST['add_raw_materials'])) {
+        foreach($controller->getCartItems() as $item){
+            if($item instanceof RawMaterials){
+                header('Location: ../View/donor_dashboard.html');
+                exit();
+            }
+        }
         $rawMaterials = [
             'materialType' => $_POST['materialType'],
             'quantity' => $_POST['quantity'],
@@ -103,6 +115,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (isset($_POST['add_money'])) {
+        foreach($controller->getCartItems() as $item){
+            if($item instanceof Money){
+                header('Location: ../View/donor_dashboard.html');
+                exit();
+            }
+        }
         $money = [
             'amount' => $_POST['amount'],
             'donationPurpose' => $_POST['donationPurpose']
@@ -112,12 +130,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (isset($_POST['add_sacrifice'])) {
+        foreach($controller->getCartItems() as $item){
+            if($item instanceof Sacrifice){
+                header('Location: ../View/donor_dashboard.html');
+                exit();
+            }
+        }
         $sacrifice = [];
         $item = $factory->createAndValidate($_POST['animalType'], $sacrifice);
         $controller->addToCart($item);
     }
 
     if (isset($_POST['add_ready_meal'])) {
+        foreach($controller->getCartItems() as $item){
+            if($item instanceof ClientReadyMeal){
+                header('Location: ../View/donor_dashboard.html');
+                exit();
+            }
+        }
         $readymeal = [
             'readyMealType' => $_POST['readyMealType'],
             'readyMealExpiration' => $_POST['readyMealExpiration'],

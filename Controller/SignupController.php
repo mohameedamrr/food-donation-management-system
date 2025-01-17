@@ -30,6 +30,8 @@ spl_autoload_register(function ($class_name) {
 // SignupController.php
 // require_once 'BasicDonator.php';
 
+session_start();
+
 class SignupController {
     /**
      * Handles the signup process.
@@ -55,7 +57,7 @@ class SignupController {
                 'phone' => $userData['phone'],
                 'password' => $userData['password'],
             ]);
-
+            $_SESSION['user'] = $basicDonator;
             // Redirect to the user dashboard
             $this->redirectToDashboard();
         } catch (Exception $e) {
@@ -70,7 +72,8 @@ class SignupController {
      * @return void
      */
     private function redirectToDashboard() {
-        header('Location: user_dashboard.php');
+        $_SESSION['cart']= [];
+        header('Location: ../View/donor_dashboard.html');
         exit();
     }
 

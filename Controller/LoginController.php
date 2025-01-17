@@ -78,7 +78,7 @@ class LoginController {
      * @return void
      */
     private function redirectUser($userType) {
-
+        $_SESSION['cart']= [];
         switch ($userType) {
             case 'Donator':
                 header('Location: ../View/donor_dashboard.html');

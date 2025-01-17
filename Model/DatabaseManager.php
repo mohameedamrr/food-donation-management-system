@@ -1,5 +1,5 @@
 <?php
-// require_once '..\interfaces\IDatabaseManager.php';
+//require_once '..\interfaces\IDatabaseManager.php';
 
 class DatabaseManager implements IDatabaseManager {
     // Private static instance of DatabaseManager
