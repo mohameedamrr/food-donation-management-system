@@ -238,7 +238,8 @@ if(!isset($_SESSION))
         <!-- Top Buttons -->
         <div class="top-buttons">
             <button onclick="window.location.href='admin_employees_dashboard.php'">Employees</button>
-            <button onclick="window.location.href='donation_history.php'">Donation History</button>
+            <button onclick="onEmployeeReport()">Employee Report</button>
+            <button onclick="onDonationReport()">Donation Report</button>
         </div>
 
         <?php
@@ -349,6 +350,46 @@ if(!isset($_SESSION))
             });
         }
 
+        function onEmployeeReport() {
+            const formData = new FormData();
+            formData.append('employee_report', 'true');
+
+            fetch('../Controller/AdminDashboardController.php', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => {
+                if (response.ok) {
+                   window.location.reload();
+                } else {
+                    console.error('Failed to submit note');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function onDonationReport() {
+            const formData = new FormData();
+            formData.append('donation_report', 'true');
+
+            fetch('../Controller/AdminDashboardController.php', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => {
+                if (response.ok) {
+                   window.location.reload();
+                } else {
+                    console.error('Failed to submit note');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
         // Enable/Disable Assign Employee Button based on dropdown selection
         document.querySelectorAll('select[id^="employee-select-"]').forEach(select => {
             select.addEventListener('change', function () {
@@ -402,15 +443,18 @@ if(!isset($_SESSION))
         }
 
         function undoLastAction() {
+            const formData = new FormData();
+            formData.append('undo', "true");
+
             fetch('../Controller/AdminDashboardController.php', {
                 method: 'POST',
-                body: new URLSearchParams({ undo_last_action: 'true' }),
+                body: formData,
             })
             .then(response => {
                 if (response.ok) {
                     window.location.reload();
                 } else {
-                    console.error('Failed to undo last action');
+                    console.error('Failed to change status');
                 }
             })
             .catch(error => {

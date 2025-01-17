@@ -119,7 +119,11 @@ class AdminDashboardController {
     }
 
     public function undoCommand() {
+        $oldCommands = $this->admin->getCommandsHistory();
         $this->admin->undoCommand();
+        $this->admin = new Admin('1');
+        $this->admin->setCommandsHistory($oldCommands);
+        $_SESSION['admin'] = $this->admin;
     }
 
     public function convertAppointmentsToDictionary($appointments) {
@@ -168,6 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (isset($_POST['undo'])) {
+        error_log("fdsdfssdfds");
         $controller->undoCommand();
     }
 
@@ -182,9 +187,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    if (isset($_POST['donation_history'])) {
-        header('Location: ../View/donation_history_dashboard.php');
-        exit();
+    if (isset($_POST['employee_report'])) {
+        $employeeReport = new EmployeesReport();
+        $employeeReport->generateReport();
+    }
+
+    if (isset($_POST['donation_report'])) {
+        $donationReport = new DonationReport();
+        $donationReport->generateReport();
     }
 
     if (isset($_POST['saveEmployee'])) {

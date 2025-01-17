@@ -174,6 +174,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['user']->createAppointment($appointmentLocation, $appointmentDate);
         }
         if ($controller->proceedDonation()) {
+            $user = $_SESSION['user'];
+            $user->setDonationHistory();
+            $_SESSION['user'] = $user;
             header('Location: donation_success.php');
             exit();
         } else {

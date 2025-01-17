@@ -129,6 +129,7 @@ class BasicDonator extends UserEntity implements IStoreObject, IUpdateObject, IR
         return $donationObject;
     }
 
+    
     public function proceedToNextStepDonation(Donate $donate, array $items, IPayment $paymentStrategy = new NoPaymentMethod()): bool {
         if($donate->getDonationState() instanceof CompletedState) {
             $donorProxy = new DatabaseManagerProxy('donor');
@@ -152,8 +153,8 @@ class BasicDonator extends UserEntity implements IStoreObject, IUpdateObject, IR
         return $this->donationHistory;
     }
 
-    public function setDonationHistory($donationHistory): void {
-        $this->donationHistory = $donationHistory;
+    public function setDonationHistory(): void {
+        $this->donationHistory = $this->fetchDonationHistory($this->id);
     }
 
     //create iterator
@@ -194,6 +195,8 @@ class BasicDonator extends UserEntity implements IStoreObject, IUpdateObject, IR
     {
         $this->appointments = $appointments;
     }
+
+
 
     public function deleteAppointment($appointmentID): bool {
 
