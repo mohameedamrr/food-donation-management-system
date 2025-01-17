@@ -1,6 +1,35 @@
 <?php
-session_start();
-require_once '../Controller/DonationHistoryController.php';
+spl_autoload_register(function ($class_name) {
+    $directories = [
+        '../Model/',
+        '../Controller/',
+        '../View/',
+        '../interfaces/',
+        '../Model/AdapterDP/',
+        '../Model/CommandDP/',
+        '../Model/DecoratorDP/',
+        '../Model/DonateStateDP/',
+        '../Model/DonationItemChildren/',
+        '../Model/FacadeDP/',
+        '../Model/FactoryMethodDP/',
+        '../Model/IteratorDP/',
+        '../Model/PaymentStateDP/',
+        '../Model/PaymentStrategyDP/',
+        '../Model/ProxyDP/',
+        '../Model/TemplateDP/',
+    ];
+    foreach ($directories as $directory) {
+        $file = __DIR__ . '/' . $directory . $class_name . '.php';
+        if (file_exists($file)) {
+            require_once $file;
+            return;
+        }
+    }
+});
+if(!isset($_SESSION))
+{
+    session_start();
+}
 
 $controller = new DonationHistoryController();
 $donationHistory = $controller->getDonationHistory();

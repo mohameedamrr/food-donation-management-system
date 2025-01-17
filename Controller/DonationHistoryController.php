@@ -27,7 +27,10 @@ spl_autoload_register(function ($class_name) {
     }
 });
 
-session_start();
+if(!isset($_SESSION))
+{
+    session_start();
+}
 
 class DonationHistoryController {
     private $admin;
@@ -40,11 +43,6 @@ class DonationHistoryController {
         $this->admin = $_SESSION['admin'];
     }
 
-    /**
-     * Fetches all donation history from the database.
-     *
-     * @return array List of donation history entries.
-     */
     public function getDonationHistory() {
         $db = new DatabaseManagerProxy('admin');
         $sql = "SELECT * FROM `food_donation`.`donation_history`";
@@ -52,12 +50,6 @@ class DonationHistoryController {
         return $result;
     }
 
-    /**
-     * Updates the description of a donation history entry.
-     *
-     * @param int $donationId The ID of the donation history entry.
-     * @param string $newDescription The new description.
-     */
     public function updateDonationDescription($donationId, $newDescription) {
         $db = new DatabaseManagerProxy('admin');
         $sql = "SELECT * FROM `food_donation`.`donation_history` WHERE id = $donationId";

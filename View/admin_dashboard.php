@@ -57,6 +57,7 @@ if(!isset($_SESSION))
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             max-width: 800px;
             margin: 0 auto;
+            position: relative;
         }
 
         h2 {
@@ -206,11 +207,39 @@ if(!isset($_SESSION))
             background-color: #6c757d;
             cursor: not-allowed;
         }
+
+        /* New Styles for Top Buttons */
+        .top-buttons {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .top-buttons button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .top-buttons button:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
     <div class="dashboard-container">
         <h1>Admin Dashboard</h1>
+        <!-- Top Buttons -->
+        <div class="top-buttons">
+            <button onclick="window.location.href='admin_employees_dashboard.php'">Employees</button>
+            <button onclick="window.location.href='donation_history.php'">Donation History</button>
+        </div>
 
         <?php
         echo "<h2> Hello " . $_SESSION['admin']->getName() . ",</h2>";
