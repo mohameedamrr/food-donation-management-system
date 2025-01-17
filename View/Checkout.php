@@ -43,6 +43,15 @@ if (!isset($_SESSION['user'])) {
 // $cartItems = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
 $controller = new CartController();
 $cartItems = $controller->getCartData();
+
+// Check if the cart contains items that require an appointment
+$requiresAppointment = false;
+foreach ($cartItems as $item) {
+    if ($item['type'] === "ClientReadyMeal" || $item['type'] === "RawMaterials") {
+        $requiresAppointment = true;
+        break;
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -168,6 +177,19 @@ $cartItems = $controller->getCartData();
             border: 1px solid #ddd;
             border-radius: 4px;
         }
+
+        .appointment-details {
+            margin-top: 20px;
+            display: <?php echo $requiresAppointment ? 'block' : 'none'; ?>;
+        }
+
+        .appointment-details input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
@@ -212,6 +234,11 @@ $cartItems = $controller->getCartData();
                             echo '<p><strong>Expiration:</strong> ' . htmlspecialchars($item['expiration']) . '</p>';
                             echo '<p><strong>Packaging Type:</strong> ' . htmlspecialchars($item['packagingType']) . '</p>';
                             echo '<p><strong>Quantity:</strong> ' . htmlspecialchars($item['mealQuantity']) . '</p>';
+                        } elseif ($item['type'] === "Box") {
+                            echo '<p><strong>Box Items:</strong> ' . htmlspecialchars($item['items']) . '</p>';
+                            echo '<p><strong>Box Cost:</strong> ' . htmlspecialchars($item['cost']) . '</p>';
+                            echo '<p><strong>Box Size:</strong> ' . htmlspecialchars($item['boxSize']) . '</p>';
+                            $totalCost += $item['cost'];
                         }
                         ?>
                         <form method="POST" action="../Controller/CartController.php" style="display: inline;">
@@ -225,6 +252,16 @@ $cartItems = $controller->getCartData();
 
             <?php endif; ?>
         </div>
+
+        <!-- Appointment Details Section -->
+        <?php if ($requiresAppointment): ?>
+            <div class="appointment-details">
+                <h3>Appointment Details</h3>
+                <input type="date" name="appointmentDate" placeholder="Appointment Date">
+                <input type="text" name="appointmentLocation" placeholder="Appointment Location">
+            </div>
+        <?php endif; ?>
+
         <div class="payment-method">
             <h3>Select Payment Method</h3>
             <label>
@@ -254,6 +291,11 @@ $cartItems = $controller->getCartData();
         <div class="donate-button">
             <form method="POST" action="../Controller/CartController.php">
                 <input type="hidden" name="paymentType" id="paymentType" value="Cash">
+                <?php if ($requiresAppointment): ?>
+                    <!-- Hidden inputs for appointment data -->
+                    <input type="hidden" name="appointmentDate" id="appointmentDate">
+                    <input type="hidden" name="appointmentLocation" id="appointmentLocation">
+                <?php endif; ?>
                 <div id="dynamic-fields"></div>
                 <button type="submit" name="donate">Donate</button>
             </form>
@@ -305,6 +347,22 @@ $cartItems = $controller->getCartData();
 
         // Initialize payment details on page load
         updatePaymentDetails();
+
+        // Handle appointment details
+        <?php if ($requiresAppointment): ?>
+            const appointmentDateInput = document.querySelector('input[name="appointmentDate"]');
+            const appointmentLocationInput = document.querySelector('input[name="appointmentLocation"]');
+            const hiddenAppointmentDate = document.getElementById('appointmentDate');
+            const hiddenAppointmentLocation = document.getElementById('appointmentLocation');
+
+            appointmentDateInput.addEventListener('change', () => {
+                hiddenAppointmentDate.value = appointmentDateInput.value;
+            });
+
+            appointmentLocationInput.addEventListener('input', () => {
+                hiddenAppointmentLocation.value = appointmentLocationInput.value;
+            });
+        <?php endif; ?>
     </script>
 </body>
 </html>
