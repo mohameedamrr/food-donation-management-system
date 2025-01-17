@@ -128,18 +128,17 @@ class CartController {
         }
         $this->donate->proceedDonation($this->cart, $_SESSION['paymentMethod']);
         if ($this->donate->getDonationState() instanceof DonateFailedState) {
-            header('Location: ../View/failedPayment.html');
+
+            header('Location: ../View/donor_dashboard.html?success=payment_failed');
             exit();
         } else {
             $this->donate->proceedDonation($this->cart, $_SESSION['paymentMethod']);
             $this->donate->proceedDonation($this->cart, $_SESSION['paymentMethod']);
             $this->donate->proceedDonation($this->cart, $_SESSION['paymentMethod']);
+            $this->clearCart();
+            header('Location: ../View/donor_dashboard.html?success=donation_successful');
+            exit();
         }
-
-
-        $this->clearCart();
-
-        return true;
     }
 }
 

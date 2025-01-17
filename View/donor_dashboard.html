@@ -144,6 +144,18 @@
             background-color: #45a049;
         }
     </style>
+    <script>
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const success = urlParams.get('success');
+            if (success === 'donation_successful') {
+                alert('Donation Successful!');
+            }
+            else if (success === 'payment_failed') {
+            alert('Payment Failed, Try Again!');
+        }
+        };
+    </script>
 </head>
 <body>
 <!-- Cart Icon -->
