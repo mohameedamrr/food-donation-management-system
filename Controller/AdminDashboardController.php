@@ -78,6 +78,15 @@ class AdminDashboardController {
         return $employeesData;
     }
 
+    public function saveEmployee($data) {
+        $employees = $this->admin->createEmployee($data);
+    }
+
+    public function deleteEmployee($id) {
+        $this->admin->deleteEmployee($id);
+        
+    }
+
     public function updateAppointmentStatus($appointmentID, $status) {
         $appointment = new Appointment((int)$appointmentID);
         $changeStatusCommand = new ChangeAppointmentStatusCommand($appointment, $status, $appointment->getStatus());
@@ -175,6 +184,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (isset($_POST['donation_history'])) {
         header('Location: ../View/donation_history_dashboard.php');
+        exit();
+    }
+
+    if (isset($_POST['saveEmployee'])) {
+        $data = [
+            'name' => $_POST['name'],
+            'email' => $_POST['email'],
+            'phone' => $_POST['phone'],
+            'password' => $_POST['password'],
+            'role' => $_POST['role'],
+            'department' => $_POST['department'],
+            'salary' => $_POST['salary']
+        ];
+        $controller->saveEmployee($data);
+        header('Location: ../View/admin_employees_dashboard.php');
+        exit();
+    }
+
+    if (isset($_POST['delete_employee'])) {
+        $controller->deleteEmployee($_POST['employeeID']);
+        header('Location: ../View/admin_employees_dashboard.php');
         exit();
     }
 

@@ -106,10 +106,19 @@ class Admin extends UserEntity implements ISubject, IUpdateObject, IStoreObject,
 
     //***hnsebha kda */
     public function deleteEmployee(int $employeeID): void {
-        // Employee::deleteObject($employeeID);
-        $sql = "DELETE FROM `food_donation`.`Employees` WHERE id = $employeeID";
-        $db =  new DatabaseManagerProxy('admin'); 
-        $db->runQuery($sql);
+        $db = new DatabaseManagerProxy('admin'); 
+        
+        // Delete from employees table
+        $sql = "DELETE FROM `food_donation`.`employees` WHERE id = $employeeID";
+        if (!$db->runQuery($sql)) {
+            throw new Exception("Failed to delete employee from employees table.");
+        }
+    
+        // Delete from users table
+        $sql2 = "DELETE FROM `food_donation`.`users` WHERE id = $employeeID";
+        if (!$db->runQuery($sql2)) {
+            throw new Exception("Failed to delete employee from users table.");
+        }
     }
 
     ////////// add apoint

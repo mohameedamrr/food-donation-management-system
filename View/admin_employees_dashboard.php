@@ -1,5 +1,4 @@
 <?php
-session_start(); // Start the session at the top
 
 spl_autoload_register(function ($class_name) {
     $directories = [
@@ -28,12 +27,13 @@ spl_autoload_register(function ($class_name) {
         }
     }
 });
+session_start(); // Start the session at the top
 
 // Check if the user is logged in and is an admin
-if (!isset($_SESSION['user']) || !($_SESSION['user'] instanceof Admin)) {
-    header('Location: ../View/LoginView.html');
-    exit();
-}
+// if (!isset($_SESSION['admin']) || !($_SESSION['admin'] instanceof Admin)) {
+//     header('Location: ../View/LoginView.html');
+//     exit();
+// }
 ?>
 
 <!DOCTYPE html>
@@ -156,7 +156,7 @@ if (!isset($_SESSION['user']) || !($_SESSION['user'] instanceof Admin)) {
         <h1>Admin Employees Management</h1>
 
         <?php
-        echo "<h2> Hello " . $_SESSION['user']->getName() . ",</h2>";
+        echo "<h2> Hello " . $_SESSION['admin']->getName() . ",</h2>";
         ?>
 
         <!-- Add Employee Button -->
@@ -165,14 +165,14 @@ if (!isset($_SESSION['user']) || !($_SESSION['user'] instanceof Admin)) {
         <!-- Add Employee Form -->
         <div id="addEmployeeForm" class="add-employee-form">
             <h3>Add New Employee</h3>
-            <form id="employeeForm" action="../Controller/AdminDashboardController.php" method="POST">
-                <input type="text" name="name" placeholder="Name" required>
-                <input type="email" name="email" placeholder="Email" required>
-                <input type="text" name="phone" placeholder="Phone" required>
-                <input type="password" name="password" placeholder="Password" required>
-                <input type="text" name="role" placeholder="Role" required>
-                <input type="text" name="department" placeholder="Department" required>
-                <input type="number" name="salary" placeholder="Salary" required>
+            <form id="employeeForm" onsubmit="saveEmployeeAction(event)">
+                <input type="text" name="name" id="name" placeholder="Name" required>
+                <input type="email" name="email" id="email" placeholder="Email" required>
+                <input type="text" name="phone" id="phone" placeholder="Phone" required>
+                <input type="password" name="password" id="password" placeholder="Password" required>
+                <input type="text" name="role" id="role" placeholder="Role" required>
+                <input type="text" name="department" id="department" placeholder="Department" required>
+                <input type="number" name="salary" id="salary" placeholder="Salary" required>
                 <button type="submit">Save Employee</button>
             </form>
         </div>
@@ -189,16 +189,18 @@ if (!isset($_SESSION['user']) || !($_SESSION['user'] instanceof Admin)) {
                     echo '<p>No employees found.</p>';
                 } else {
                     foreach ($employees as $employee) {
-                        echo '<div class="employee">';
-                        echo '<h4>Employee ID: ' . $employee['id'] . '</h4>';
-                        echo '<p>Name: ' . $employee['name']  . '</p>';
-                        echo '<p>Email: ' . $employee['email']  . '</p>';
-                        echo '<p>Phone: ' . $employee['phone']  . '</p>';
-                        echo '<p>Role: ' . $employee['role']  . '</p>';
-                        echo '<p>Department: ' . $employee['department']  . '</p>';
-                        echo '<p>Salary: ' . $employee['salary']  . '</p>';
-                        echo '<button class="delete-button" onclick="deleteEmployee(' . $employee['id'] . ')">Delete</button>';
-                        echo '</div>';
+                        if($employee['id'] != 1){
+                            echo '<div class="employee">';
+                            echo '<h4>Employee ID: ' . $employee['id'] . '</h4>';
+                            echo '<p>Name: ' . $employee['name']  . '</p>';
+                            echo '<p>Email: ' . $employee['email']  . '</p>';
+                            echo '<p>Phone: ' . $employee['phone']  . '</p>';
+                            echo '<p>Role: ' . $employee['role']  . '</p>';
+                            echo '<p>Department: ' . $employee['department']  . '</p>';
+                            echo '<p>Salary: ' . $employee['salary']  . '</p>';
+                            echo '<button class="delete-button" onclick="deleteEmployee(' . $employee['id'] . ')">Delete</button>';
+                            echo '</div>';
+                        } 
                     }
                 }
                 ?>
@@ -235,6 +237,34 @@ if (!isset($_SESSION['user']) || !($_SESSION['user'] instanceof Admin)) {
                     console.error('Error:', error);
                 });
             }
+
+            function saveEmployeeAction(event) {
+    // Prevent the default form submission behavior
+    event.preventDefault();
+
+    // Get the form element
+    const form = document.getElementById('employeeForm');
+
+    // Create a FormData object and populate it with the form data
+    const formData = new FormData(form);
+    formData.append('saveEmployee', 'true'); // Add the saveEmployee flag
+
+    // Send the form data to the server using fetch
+    fetch('../Controller/AdminDashboardController.php', {
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => {
+        if (response.ok) {
+            window.location.reload(); // Reload the page to reflect the changes
+        } else {
+            console.error('Failed to save employee');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
         }
     </script>
 </body>
