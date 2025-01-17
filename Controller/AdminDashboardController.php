@@ -178,9 +178,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    if (isset($_POST['donation_history'])) {
-        header('Location: ../View/donation_history_dashboard.php');
-        exit();
+    if (isset($_POST['employee_report'])) {
+        $employeeReport = new EmployeesReport();
+        $employeeReport->generateReport();
+    }
+
+    if (isset($_POST['donation_report'])) {
+        $donationReport = new DonationReport();
+        $donationReport->generateReport();
     }
 
     header('Location: ../View/admin_dashboard.php');

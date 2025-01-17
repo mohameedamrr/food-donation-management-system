@@ -238,7 +238,8 @@ if(!isset($_SESSION))
         <!-- Top Buttons -->
         <div class="top-buttons">
             <button onclick="window.location.href='admin_employees_dashboard.php'">Employees</button>
-            <button onclick="window.location.href='donation_history.php'">Donation History</button>
+            <button onclick="onEmployeeReport()">Employee Report</button>
+            <button onclick="onDonationReport()">Donation Report</button>
         </div>
 
         <?php
@@ -332,6 +333,46 @@ if(!isset($_SESSION))
             formData.append('appointmentID', appointmentID);
             formData.append('note', note);
             formData.append('add_note', 'true');
+
+            fetch('../Controller/AdminDashboardController.php', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => {
+                if (response.ok) {
+                   window.location.reload();
+                } else {
+                    console.error('Failed to submit note');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function onEmployeeReport() {
+            const formData = new FormData();
+            formData.append('employee_report', 'true');
+
+            fetch('../Controller/AdminDashboardController.php', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => {
+                if (response.ok) {
+                   window.location.reload();
+                } else {
+                    console.error('Failed to submit note');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function onDonationReport() {
+            const formData = new FormData();
+            formData.append('donation_report', 'true');
 
             fetch('../Controller/AdminDashboardController.php', {
                 method: 'POST',
