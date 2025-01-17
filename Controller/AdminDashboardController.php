@@ -68,6 +68,11 @@ class AdminDashboardController {
             $employeesData[] = [
                 'name' => $employee->getName(),
                 'id' => $employee->getId(),
+                'email' => $employee->getEmail(),
+                'phone' => $employee->getPhone(),
+                'role' => $employee->getRole(),
+                'department' => $employee->getDepartment(),
+                'salary' => $employee->getSalary(),
             ];
         }
         return $employeesData;
