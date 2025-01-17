@@ -91,102 +91,292 @@
             text-align: center;
             margin-top: 20px;
         }
+
+        /* General styles */
+        .item-control {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .item-control form {
+            display: flex;
+            align-items: center;
+            gap: 10px; /* Adds space between elements */
+        }
+
+        .item-control span {
+            font-weight: bold;
+            min-width: 50px; /* Ensures consistent spacing for item names */
+        }
+
+        /* Circular button styling */
+        .circle-button {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 0;
+            outline: none;
+        }
+
+        .circle-button:hover {
+            background-color: #e0e0e0;
+        }
+
+        /* Add to Box button styling */
+        .item-control button[type="submit"] {
+            padding: 5px 10px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+
+        .item-control button[type="submit"]:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
-    <!-- Cart Icon -->
-    <div class="cart-icon">
-        <span id="cart-count">0</span>
+<!-- Cart Icon -->
+<div class="cart-icon">
+    <span id="cart-count">0</span>
+</div>
+
+<div class="dashboard-container">
+    <h2>Donor Dashboard</h2>
+
+    <!-- Meal Donation Section -->
+    <div class="section">
+        <h3>Meal Donation</h3>
+        <form method="POST" action="../Controller/DonorDashboardController.php">
+            <select name="mealType" required>
+                <option value="Beef Meal">Beef</option>
+                <option value="Chicken Meal">Chicken</option>
+                <option value="Vegetarian Meal">Vegetarian</option>
+            </select>
+            <input type="number" name="mealQuantity" placeholder="Quantity" required>
+            <button type="submit" name="add_meal">Add to Cart</button>
+        </form>
     </div>
 
-    <div class="dashboard-container">
-        <h2>Donor Dashboard</h2>
+    <!-- Raw Materials Donation Section -->
+    <div class="section">
+        <h3>Raw Materials Donation</h3>
+        <form method="POST" action="../Controller/DonorDashboardController.php">
+            <input type="text" name="materialType" placeholder="Material Type (e.g., Grain)" required>
+            <input type="number" name="quantity" placeholder="Quantity" required>
+            <input type="number" name="rawMaterialWeight" placeholder="Weight (kg)" required>
+            <input type="text" name="supplier" placeholder="Supplier" required>
+            <button type="submit" name="add_raw_materials">Add to Cart</button>
+        </form>
+    </div>
 
-        <!-- Meal Donation Section -->
-        <div class="section">
-            <h3>Meal Donation</h3>
-            <form method="POST" action="../Controller/DonorDashboardController.php">
-                <select name="mealType" required>
-                    <option value="Beef Meal">Beef</option>
-                    <option value="Chicken Meal">Chicken</option>
-                    <option value="Vegetarian Meal">Vegetarian</option>
-                </select>
-                <input type="number" name="mealQuantity" placeholder="Quantity" required>
-                <button type="submit" name="add_meal">Add to Cart</button>
-            </form>
-        </div>
+    <!-- Money Donation Section -->
+    <div class="section">
+        <h3>Money Donation</h3>
+        <form method="POST" action="../Controller/DonorDashboardController.php">
+            <input type="number" name="amount" placeholder="Amount" required>
+            <input type="text" name="donationPurpose" placeholder="Purpose (e.g., School Supplies)" required>
+            <button type="submit" name="add_money">Add to Cart</button>
+        </form>
+    </div>
 
-        <!-- Raw Materials Donation Section -->
-        <div class="section">
-            <h3>Raw Materials Donation</h3>
-            <form method="POST" action="../Controller/DonorDashboardController.php">
-                <input type="text" name="materialType" placeholder="Material Type (e.g., Grain)" required>
-                <input type="number" name="quantity" placeholder="Quantity" required>
-                <input type="number" name="rawMaterialWeight" placeholder="Weight (kg)" required>
-                <input type="text" name="supplier" placeholder="Supplier" required>
-                <button type="submit" name="add_raw_materials">Add to Cart</button>
-            </form>
-        </div>
+    <!-- Sacrifice Donation Section -->
+    <div class="section">
+        <h3>Sacrifice Donation</h3>
+        <form method="POST" action="../Controller/DonorDashboardController.php">
+            <select name="animalType" id="animalType" required>
+                <option value="Sheep Sacrifice">Sheep</option>
+                <option value="Cow Sacrifice">Cow</option>
+                <option value="Goat Sacrifice">Goat</option>
+            </select>
+            <input type="number" name="weight" id="weight" placeholder="Weight (kg)" readonly required>
+            <button type="submit" name="add_sacrifice">Add to Cart</button>
+        </form>
+    </div>
 
-        <!-- Money Donation Section -->
-        <div class="section">
-            <h3>Money Donation</h3>
-            <form method="POST" action="../Controller/DonorDashboardController.php">
-                <input type="number" name="amount" placeholder="Amount" required>
-                <input type="text" name="donationPurpose" placeholder="Purpose (e.g., School Supplies)" required>
-                <button type="submit" name="add_money">Add to Cart</button>
-            </form>
-        </div>
+    <!-- Client Ready Meal Section -->
+    <div class="section">
+        <h3>Client Ready Meal</h3>
+        <form method="POST" action="../Controller/DonorDashboardController.php">
+            <input type="text" name="readyMealType" placeholder="Meal Type (e.g., Frozen Pizza)" required>
+            <input type="date" name="readyMealExpiration" placeholder="Expiration Date" required>
+            <input type="text" name="packagingType" placeholder="Packaging Type (e.g., Plastic Wrap)" required>
+            <input type="number" name="readyMealQuantity" placeholder="Quantity" required>
+            <button type="submit" name="add_ready_meal">Add to Cart</button>
+        </form>
+    </div>
 
-        <!-- Sacrifice Donation Section -->
-        <div class="section">
-            <h3>Sacrifice Donation</h3>
-            <form method="POST" action="../Controller/DonorDashboardController.php">
-                <select name="animalType" id="animalType" required>
-                    <option value="Sheep Sacrifice">Sheep</option>
-                    <option value="Cow Sacrifice">Cow</option>
-                    <option value="Goat Sacrifice">Goat</option>
-                </select>
-                <input type="number" name="weight" id="weight" placeholder="Weight (kg)" readonly required>
-                <button type="submit" name="add_sacrifice">Add to Cart</button>
-            </form>
-        </div>
-
-        <!-- Client Ready Meal Section -->
-        <div class="section">
-            <h3>Client Ready Meal</h3>
-            <form method="POST" action="../Controller/DonorDashboardController.php">
-                <input type="text" name="readyMealType" placeholder="Meal Type (e.g., Frozen Pizza)" required>
-                <input type="date" name="readyMealExpiration" placeholder="Expiration Date" required>
-                <input type="text" name="packagingType" placeholder="Packaging Type (e.g., Plastic Wrap)" required>
-                <input type="number" name="readyMealQuantity" placeholder="Quantity" required>
-                <button type="submit" name="add_ready_meal">Add to Cart</button>
-            </form>
-        </div>
-
-        <!-- Box Section -->
-        <div class="section">
-            <h3>Box Donation</h3>
-            <form method="POST" action="../Controller/DonorDashboardController.php">
-                <input type="number" name="boxQuantity" placeholder="Number of Boxes" required>
-                <button type="submit" name="add_box">Add Box to Cart</button>
-            </form>
-        </div>
-
-        <!-- Proceed Button -->
-        <div class="proceed-button">
-            <button onclick="handleProceed()">Proceed</button>
+    <!-- Box Section -->
+    <div class="section">
+        <h3>Box Donation</h3>
+        <h4>Box Initial Items: Oil, Pasta, Rice, Sugar<br><br>Box Initial Size: 10 kg</h4>
+        <!-- <br><br>
+        <h4 id="box_items"></h4><br><br>
+        <h4 id="box_size"></h4><br><br>
+        <h4 id="box_cost"></h4><br><br> -->
+        <form method="POST" onsubmit="handleBoxSubmission(event)">
+            <button type="submit" name="add_box">Add Box to Cart</button>
+        </form>
+        <!-- Add Items to Box Section (Initially Hidden) -->
+        <div id="addItemsSection" style="display: none;">
+            <h4>Add Items to Box</h4>
+            <div class="item-control">
+                <form method="POST" onsubmit="handleOilSubmission(event)">
+                    <span>Oil</span>
+                    <button class="circle-button" value="add" onclick="adjustQuantity('oil', -1)">-</button>
+                    <span id="oilQuantity">0</span>
+                    <button class="circle-button" value="remove" onclick="adjustQuantity('oil', 1)">+</button>
+                    <button type="submit" name="additional_oil">Add to Box</button>
+                </form>
+            </div>
+            <div class="item-control">
+                <form method="POST" onsubmit="handlePastaSubmission(event)">
+                    <span>Pasta</span>
+                    <button class="circle-button" value="add" onclick="adjustQuantity('pasta', -1)">-</button>
+                    <span id="pastaQuantity">0</span>
+                    <button class="circle-button" value="remove" onclick="adjustQuantity('pasta', 1)">+</button>
+                    <button type="submit" name="additional_pasta">Add to Box</button>
+                </form>
+            </div>
+            <div class="item-control">
+                <form method="POST" onsubmit="handleRiceSubmission(event)">
+                    <span>Rice</span>
+                    <button class="circle-button" value="add" onclick="adjustQuantity('rice', -1)">-</button>
+                    <span id="riceQuantity">0</span>
+                    <button class="circle-button" value="remove" onclick="adjustQuantity('rice', 1)">+</button>
+                    <button type="submit" name="additional_rice">Add to Box</button>
+                </form>
+            </div>
         </div>
     </div>
 
-    <script>
-        function handleProceed() {
-            const formData = new FormData();
-            formData.append('proceed', 'true');
-            fetch('../Controller/DonorDashboardController.php', {
-                method: 'POST',
-                body: formData,
+    <!-- Proceed Button -->
+    <div class="proceed-button">
+        <button onclick="handleProceed()">Proceed</button>
+    </div>
+</div>
+
+<script>
+    async function handleBoxSubmission(event) {
+        event.preventDefault();
+        const formData = new FormData();
+        formData.append('add_box', 'true');
+        fetch('../Controller/DonorDashboardController.php', {
+            method: 'POST',
+            body: formData,
+        }).then(response => {
+            if (response.ok) {
+                fetchCartItemCount();
+                document.getElementById('addItemsSection').style.display = 'block';
+            } else {
+            }
+        })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
+    async function handleOilSubmission(event) {
+        event.preventDefault();
+        const clickedButton = event.submitter;
+        if(clickedButton.value == "add" || clickedButton.value == "remove") {
+            return;
+        }
+        const formData = new FormData();
+        const form = event.target;
+        formData.append('additional_oil', 'true');
+        formData.append('oilQuantity', document.getElementById(`oilQuantity`).textContent);
+        fetch('../Controller/DonorDashboardController.php', {
+            method: 'POST',
+            body: formData,
+        })  .then((response) => {
+            return response.json();
+        })
+            .then((data) => {
+                // Handle the JSON response
+                console.log("Response from server:", data);
             })
+            .catch((error) => {
+                console.error("Error:", error);
+            });
+    }
+
+    async function handlePastaSubmission(event) {
+        event.preventDefault();
+        const clickedButton = event.submitter;
+        if(clickedButton.value == "add" || clickedButton.value == "remove") {
+            return;
+        }
+        const formData = new FormData();
+        const form = event.target;
+        formData.append('additional_pasta', 'true');
+        formData.append('pastaQuantity', document.getElementById(`pastaQuantity`).textContent);
+        fetch('../Controller/DonorDashboardController.php', {
+            method: 'POST',
+            body: formData,
+        }).then(response => {
+            if (response.ok) {
+                fetchCartItemCount();
+                document.getElementById('addItemsSection').style.display = 'block';
+            } else {
+            }
+        })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
+    async function handleRiceSubmission(event) {
+        event.preventDefault();
+        const clickedButton = event.submitter;
+        if(clickedButton.value == "add" || clickedButton.value == "remove") {
+            return;
+        }
+        const formData = new FormData();
+        const form = event.target;
+        formData.append('additional_rice', 'true');
+        formData.append('riceQuantity', document.getElementById(`riceQuantity`).textContent);
+        fetch('../Controller/DonorDashboardController.php', {
+            method: 'POST',
+            body: formData,
+        }).then(response => {
+            if (response.ok) {
+                fetchCartItemCount();
+                document.getElementById('addItemsSection').style.display = 'block';
+            } else {
+            }
+        })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
+
+    function adjustQuantity(item, change) {
+        const quantityElement = document.getElementById(`${item}Quantity`);
+        let quantity = parseInt(quantityElement.textContent);
+        quantity += change;
+        if (quantity < 0) quantity = 0;
+        quantityElement.textContent = quantity;
+    }
+
+    function handleProceed() {
+        const formData = new FormData();
+        formData.append('proceed', 'true');
+        fetch('../Controller/DonorDashboardController.php', {
+            method: 'POST',
+            body: formData,
+        })
             .then(response => {
                 if (response.ok) {
                     window.location.href = '../View/Checkout.php';
@@ -197,37 +387,37 @@
             .catch(error => {
                 console.error('Error:', error);
             });
+    }
+    // Fetch the cart item count from the server
+    async function fetchCartItemCount() {
+        const response = await fetch('../Controller/getCartItemCount.php');
+        const data = await response.json();
+        document.getElementById('cart-count').textContent = data.count;
+    }
+
+    // Update the cart count when the page loads
+    fetchCartItemCount();
+
+    // Automatically set the weight based on the animal type
+    const animalTypeSelect = document.getElementById('animalType');
+    const weightInput = document.getElementById('weight');
+
+    animalTypeSelect.addEventListener('change', () => {
+        switch (animalTypeSelect.value) {
+            case 'Sheep Sacrifice':
+                weightInput.value = 100;
+                break;
+            case 'Cow Sacrifice':
+                weightInput.value = 510;
+                break;
+            case 'Goat Sacrifice':
+                weightInput.value = 90;
+                break;
         }
-        // Fetch the cart item count from the server
-        async function fetchCartItemCount() {
-            const response = await fetch('../Controller/getCartItemCount.php');
-            const data = await response.json();
-            document.getElementById('cart-count').textContent = data.count;
-        }
+    });
 
-        // Update the cart count when the page loads
-        fetchCartItemCount();
-
-        // Automatically set the weight based on the animal type
-        const animalTypeSelect = document.getElementById('animalType');
-        const weightInput = document.getElementById('weight');
-
-        animalTypeSelect.addEventListener('change', () => {
-            switch (animalTypeSelect.value) {
-                case 'Sheep Sacrifice':
-                    weightInput.value = 100;
-                    break;
-                case 'Cow Sacrifice':
-                    weightInput.value = 510;
-                    break;
-                case 'Goat Sacrifice':
-                    weightInput.value = 90;
-                    break;
-            }
-        });
-
-        // Initialize the weight on page load
-        animalTypeSelect.dispatchEvent(new Event('change'));
-    </script>
+    // Initialize the weight on page load
+    animalTypeSelect.dispatchEvent(new Event('change'));
+</script>
 </body>
 </html>

@@ -167,6 +167,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $_SESSION['paymentMethod'] = new Cash();
         }
+        if (isset($_POST['appointmentDate']) && isset($_POST['appointmentLocation'])) {
+            $appointmentDate = $_POST['appointmentDate'];
+            $appointmentLocation = $_POST['appointmentLocation'];
+            
+            // Call the createAppointment method on the user object
+            $_SESSION['user']->createAppointment($appointmentLocation, $appointmentDate);
+        }
         if ($controller->proceedDonation()) {
             header('Location: donation_success.php');
             exit();

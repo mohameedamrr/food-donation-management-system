@@ -17,7 +17,6 @@ class BasicBox extends Box implements IDeleteObject, IReadObject, IStoreObject, 
 
     public function addItem($item): array {
         $this->finalItemList = $this->initialItemList;
-        echo $this->finalItemList;
         $this->finalBoxSize = $this->initialBoxSize;
         return $this->finalItemList;
     }
@@ -26,7 +25,7 @@ class BasicBox extends Box implements IDeleteObject, IReadObject, IStoreObject, 
         $this->totalCost = $this->cost;
         return $this->totalCost;
     }
- 
+
     public static function readObject($item_id) {
         return new BasicBox($item_id);
     }
