@@ -26,11 +26,17 @@ spl_autoload_register(function ($class_name) {
         }
     }
 });
-if(!isset($_SESSION))
-{
+
+if (!isset($_SESSION)) {
     session_start();
 }
-
+// if (!isset($_SESSION['user'])) {
+//     header('Location: LoginView.html');
+//     exit();
+// }
+$user = $_SESSION['user'];
+$user->setDonationHistory();
+$_SESSION['user'] = $user;
 $controller = new DonationHistoryController();
 $donationHistory = $controller->getDonationHistory();
 ?>
@@ -42,7 +48,6 @@ $donationHistory = $controller->getDonationHistory();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Donation History</title>
     <style>
-        /* Use the same styles as in the attached files */
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
@@ -55,7 +60,7 @@ $donationHistory = $controller->getDonationHistory();
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            max-width: 1200px;
+            max-width: 800px;
             margin: 0 auto;
         }
 
@@ -95,70 +100,40 @@ $donationHistory = $controller->getDonationHistory();
         .donation p {
             margin: 5px 0;
         }
-
-        .edit-section {
-            display: none;
-            margin-top: 10px;
-        }
-
-        .edit-section textarea {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-
-        .edit-section button {
-            margin-right: 10px;
-        }
     </style>
 </head>
 <body>
     <div class="dashboard-container">
         <h1>Donation History</h1>
 
+        <?php
+        echo "<h2>Hello " . $_SESSION['user']->getName() . ",</h2>";
+        ?>
+
         <div class="section">
-            <h3>All Donations</h3>
-            <?php
-            if (empty($donationHistory)) {
-                echo '<p>No donation history available.</p>';
-            } else {
-                foreach ($donationHistory as $donation) {
-                    echo '<div class="donation">';
-                    echo '<h4>Donation ID: ' . $donation['id'] . '</h4>';
-                    echo '<p>Total Cost: ' . $donation['total_cost'] . '</p>';
-                    echo '<p>Description: ' . $donation['description'] . '</p>';
-                    echo '<p>Donation Date: ' . $donation['donation_date'] . '</p>';
-
-                    echo '<button onclick="showEditForm(' . $donation['id'] . ')">Edit Description</button>';
-                    echo '<div id="edit-section-' . $donation['id'] . '" class="edit-section">';
-                    echo '<form method="POST" action="../Controller/DonationHistoryController.php">';
-                    echo '<input type="hidden" name="donation_id" value="' . $donation['id'] . '">';
-                    echo '<textarea name="new_description" placeholder="Enter new description"></textarea>';
-                    echo '<button type="submit" name="update_description">Save</button>';
-                    echo '<button type="button" onclick="hideEditForm(' . $donation['id'] . ')">Cancel</button>';
-                    echo '</form>';
-                    echo '</div>';
-
-                    echo '</div>';
+            <h3>Your Donation History</h3>
+            <div id="donationHistoryList">
+                <?php
+                if (empty($donationHistory)) {
+                    echo '<p>No donation history found.</p>';
+                } else {
+                    foreach ($donationHistory as $donation) {
+                        echo '<div class="donation">';
+                        echo '<h4>Donation ID: ' . $donation['id'] . '</h4>';
+                        echo '<p>Total Cost: ' . $donation['totalCost'] . '</p>';
+                        //echo '<p>Description: ' . $donation['description'] . '</p>';
+                        echo '<p>Donation Items:</p>';
+                        echo '<ul>';
+                        foreach ($donation['donationItems'] as $item) {
+                            echo '<li>' . $item->getItemName() . ' : ' . $item->getCost() . '</li>';
+                        }
+                        echo '</ul>';
+                        echo '</div>';
+                    }
                 }
-            }
-            ?>
+                ?>
+            </div>
         </div>
     </div>
-
-    <script>
-        // Function to show the edit form
-        function showEditForm(donationId) {
-            document.getElementById('edit-section-' + donationId).style.display = 'block';
-        }
-
-        // Function to hide the edit form
-        function hideEditForm(donationId) {
-            document.getElementById('edit-section-' + donationId).style.display = 'none';
-        }
-    </script>
 </body>
 </html>
